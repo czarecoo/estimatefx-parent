@@ -4,19 +4,19 @@ import java.util.Objects;
 
 public class Vote {
     private String name;
-    private String vote;
+    private VoteValue voteValue;
 
     public Vote(String name, String vote) {
         this.name = name;
-        this.vote = vote;
+        this.voteValue = new VoteValue(vote);
     }
 
     public String getName() {
         return name;
     }
 
-    public String getVote() {
-        return vote;
+    public VoteValue getVoteValue() {
+        return voteValue;
     }
 
     @Override
@@ -25,19 +25,19 @@ public class Vote {
         if (o == null || getClass() != o.getClass()) return false;
         Vote vote1 = (Vote) o;
         return Objects.equals(name, vote1.name) &&
-                Objects.equals(vote, vote1.vote);
+                Objects.equals(voteValue, vote1.voteValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, vote);
+        return Objects.hash(name, voteValue);
     }
 
     @Override
     public String toString() {
         return "Vote{" +
                 "name='" + name + '\'' +
-                ", vote='" + vote + '\'' +
+                ", vote='" + voteValue + '\'' +
                 '}';
     }
 }

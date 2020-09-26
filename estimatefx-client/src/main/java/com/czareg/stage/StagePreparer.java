@@ -11,6 +11,6 @@ public class StagePreparer {
 
     public void prepare() {
         stage.setTitle("EstimateFx");
-        stage.setResizable(false);
+        stage.setResizable(true);
     }
 }

@@ -12,10 +12,11 @@
       <Insets bottom="20.0" left="40.0" right="40.0" top="20.0"/>
    </padding>
    <children>
-      <Label text="Enter your name:"/>
+      <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Enter your name:"
+             VBox.vgrow="ALWAYS"/>
       <TextField fx:id="nameTextField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                 promptText="Name"/>
+                 promptText="Name" VBox.vgrow="ALWAYS"/>
       <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-              onAction="#handleJoinSessionButtonClicked" text="Join Session"/>
+              onAction="#handleJoinSessionButtonClicked" text="Join Session" VBox.vgrow="ALWAYS"/>
    </children>
 </VBox>
