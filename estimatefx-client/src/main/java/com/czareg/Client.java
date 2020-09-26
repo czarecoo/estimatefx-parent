@@ -1,31 +1,35 @@
 package com.czareg;
 
+import com.czareg.context.Context;
+import com.czareg.scene.SceneManager;
+import com.czareg.stage.StagePreparer;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
+import static com.czareg.scene.fxml.FxmlScene.JOIN;
 
 public class Client extends Application {
     private static final Logger LOG = LogManager.getLogger(Client.class);
+    private SceneManager sceneManager;
+    private StagePreparer stagePreparer;
 
     public static void main(String[] args) {
         launch(Client.class);
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/join.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root, 400, 150);
-        stage.setTitle("EstimateFx");
-        stage.setResizable(false);
-        stage.setScene(scene);
+    public void start(Stage stage) {
+        Context context = new Context();
+        context.setStage(stage);
+
+        sceneManager = new SceneManager(context);
+        sceneManager.setScene(JOIN);
+
+        stagePreparer = new StagePreparer(stage);
+        stagePreparer.prepare();
+
         LOG.info("Started UI");
         stage.show();
     }
