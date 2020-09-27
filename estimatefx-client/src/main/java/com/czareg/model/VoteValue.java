@@ -1,4 +1,4 @@
-package com.czareg;
+package com.czareg.model;
 
 import java.util.Objects;
 

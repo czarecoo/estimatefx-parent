@@ -2,16 +2,16 @@ package com.czareg.session;
 
 import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.session.exceptions.NotExistsException;
-import com.czareg.user.Type;
 import com.czareg.user.User;
+import com.czareg.user.UserType;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static com.czareg.session.State.*;
-import static com.czareg.user.Type.CREATOR;
-import static com.czareg.user.Type.JOINER;
+import static com.czareg.user.UserType.CREATOR;
+import static com.czareg.user.UserType.JOINER;
 
 @Component
 public class SessionService {
@@ -42,10 +42,10 @@ public class SessionService {
         return sessionRepository.getSessions();
     }
 
-    public void vote(Integer sessionId, String userName, int value) throws NotExistsException, BadRequestException {
+    public void vote(Integer sessionId, String userName, String voteValue) throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
-        session.vote(user.getName(), value);
+        session.vote(user.getName(), voteValue);
     }
 
     public Session join(Integer sessionId, String userName) throws NotExistsException, BadRequestException {
@@ -111,7 +111,7 @@ public class SessionService {
     private boolean didCreatorLeave(Session session) {
         return session.getUsers().stream()
                 .map(User::getType)
-                .noneMatch(Type::isCreator);
+                .noneMatch(UserType::isCreator);
     }
 
     private User findUser(String userName, Session session) throws NotExistsException {
@@ -121,10 +121,10 @@ public class SessionService {
                 .orElseThrow(() -> new NotExistsException("User does not exist in this session"));
     }
 
-    private User createUser(String userName, Type type) {
+    private User createUser(String userName, UserType userType) {
         User creator = userFactory.getObject();
         creator.setName(userName);
-        creator.setType(type);
+        creator.setType(userType);
         return creator;
     }
 }

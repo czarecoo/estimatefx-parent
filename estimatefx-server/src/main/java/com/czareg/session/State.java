@@ -1,12 +1,13 @@
 package com.czareg.session;
 
+import com.czareg.dto.StateDTO;
 import com.czareg.session.exceptions.BadRequestException;
 
 public enum State {
     VOTING {
         @Override
-        public void vote(Session session, String userName, int value) {
-            session.getVotes().put(userName, value);
+        public void vote(Session session, String userName, String voteValue) {
+            session.getVotes().put(userName, voteValue);
         }
 
         @Override
@@ -15,7 +16,7 @@ public enum State {
         }
     }, WAITING {
         @Override
-        public void vote(Session session, String userName, int value) throws BadRequestException {
+        public void vote(Session session, String userName, String voteValue) throws BadRequestException {
             throw new BadRequestException("Voting is disabled in current state. Please wait for creator to start another vote.");
         }
 
@@ -25,7 +26,7 @@ public enum State {
         }
     }, CLOSED {
         @Override
-        public void vote(Session session, String userName, int value) throws BadRequestException {
+        public void vote(Session session, String userName, String voteValue) throws BadRequestException {
             throw new BadRequestException("Voting is disabled in current state.");
         }
 
@@ -35,12 +36,16 @@ public enum State {
         }
     };
 
-    public abstract void vote(Session session, String userName, int value) throws BadRequestException;
+    public abstract void vote(Session session, String userName, String voteValue) throws BadRequestException;
 
     public abstract String getDescription();
 
     @Override
     public String toString() {
         return getDescription();
+    }
+
+    public StateDTO toDTO() {
+        return StateDTO.valueOf(this.name());
     }
 }

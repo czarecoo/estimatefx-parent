@@ -1,7 +1,11 @@
 package com.czareg.user;
 
+import com.czareg.dto.UserDTO;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
@@ -9,7 +13,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 @Scope(SCOPE_PROTOTYPE)
 public class User {
     private String name;
-    private Type type;
+    private UserType userType;
 
     public String getName() {
         return name;
@@ -19,19 +23,29 @@ public class User {
         this.name = name;
     }
 
-    public Type getType() {
-        return type;
+    public static List<UserDTO> mapUsersToDTOs(List<User> users) {
+        return users.stream()
+                .map(User::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public UserType getType() {
+        return userType;
+    }
+
+    public void setType(UserType userType) {
+        this.userType = userType;
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "name='" + name + '\'' +
-                ", type=" + type +
+                ", type=" + userType +
                 '}';
+    }
+
+    public UserDTO toDTO() {
+        return new UserDTO(name, userType.toDTO());
     }
 }

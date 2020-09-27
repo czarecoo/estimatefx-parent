@@ -1,8 +1,8 @@
 package com.czareg.controller;
 
-import com.czareg.Vote;
-import com.czareg.VoteValue;
 import com.czareg.context.Context;
+import com.czareg.model.Vote;
+import com.czareg.model.VoteValue;
 import com.czareg.stage.ContextAware;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

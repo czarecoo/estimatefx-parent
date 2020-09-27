@@ -20,6 +20,13 @@ public class JoinController implements ContextAware {
     @FXML
     private void handleJoinSessionButtonClicked(ActionEvent event) {
         context.setName(nameTextField.getText());
+       /* BackendService backendService = new BackendService("http://localhost:8080/");
+        try {
+            List<SessionDTO> sessionDTOList  = backendService.getSessions();
+            System.out.println(sessionDTOList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
         context.getSceneManager().setScene(FxmlScene.VOTE);
     }
 

@@ -1,5 +1,6 @@
 package com.czareg.session;
 
+import com.czareg.dto.SessionDTO;
 import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.user.User;
 import org.springframework.context.annotation.Scope;
@@ -24,7 +25,7 @@ public class Session {
     private State state;
     private Instant creationTime;
     private List<User> users;
-    private Map<String, Integer> votes;
+    private Map<String, String> votes;
     private String description;
 
     public Session() {
@@ -54,7 +55,7 @@ public class Session {
         return users;
     }
 
-    public Map<String, Integer> getVotes() {
+    public Map<String, String> getVotes() {
         return votes;
     }
 
@@ -82,7 +83,18 @@ public class Session {
         this.state = VOTING;
     }
 
-    public void vote(String name, int value) throws BadRequestException {
-        getState().vote(this, name, value);
+    public void vote(String name, String voteValue) throws BadRequestException {
+        getState().vote(this, name, voteValue);
+    }
+
+    public SessionDTO toDTO() {
+        SessionDTO sessionDTO = new SessionDTO();
+        sessionDTO.setSessionId(sessionId);
+        sessionDTO.setState(state.toDTO());
+        sessionDTO.setCreationTime(creationTime.toString());
+        sessionDTO.setUsers(User.mapUsersToDTOs(users));
+        sessionDTO.setVotes(votes);
+        sessionDTO.setDescription(description);
+        return sessionDTO;
     }
 }
