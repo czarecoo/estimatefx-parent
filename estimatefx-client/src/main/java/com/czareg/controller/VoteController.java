@@ -51,6 +51,11 @@ public class VoteController implements ContextAware {
         votingStatusLabel.setText("Waiting for voting to start");
     }
 
+    @Override
+    public void initialize(Context context) {
+        this.context = context;
+    }
+
     @FXML
     private void handleVoteButtonClicked(ActionEvent event) {
         if (!(event.getSource() instanceof Button)) {
@@ -88,10 +93,5 @@ public class VoteController implements ContextAware {
         votingStatusLabel.setText("Waiting for voting to start");
 
         LOG.info("Stopped voting");
-    }
-
-    @Override
-    public void setContext(Context context) {
-        this.context = context;
     }
 }

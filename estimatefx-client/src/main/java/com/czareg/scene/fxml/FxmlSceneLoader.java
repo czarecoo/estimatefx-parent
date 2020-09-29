@@ -14,7 +14,7 @@ public class FxmlSceneLoader {
         URL url = createUrlForFxmlFileInResources(fxmlFile);
         FXMLLoader loader = new FXMLLoader(url);
         Parent root = loadFxmlFile(loader, fxmlFile);
-        injectContextIntoFxmlController(loader, context, fxmlFile);
+        initializeController(loader, context, fxmlFile);
         return new Scene(root);
     }
 
@@ -36,12 +36,12 @@ public class FxmlSceneLoader {
         }
     }
 
-    private void injectContextIntoFxmlController(FXMLLoader loader, Context context, String fxmlFile) {
+    private void initializeController(FXMLLoader loader, Context context, String fxmlFile) {
         ContextAware controller = loader.getController();
         if (controller == null) {
             String message = String.format("Failed to inject context into controller of %s", fxmlFile);
             throw new FxmlSceneLoadingException(message);
         }
-        controller.setContext(context);
+        controller.initialize(context);
     }
 }

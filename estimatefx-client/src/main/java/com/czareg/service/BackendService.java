@@ -2,6 +2,7 @@ package com.czareg.service;
 
 import com.czareg.dto.SessionDTO;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -15,7 +16,7 @@ public class BackendService {
         this.baseUrl = baseUrl;
     }
 
-    public SessionDTO createSession(String userName) throws BackendServiceCallFailed {
+    public SessionDTO createSession(String userName) throws BackendServiceCallFailedException {
         try (ClosableClient client = new ClosableClient()) {
             Response response = client
                     .target(baseUrl)
@@ -28,12 +29,14 @@ public class BackendService {
                 return response.readEntity(SessionDTO.class);
             } else {
                 String errorMessage = response.readEntity(String.class);
-                throw new BackendServiceCallFailed(errorMessage);
+                throw new BackendServiceCallFailedException(errorMessage);
             }
+        } catch (ProcessingException e) {
+            throw new BackendServiceCallFailedException(e);
         }
     }
 
-    public SessionDTO joinSession(int sessionId, String userName) throws BackendServiceCallFailed {
+    public SessionDTO joinSession(int sessionId, String userName) throws BackendServiceCallFailedException {
         try (ClosableClient client = new ClosableClient()) {
             Response response = client
                     .target(baseUrl)
@@ -47,12 +50,14 @@ public class BackendService {
                 return response.readEntity(SessionDTO.class);
             } else {
                 String errorMessage = response.readEntity(String.class);
-                throw new BackendServiceCallFailed(errorMessage);
+                throw new BackendServiceCallFailedException(errorMessage);
             }
+        } catch (ProcessingException e) {
+            throw new BackendServiceCallFailedException(e);
         }
     }
 
-    public void startVotingOnSession(int sessionId, String userName) throws BackendServiceCallFailed {
+    public void startVotingOnSession(int sessionId, String userName) throws BackendServiceCallFailedException {
         try (ClosableClient client = new ClosableClient()) {
             Response response = client
                     .target(baseUrl)
@@ -64,12 +69,14 @@ public class BackendService {
 
             if (response.getStatus() != 200) {
                 String errorMessage = response.readEntity(String.class);
-                throw new BackendServiceCallFailed(errorMessage);
+                throw new BackendServiceCallFailedException(errorMessage);
             }
+        } catch (ProcessingException e) {
+            throw new BackendServiceCallFailedException(e);
         }
     }
 
-    public void stopVotingOnSession(int sessionId, String userName) throws BackendServiceCallFailed {
+    public void stopVotingOnSession(int sessionId, String userName) throws BackendServiceCallFailedException {
         try (ClosableClient client = new ClosableClient()) {
             Response response = client
                     .target(baseUrl)
@@ -81,12 +88,14 @@ public class BackendService {
 
             if (response.getStatus() != 200) {
                 String errorMessage = response.readEntity(String.class);
-                throw new BackendServiceCallFailed(errorMessage);
+                throw new BackendServiceCallFailedException(errorMessage);
             }
+        } catch (ProcessingException e) {
+            throw new BackendServiceCallFailedException(e);
         }
     }
 
-    public List<SessionDTO> getSessions() throws BackendServiceCallFailed {
+    public List<SessionDTO> getSessions() throws BackendServiceCallFailedException {
         try (ClosableClient client = new ClosableClient()) {
             Response response = client
                     .target(baseUrl)
@@ -99,12 +108,14 @@ public class BackendService {
                 });
             } else {
                 String errorMessage = response.readEntity(String.class);
-                throw new BackendServiceCallFailed(errorMessage);
+                throw new BackendServiceCallFailedException(errorMessage);
             }
+        } catch (ProcessingException e) {
+            throw new BackendServiceCallFailedException(e);
         }
     }
 
-    public SessionDTO getSession(int sessionId) throws BackendServiceCallFailed {
+    public SessionDTO getSession(int sessionId) throws BackendServiceCallFailedException {
         try (ClosableClient client = new ClosableClient()) {
             Response response = client
                     .target(baseUrl)
@@ -117,12 +128,14 @@ public class BackendService {
                 return response.readEntity(SessionDTO.class);
             } else {
                 String errorMessage = response.readEntity(String.class);
-                throw new BackendServiceCallFailed(errorMessage);
+                throw new BackendServiceCallFailedException(errorMessage);
             }
+        } catch (ProcessingException e) {
+            throw new BackendServiceCallFailedException(e);
         }
     }
 
-    public void leaveSession(int sessionId, String userName) throws BackendServiceCallFailed {
+    public void leaveSession(int sessionId, String userName) throws BackendServiceCallFailedException {
         try (ClosableClient client = new ClosableClient()) {
             Response response = client
                     .target(baseUrl)
@@ -134,12 +147,14 @@ public class BackendService {
 
             if (response.getStatus() != 200) {
                 String errorMessage = response.readEntity(String.class);
-                throw new BackendServiceCallFailed(errorMessage);
+                throw new BackendServiceCallFailedException(errorMessage);
             }
+        } catch (ProcessingException e) {
+            throw new BackendServiceCallFailedException(e);
         }
     }
 
-    public void voteOnSession(int sessionId, String userName, String voteValue) throws BackendServiceCallFailed {
+    public void voteOnSession(int sessionId, String userName, String voteValue) throws BackendServiceCallFailedException {
         try (ClosableClient client = new ClosableClient()) {
             Response response = client
                     .target(baseUrl)
@@ -152,8 +167,10 @@ public class BackendService {
 
             if (response.getStatus() != 200) {
                 String errorMessage = response.readEntity(String.class);
-                throw new BackendServiceCallFailed(errorMessage);
+                throw new BackendServiceCallFailedException(errorMessage);
             }
+        } catch (ProcessingException e) {
+            throw new BackendServiceCallFailedException(e);
         }
     }
 }

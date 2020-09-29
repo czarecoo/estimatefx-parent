@@ -1,13 +1,18 @@
 package com.czareg.controller;
 
 import com.czareg.context.Context;
+import com.czareg.model.Session;
 import com.czareg.scene.fxml.FxmlScene;
 import com.czareg.stage.ContextAware;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static com.czareg.scene.fxml.FxmlScene.CREATE;
 
 public class JoinController implements ContextAware {
     private static final Logger LOG = LogManager.getLogger(JoinController.class);
@@ -16,22 +21,28 @@ public class JoinController implements ContextAware {
     @FXML
     private TextField nameTextField;
 
+    @FXML
+    private ChoiceBox<Session> existingSessionsChoiceBox;
+
+    @Override
+    public void initialize(Context context) {
+        this.context = context;
+        afterContextInitialize();
+    }
+
+    @FXML
+    private void handleCreateSessionButtonClicked(ActionEvent event) {
+        context.getSceneManager().setScene(CREATE);
+    }
 
     @FXML
     private void handleJoinSessionButtonClicked(ActionEvent event) {
         context.setName(nameTextField.getText());
-       /* BackendService backendService = new BackendService("http://localhost:8080/");
-        try {
-            List<SessionDTO> sessionDTOList  = backendService.getSessions();
-            System.out.println(sessionDTOList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+
         context.getSceneManager().setScene(FxmlScene.VOTE);
     }
 
-    @Override
-    public void setContext(Context context) {
-        this.context = context;
+    private void afterContextInitialize() {
+        Platform.runLater(context.getTaskFactory().createSessionsFillChoiceBoxTask(existingSessionsChoiceBox));
     }
 }

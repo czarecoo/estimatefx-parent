@@ -1,5 +1,5 @@
 import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceCallFailed;
+import com.czareg.service.BackendServiceCallFailedException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,42 +15,42 @@ public class BackendServiceManualTest {
     }
 
     @Test
-    public void createSessionTest() throws BackendServiceCallFailed {
+    public void createSessionTest() throws BackendServiceCallFailedException {
         System.out.println(backendService.createSession("John"));
     }
 
     @Test
-    public void joinSessionTest() throws BackendServiceCallFailed {
+    public void joinSessionTest() throws BackendServiceCallFailedException {
         System.out.println(backendService.joinSession(0, "John2"));
     }
 
     @Test
-    public void startVotingOnSessionTest() throws BackendServiceCallFailed {
+    public void startVotingOnSessionTest() throws BackendServiceCallFailedException {
         backendService.startVotingOnSession(0, "John");
     }
 
     @Test
-    public void stopVotingOnSessionTest() throws BackendServiceCallFailed {
+    public void stopVotingOnSessionTest() throws BackendServiceCallFailedException {
         backendService.stopVotingOnSession(0, "John");
     }
 
     @Test
-    public void getSessionsTest() throws BackendServiceCallFailed {
+    public void getSessionsTest() throws BackendServiceCallFailedException {
         System.out.println(backendService.getSessions());
     }
 
     @Test
-    public void getSessionTest() throws BackendServiceCallFailed {
+    public void getSessionTest() throws BackendServiceCallFailedException {
         System.out.println(backendService.getSession(0));
     }
 
     @Test
-    public void leaveSessionTest() throws BackendServiceCallFailed {
+    public void leaveSessionTest() throws BackendServiceCallFailedException {
         backendService.leaveSession(0, "John");
     }
 
     @Test
-    public void voteOnSessionTest() throws BackendServiceCallFailed {
+    public void voteOnSessionTest() throws BackendServiceCallFailedException {
         backendService.voteOnSession(3, "John", "?");
     }
 }

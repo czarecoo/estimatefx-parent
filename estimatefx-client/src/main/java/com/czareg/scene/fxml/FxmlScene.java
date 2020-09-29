@@ -1,5 +1,5 @@
 package com.czareg.scene.fxml;
 
 public enum FxmlScene {
-    JOIN, VOTE
+    JOIN, CREATE, VOTE
 }

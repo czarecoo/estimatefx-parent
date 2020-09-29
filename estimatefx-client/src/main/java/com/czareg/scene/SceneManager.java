@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.czareg.scene.fxml.FxmlScene.*;
+
 public class SceneManager {
     private Map<FxmlScene, String> fxmlSceneFiles;
     private FxmlSceneLoader fxmlSceneLoader;
@@ -18,8 +20,9 @@ public class SceneManager {
         this.context = context;
         context.setSceneManager(this);
         this.fxmlSceneFiles = new HashMap<>();
-        fxmlSceneFiles.put(FxmlScene.JOIN, "join.fxml");
-        fxmlSceneFiles.put(FxmlScene.VOTE, "vote.fxml");
+        fxmlSceneFiles.put(JOIN, "join.fxml");
+        fxmlSceneFiles.put(CREATE, "create.fxml");
+        fxmlSceneFiles.put(VOTE, "vote.fxml");
         this.fxmlSceneLoader = new FxmlSceneLoader();
     }
 

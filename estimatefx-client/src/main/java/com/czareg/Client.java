@@ -5,6 +5,7 @@ import com.czareg.scene.SceneManager;
 import com.czareg.stage.StagePreparer;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +21,7 @@ public class Client extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws ConfigurationException {
         Context context = new Context();
         context.setStage(stage);
 
