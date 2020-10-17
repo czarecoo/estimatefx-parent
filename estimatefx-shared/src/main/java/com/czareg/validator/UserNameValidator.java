@@ -19,7 +19,7 @@ public class UserNameValidator implements Validator<String> {
         if (userName.length() > 20) {
             return new ValidationFailed("User name too long. Only 20 characters are allowed.");
         }
-        Pattern p = Pattern.compile("[^A-Za-z0-9 ]");
+        Pattern p = Pattern.compile("[^AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż0-9 ]");
         Matcher m = p.matcher(trimmedUserName);
         boolean containsSpecialCharacters = m.find();
         if (containsSpecialCharacters) {

@@ -125,7 +125,7 @@ public class SessionService {
 
     private User createUser(String userName, UserType userType) throws BadRequestException {
         ValidationResult validationResult = new UserNameValidator().validate(userName);
-        if (validationResult.isSuccessful()) {
+        if (!validationResult.isSuccessful()) {
             throw new BadRequestException(validationResult.getResult());
         }
         User creator = userFactory.getObject();

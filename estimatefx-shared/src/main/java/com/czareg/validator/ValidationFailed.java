@@ -1,7 +1,7 @@
 package com.czareg.validator;
 
-public class ValidationFailed extends ValidationResult {
-    public ValidationFailed(String result) {
+class ValidationFailed extends ValidationResult {
+    ValidationFailed(String result) {
         super(false, result);
     }
 }
