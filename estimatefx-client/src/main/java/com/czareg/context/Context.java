@@ -1,7 +1,10 @@
 package com.czareg.context;
 
 import com.czareg.scene.SceneManager;
+import com.czareg.service.BackendApi;
+import com.czareg.service.BackendApiFactory;
 import com.czareg.service.BackendService;
+import com.czareg.service.BackendServiceImpl;
 import com.czareg.tasks.TaskFactory;
 import javafx.stage.Stage;
 import org.apache.commons.configuration.ConfigurationException;
@@ -17,9 +20,10 @@ public class Context {
     public Context() throws ConfigurationException {
         PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration("application.properties");
         propertiesConfiguration.setThrowExceptionOnMissing(true);
-        String url = propertiesConfiguration.getString("backend.url");
-
-        BackendService backendService = new BackendService(url);
+        String baseUrl = propertiesConfiguration.getString("backend.url");
+        BackendApiFactory backendApiFactory = new BackendApiFactory();
+        BackendApi backendApi = backendApiFactory.createBackendApi(baseUrl);
+        BackendService backendService = new BackendServiceImpl(backendApi);
         taskFactory = new TaskFactory(backendService, this);
     }
 

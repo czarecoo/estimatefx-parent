@@ -3,7 +3,7 @@ package com.czareg.tasks;
 import com.czareg.dto.SessionDTO;
 import com.czareg.model.Session;
 import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceCallFailedException;
+import com.czareg.service.BackendServiceException;
 import javafx.concurrent.Task;
 import javafx.scene.control.ChoiceBox;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +24,7 @@ public class FillSessionsChoiceBoxTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws BackendServiceCallFailedException {
+    protected Void call() throws BackendServiceException {
         try {
             List<SessionDTO> sessionDTOs = backendService.getSessions();
             LOG.info("Received sessions from backend: {}", sessionDTOs);
@@ -32,7 +32,7 @@ public class FillSessionsChoiceBoxTask extends Task<Void> {
                     .map(Session::new)
                     .collect(Collectors.toList());
             return null;
-        } catch (BackendServiceCallFailedException e) {
+        } catch (BackendServiceException e) {
             LOG.error("Failed to fill existing sessions choice box", e);
             throw e;
         }

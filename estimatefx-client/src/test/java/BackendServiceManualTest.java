@@ -1,56 +1,55 @@
-import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceCallFailedException;
+import com.czareg.service.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
+//@Ignore
 public class BackendServiceManualTest {
     public static final String URL = "http://localhost:8080";
     private BackendService backendService;
 
     @Before
     public void setUp() {
-        backendService = new BackendService(URL);
+        BackendApi backendApi = new BackendApiFactory().createBackendApi(URL);
+        backendService = new BackendServiceImpl(backendApi);
     }
 
     @Test
-    public void createSessionTest() throws BackendServiceCallFailedException {
+    public void createSessionTest() throws BackendServiceException {
         System.out.println(backendService.createSession("John"));
     }
 
     @Test
-    public void joinSessionTest() throws BackendServiceCallFailedException {
-        System.out.println(backendService.joinSession(0, "John2"));
+    public void joinSessionTest() throws BackendServiceException {
+        System.out.println(backendService.joinSession(1, "John2"));
     }
 
     @Test
-    public void startVotingOnSessionTest() throws BackendServiceCallFailedException {
-        backendService.startVotingOnSession(0, "John");
+    public void startVotingOnSessionTest() throws BackendServiceException {
+        backendService.startVotingOnSession(1, "John");
     }
 
     @Test
-    public void stopVotingOnSessionTest() throws BackendServiceCallFailedException {
-        backendService.stopVotingOnSession(0, "John");
+    public void stopVotingOnSessionTest() throws BackendServiceException {
+        backendService.stopVotingOnSession(1, "John2");
     }
 
     @Test
-    public void getSessionsTest() throws BackendServiceCallFailedException {
+    public void getSessionsTest() throws BackendServiceException {
         System.out.println(backendService.getSessions());
     }
 
     @Test
-    public void getSessionTest() throws BackendServiceCallFailedException {
+    public void getSessionTest() throws BackendServiceException {
         System.out.println(backendService.getSession(0));
     }
 
     @Test
-    public void leaveSessionTest() throws BackendServiceCallFailedException {
+    public void leaveSessionTest() throws BackendServiceException {
         backendService.leaveSession(0, "John");
     }
 
     @Test
-    public void voteOnSessionTest() throws BackendServiceCallFailedException {
+    public void voteOnSessionTest() throws BackendServiceException {
         backendService.voteOnSession(3, "John", "?");
     }
 }

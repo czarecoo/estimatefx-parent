@@ -78,7 +78,7 @@ public class SessionService {
 
         State currentState = session.getState();
         if (currentState == VOTING || currentState == CLOSED) {
-            throw new BadRequestException("Cannot start voting in current state:" + currentState);
+            throw new BadRequestException("Cannot start voting in current state: " + currentState);
         }
         if (!user.getType().isCreator()) {
             throw new BadRequestException("Only creator can start voting.");

@@ -84,8 +84,6 @@ public class VoteController implements ContextAware {
 
     @FXML
     private void handleStopButtonClicked(ActionEvent event) {
-        startButton.setText("Clear and start");
-
         startButton.setDisable(false);
         stopButton.setDisable(true);
         buttonsHBox.setDisable(true);

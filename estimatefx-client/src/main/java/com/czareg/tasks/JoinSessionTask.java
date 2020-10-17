@@ -10,13 +10,13 @@ import org.apache.logging.log4j.Logger;
 
 import static com.czareg.scene.fxml.FxmlScene.VOTE;
 
-public class CreateSessionTask extends Task<Void> {
-    private static final Logger LOG = LogManager.getLogger(CreateSessionTask.class);
+public class JoinSessionTask extends Task<Void> {
+    private static final Logger LOG = LogManager.getLogger(JoinSessionTask.class);
     private SessionDTO session;
     private Context context;
     private BackendService backendService;
 
-    public CreateSessionTask(Context context, BackendService backendService) {
+    public JoinSessionTask(Context context, BackendService backendService) {
         this.context = context;
         this.backendService = backendService;
     }
@@ -25,8 +25,9 @@ public class CreateSessionTask extends Task<Void> {
     protected Void call() throws BackendServiceException {
         try {
             String userName = context.getName();
-            session = backendService.createSession(userName);
-            LOG.info("Received created session from backend: {}", session);
+            int sessionId = context.getSessionId();
+            session = backendService.joinSession(sessionId, userName);
+            LOG.info("Received join session from backend: {}", session);
             return null;
         } catch (BackendServiceException e) {
             LOG.error(e);
@@ -36,8 +37,6 @@ public class CreateSessionTask extends Task<Void> {
 
     @Override
     protected void succeeded() {
-        int sessionId = session.getSessionId();
-        context.setSessionId(sessionId);
         context.getSceneManager().setScene(VOTE);
     }
 }

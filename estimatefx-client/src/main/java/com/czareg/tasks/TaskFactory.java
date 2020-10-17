@@ -18,7 +18,15 @@ public class TaskFactory {
         return new CreateSessionTask(context, backendService);
     }
 
+    public Runnable createJoinSessionTask() {
+        return new JoinSessionTask(context, backendService);
+    }
+
     public Runnable createSessionsFillChoiceBoxTask(ChoiceBox<Session> sessionChoiceBox) {
         return new FillSessionsChoiceBoxTask(sessionChoiceBox, backendService);
+    }
+
+    public Runnable createLeaveSessionTask() {
+        return new LeaveSessionTask(context, backendService);
     }
 }

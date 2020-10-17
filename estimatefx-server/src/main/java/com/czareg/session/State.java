@@ -12,27 +12,27 @@ public enum State {
 
         @Override
         public String getDescription() {
-            return "The session is now in VOTING state. Please click the button, that most accurately, describes discussed topic's complexity.";
+            return "The session is now in VOTING state";
         }
     }, WAITING {
         @Override
         public void vote(Session session, String userName, String voteValue) throws BadRequestException {
-            throw new BadRequestException("Voting is disabled in current state. Please wait for creator to start another vote.");
+            throw new BadRequestException("Voting is disabled in WAITING state");
         }
 
         @Override
         public String getDescription() {
-            return "The session is now in WAITING state. Please wait for creator to start another vote.";
+            return "The session is now in WAITING state";
         }
     }, CLOSED {
         @Override
         public void vote(Session session, String userName, String voteValue) throws BadRequestException {
-            throw new BadRequestException("Voting is disabled in current state.");
+            throw new BadRequestException("Voting is disabled in CLOSED state");
         }
 
         @Override
         public String getDescription() {
-            return "The session is CLOSED because the creator left. Consider creating new session.";
+            return "The session is now in CLOSED state";
         }
     };
 

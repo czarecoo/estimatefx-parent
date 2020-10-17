@@ -15,6 +15,7 @@ public class Client extends Application {
     private static final Logger LOG = LogManager.getLogger(Client.class);
     private SceneManager sceneManager;
     private StagePreparer stagePreparer;
+    private Context context;
 
     public static void main(String[] args) {
         launch(Client.class);
@@ -22,7 +23,7 @@ public class Client extends Application {
 
     @Override
     public void start(Stage stage) throws ConfigurationException {
-        Context context = new Context();
+        context = new Context();
         context.setStage(stage);
 
         sceneManager = new SceneManager(context);
@@ -33,5 +34,10 @@ public class Client extends Application {
 
         LOG.info("Started UI");
         stage.show();
+    }
+
+    @Override
+    public void stop() {
+        context.getTaskFactory().createLeaveSessionTask().run();
     }
 }

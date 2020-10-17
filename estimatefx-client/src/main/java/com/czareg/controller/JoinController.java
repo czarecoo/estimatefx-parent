@@ -2,7 +2,6 @@ package com.czareg.controller;
 
 import com.czareg.context.Context;
 import com.czareg.model.Session;
-import com.czareg.scene.fxml.FxmlScene;
 import com.czareg.stage.ContextAware;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -30,6 +29,10 @@ public class JoinController implements ContextAware {
         afterContextInitialize();
     }
 
+    private void afterContextInitialize() {
+        Platform.runLater(context.getTaskFactory().createSessionsFillChoiceBoxTask(existingSessionsChoiceBox));
+    }
+
     @FXML
     private void handleCreateSessionButtonClicked(ActionEvent event) {
         context.getSceneManager().setScene(CREATE);
@@ -38,11 +41,8 @@ public class JoinController implements ContextAware {
     @FXML
     private void handleJoinSessionButtonClicked(ActionEvent event) {
         context.setName(nameTextField.getText());
+        context.setSessionId(existingSessionsChoiceBox.getSelectionModel().getSelectedItem().getSessionDTO().getSessionId());
 
-        context.getSceneManager().setScene(FxmlScene.VOTE);
-    }
-
-    private void afterContextInitialize() {
-        Platform.runLater(context.getTaskFactory().createSessionsFillChoiceBoxTask(existingSessionsChoiceBox));
+        Platform.runLater(context.getTaskFactory().createJoinSessionTask());
     }
 }
