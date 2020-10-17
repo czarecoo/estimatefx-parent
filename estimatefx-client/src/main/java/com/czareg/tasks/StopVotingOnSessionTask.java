@@ -7,12 +7,12 @@ import javafx.concurrent.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LeaveSessionTask extends Task<Void> {
-    private static final Logger LOG = LogManager.getLogger(LeaveSessionTask.class);
+public class StopVotingOnSessionTask extends Task<Void> {
+    private static final Logger LOG = LogManager.getLogger(StopVotingOnSessionTask.class);
     private Context context;
     private BackendService backendService;
 
-    public LeaveSessionTask(Context context, BackendService backendService) {
+    public StopVotingOnSessionTask(Context context, BackendService backendService) {
         this.context = context;
         this.backendService = backendService;
     }
@@ -21,17 +21,9 @@ public class LeaveSessionTask extends Task<Void> {
     protected Void call() throws BackendServiceException {
         try {
             String userName = context.getUserName();
-            if (userName == null) {
-                LOG.info("Stopping without leaving session because userName is null");
-                return null;
-            }
-            Integer sessionId = context.getSessionId();
-            if (sessionId == null) {
-                LOG.info("Stopping without leaving session because sessionId is null");
-                return null;
-            }
-            backendService.leaveSession(sessionId, userName);
-            LOG.info("Left session");
+            int sessionId = context.getSessionId();
+            backendService.stopVotingOnSession(sessionId, userName);
+            LOG.info("Stopped voting on session");
             return null;
         } catch (BackendServiceException e) {
             LOG.error(e);

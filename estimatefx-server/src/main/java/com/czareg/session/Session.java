@@ -1,6 +1,7 @@
 package com.czareg.session;
 
 import com.czareg.dto.SessionDTO;
+import com.czareg.dto.SessionIdentifierDTO;
 import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.user.User;
 import org.springframework.context.annotation.Scope;
@@ -87,7 +88,7 @@ public class Session {
         getState().vote(this, name, voteValue);
     }
 
-    public SessionDTO toDTO() {
+    public SessionDTO toSessionDTO() {
         SessionDTO sessionDTO = new SessionDTO();
         sessionDTO.setSessionId(sessionId);
         sessionDTO.setState(state.toDTO());
@@ -96,5 +97,12 @@ public class Session {
         sessionDTO.setVotes(votes);
         sessionDTO.setDescription(description);
         return sessionDTO;
+    }
+
+    public SessionIdentifierDTO toSessionIdentifierDTO() {
+        SessionIdentifierDTO sessionIdentifierDTO = new SessionIdentifierDTO();
+        sessionIdentifierDTO.setSessionId(sessionId);
+        sessionIdentifierDTO.setDescription(description);
+        return sessionIdentifierDTO;
     }
 }

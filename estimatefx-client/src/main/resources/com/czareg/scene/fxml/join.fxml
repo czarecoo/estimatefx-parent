@@ -3,8 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-      minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171"
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
+      spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.czareg.controller.JoinController">
    <padding>
       <Insets bottom="20.0" left="40.0" right="40.0" top="20.0"/>
@@ -16,16 +16,17 @@
                  promptText="Name" VBox.vgrow="ALWAYS"/>
       <ChoiceBox fx:id="existingSessionsChoiceBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                  VBox.vgrow="ALWAYS"/>
-      <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-              onAction="#handleJoinSessionButtonClicked" text="Join existing session" VBox.vgrow="ALWAYS"/>
+      <Button fx:id="joinSessionButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+              mnemonicParsing="false" onAction="#handleJoinSessionButtonClicked" text="Join existing session"
+              VBox.vgrow="ALWAYS"/>
       <Separator prefWidth="200.0">
          <VBox.margin>
             <Insets bottom="10.0" top="10.0"/>
          </VBox.margin>
       </Separator>
-      <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-              onAction="#handleCreateSessionButtonClicked" text="I want to create new session instead"
-              VBox.vgrow="ALWAYS">
+      <Button fx:id="createSessionButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+              mnemonicParsing="false" onAction="#handleCreateSessionButtonClicked"
+              text="I want to create new session instead" VBox.vgrow="ALWAYS">
          <VBox.margin>
             <Insets/>
          </VBox.margin>

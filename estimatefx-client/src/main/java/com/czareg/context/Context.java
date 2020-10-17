@@ -11,8 +11,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 public class Context {
-    private String name;
-    private int sessionId;
+    private String userName;
+    private Integer sessionId;
     private Stage stage;
     private SceneManager sceneManager;
     private TaskFactory taskFactory;
@@ -43,19 +43,19 @@ public class Context {
         this.sceneManager = sceneManager;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public int getSessionId() {
+    public Integer getSessionId() {
         return sessionId;
     }
 
-    public void setSessionId(int sessionId) {
+    public void setSessionId(Integer sessionId) {
         this.sessionId = sessionId;
     }
 

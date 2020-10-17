@@ -5,6 +5,7 @@ import com.czareg.stage.ContextAware;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,10 +18,17 @@ public class CreateController implements ContextAware {
 
     @FXML
     private TextField nameTextField;
+    @FXML
+    private Button createSessionButton;
+    @FXML
+    private Button joinSessionButton;
+    private UserNameTextFieldBooleanBinding userNameTextFieldBooleanBinding;
 
     @Override
     public void initialize(Context context) {
         this.context = context;
+        userNameTextFieldBooleanBinding = new UserNameTextFieldBooleanBinding(nameTextField);
+        createSessionButton.disableProperty().bind(userNameTextFieldBooleanBinding);
     }
 
     @FXML
@@ -30,7 +38,8 @@ public class CreateController implements ContextAware {
 
     @FXML
     private void handleCreateSessionButtonClicked(ActionEvent event) {
-        context.setName(nameTextField.getText());
+        String userName = nameTextField.getText();
+        context.setUserName(userName);
         Platform.runLater(context.getTaskFactory().createCreateSessionTask());
     }
 }

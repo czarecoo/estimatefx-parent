@@ -1,8 +1,9 @@
 import com.czareg.service.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-//@Ignore
+@Ignore
 public class BackendServiceManualTest {
     public static final String URL = "http://localhost:8080";
     private BackendService backendService;
@@ -36,6 +37,11 @@ public class BackendServiceManualTest {
     @Test
     public void getSessionsTest() throws BackendServiceException {
         System.out.println(backendService.getSessions());
+    }
+
+    @Test
+    public void getSessionIdentifiersTest() throws BackendServiceException {
+        System.out.println(backendService.getSessionIdentifiers());
     }
 
     @Test

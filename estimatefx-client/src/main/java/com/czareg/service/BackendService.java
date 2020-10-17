@@ -1,6 +1,7 @@
 package com.czareg.service;
 
 import com.czareg.dto.SessionDTO;
+import com.czareg.dto.SessionIdentifierDTO;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ public interface BackendService {
     SessionDTO getSession(int sessionId) throws BackendServiceException;
 
     List<SessionDTO> getSessions() throws BackendServiceException;
+
+    List<SessionIdentifierDTO> getSessionIdentifiers() throws BackendServiceException;
 
     void startVotingOnSession(int sessionId, String userName) throws BackendServiceException;
 

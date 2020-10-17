@@ -1,6 +1,7 @@
 package com.czareg.service;
 
 import com.czareg.dto.SessionDTO;
+import com.czareg.dto.SessionIdentifierDTO;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -18,6 +19,9 @@ public interface BackendApi {
 
     @GET("/getSessions")
     Call<List<SessionDTO>> getSessions();
+
+    @GET("/getSessionIdentifiers")
+    Call<List<SessionIdentifierDTO>> getSessionIdentifiers();
 
     @PUT("/voteOnSession/{sessionId}")
     Call<Void> voteOnSession(@Path("sessionId") int sessionId, @Query(value = "userName") String userName, @Query(value = "voteValue") String voteValue);

@@ -4,6 +4,8 @@ import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.session.exceptions.NotExistsException;
 import com.czareg.user.User;
 import com.czareg.user.UserType;
+import com.czareg.validator.UserNameValidator;
+import com.czareg.validator.ValidationResult;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +28,7 @@ public class SessionService {
         this.userFactory = userFactory;
     }
 
-    public Session create(String userName) {
+    public Session create(String userName) throws BadRequestException {
         User creator = createUser(userName, CREATOR);
         Session session = sessionFactory.getObject();
         session.addUser(creator);
@@ -121,7 +123,11 @@ public class SessionService {
                 .orElseThrow(() -> new NotExistsException("User does not exist in this session"));
     }
 
-    private User createUser(String userName, UserType userType) {
+    private User createUser(String userName, UserType userType) throws BadRequestException {
+        ValidationResult validationResult = new UserNameValidator().validate(userName);
+        if (validationResult.isSuccessful()) {
+            throw new BadRequestException(validationResult.getResult());
+        }
         User creator = userFactory.getObject();
         creator.setName(userName);
         creator.setType(userType);

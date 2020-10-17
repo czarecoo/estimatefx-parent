@@ -1,6 +1,7 @@
 package com.czareg.service;
 
 import com.czareg.dto.SessionDTO;
+import com.czareg.dto.SessionIdentifierDTO;
 import retrofit2.Response;
 
 import java.io.IOException;
@@ -96,6 +97,26 @@ public class BackendServiceImpl implements BackendService {
         } catch (IOException e) {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("get sessions")
+                    .cause(e)
+                    .build();
+        }
+    }
+
+    @Override
+    public List<SessionIdentifierDTO> getSessionIdentifiers() throws BackendServiceException {
+        try {
+            Response<List<SessionIdentifierDTO>> sessionDTOResponse = backendApi.getSessionIdentifiers().execute();
+            if (sessionDTOResponse.isSuccessful()) {
+                return sessionDTOResponse.body();
+            }
+            throw new BackendServiceExceptionBuilder()
+                    .failedTo("get session identifiers")
+                    .serverMessage(sessionDTOResponse)
+                    .build();
+
+        } catch (IOException e) {
+            throw new BackendServiceExceptionBuilder()
+                    .failedTo("get session identifiers")
                     .cause(e)
                     .build();
         }

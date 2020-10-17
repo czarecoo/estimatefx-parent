@@ -1,9 +1,12 @@
 package com.czareg.controller;
 
 import com.czareg.context.Context;
+import com.czareg.context.VoteContext;
 import com.czareg.model.Vote;
 import com.czareg.model.VoteValue;
+import com.czareg.scheduled.GetSessionScheduledService;
 import com.czareg.stage.ContextAware;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -18,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class VoteController implements ContextAware {
     private static final Logger LOG = LogManager.getLogger(VoteController.class);
     private Context context;
+    private GetSessionScheduledService getSessionScheduledService;
 
     @FXML
     private Button startButton;
@@ -42,18 +46,20 @@ public class VoteController implements ContextAware {
 
     @FXML
     public void initialize() {
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        voteColumn.setCellValueFactory(new PropertyValueFactory<>("voteValue"));
-
-        startButton.setDisable(false);
+        startButton.setDisable(true);
         stopButton.setDisable(true);
         buttonsHBox.setDisable(true);
-        votingStatusLabel.setText("Waiting for voting to start");
+
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        voteColumn.setCellValueFactory(new PropertyValueFactory<>("voteValue"));
     }
 
     @Override
     public void initialize(Context context) {
         this.context = context;
+        VoteContext voteContext = new VoteContext(startButton, stopButton, buttonsHBox, votingStatusLabel, voteTableView);
+        getSessionScheduledService = new GetSessionScheduledService(context, voteContext);
+        getSessionScheduledService.start();
     }
 
     @FXML
@@ -61,35 +67,21 @@ public class VoteController implements ContextAware {
         if (!(event.getSource() instanceof Button)) {
             throw new IllegalStateException("Handle was assigned to wrong UI element");
         }
-        String name = context.getName();
         String voteValue = ((Button) event.getSource()).getText();
-        Vote vote = new Vote(name, voteValue);
 
-        voteTableView.getItems().add(vote);
-        LOG.info("Voted {}", vote);
+        Platform.runLater(context.getTaskFactory().createVoteOnSessionTask(voteValue));
+        LOG.info("Voted {}", voteValue);
     }
 
     @FXML
     private void handleStartButtonClicked(ActionEvent event) {
-        voteTableView.getItems().clear();
-
-        startButton.setDisable(true);
-        stopButton.setDisable(false);
-        buttonsHBox.setDisable(false);
-
-        votingStatusLabel.setText("Voting in progress");
-
+        Platform.runLater(context.getTaskFactory().createStartVotingOnSessionTask());
         LOG.info("Started voting");
     }
 
     @FXML
     private void handleStopButtonClicked(ActionEvent event) {
-        startButton.setDisable(false);
-        stopButton.setDisable(true);
-        buttonsHBox.setDisable(true);
-
-        votingStatusLabel.setText("Waiting for voting to start");
-
+        Platform.runLater(context.getTaskFactory().createStopVotingOnSessionTask());
         LOG.info("Stopped voting");
     }
 }

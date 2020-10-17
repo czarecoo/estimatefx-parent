@@ -1,11 +1,13 @@
 package com.czareg.controller;
 
 import com.czareg.context.Context;
-import com.czareg.model.Session;
+import com.czareg.model.SessionIdentifier;
+import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
 import com.czareg.stage.ContextAware;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
@@ -16,33 +18,47 @@ import static com.czareg.scene.fxml.FxmlScene.CREATE;
 public class JoinController implements ContextAware {
     private static final Logger LOG = LogManager.getLogger(JoinController.class);
     private Context context;
+    private FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService;
+    private UserNameTextFieldBooleanBinding userNameTextFieldBooleanBinding;
 
     @FXML
     private TextField nameTextField;
-
     @FXML
-    private ChoiceBox<Session> existingSessionsChoiceBox;
+    private ChoiceBox<SessionIdentifier> existingSessionsChoiceBox;
+    @FXML
+    private Button createSessionButton;
+    @FXML
+    private Button joinSessionButton;
+    private SessionChoiceBoxBooleanBinding sessionChoiceBoxBooleanBinding;
 
     @Override
     public void initialize(Context context) {
         this.context = context;
-        afterContextInitialize();
-    }
-
-    private void afterContextInitialize() {
-        Platform.runLater(context.getTaskFactory().createSessionsFillChoiceBoxTask(existingSessionsChoiceBox));
+        userNameTextFieldBooleanBinding = new UserNameTextFieldBooleanBinding(nameTextField);
+        sessionChoiceBoxBooleanBinding = new SessionChoiceBoxBooleanBinding(existingSessionsChoiceBox);
+        joinSessionButton.disableProperty().bind(userNameTextFieldBooleanBinding.or(sessionChoiceBoxBooleanBinding));
+        fillSessionsChoiceBoxScheduledService = new FillSessionsChoiceBoxScheduledService(context, existingSessionsChoiceBox);
+        fillSessionsChoiceBoxScheduledService.start();
     }
 
     @FXML
     private void handleCreateSessionButtonClicked(ActionEvent event) {
+        fillSessionsChoiceBoxScheduledService.cancel();
         context.getSceneManager().setScene(CREATE);
     }
 
     @FXML
     private void handleJoinSessionButtonClicked(ActionEvent event) {
-        context.setName(nameTextField.getText());
-        context.setSessionId(existingSessionsChoiceBox.getSelectionModel().getSelectedItem().getSessionDTO().getSessionId());
+        String userName = nameTextField.getText();
 
-        Platform.runLater(context.getTaskFactory().createJoinSessionTask());
+        SessionIdentifier selectedItem = existingSessionsChoiceBox.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) {
+            LOG.info("Cannot join session because no session is selected");
+            return;
+        }
+        context.setUserName(userName);
+        context.setSessionId(selectedItem.getSessionId());
+
+        Platform.runLater(context.getTaskFactory().createJoinSessionTask(fillSessionsChoiceBoxScheduledService));
     }
 }

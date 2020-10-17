@@ -1,6 +1,7 @@
 package com.czareg.session;
 
 import com.czareg.dto.SessionDTO;
+import com.czareg.dto.SessionIdentifierDTO;
 import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.session.exceptions.NotExistsException;
 import org.springframework.web.bind.annotation.*;
@@ -17,29 +18,37 @@ public class SessionController {
     }
 
     @PostMapping(value = "/createSession")
-    public SessionDTO createSession(@RequestParam String userName) {
+    public SessionDTO createSession(@RequestParam String userName) throws BadRequestException {
         Session session = sessionService.create(userName);
-        return session.toDTO();
+        return session.toSessionDTO();
     }
 
     @PutMapping(value = "/joinSession/{sessionId}")
     public SessionDTO joinSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
             throws BadRequestException, NotExistsException {
         Session session = sessionService.join(sessionId, userName);
-        return session.toDTO();
+        return session.toSessionDTO();
     }
 
     @GetMapping(value = "/getSession/{sessionId}")
     public SessionDTO getSessionById(@PathVariable("sessionId") int sessionId) throws NotExistsException {
         Session session = sessionService.getSession(sessionId);
-        return session.toDTO();
+        return session.toSessionDTO();
     }
 
     @GetMapping(value = "/getSessions")
     public List<SessionDTO> getSessions() {
         List<Session> sessions = sessionService.getSessions();
         return sessions.stream()
-                .map(Session::toDTO)
+                .map(Session::toSessionDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/getSessionIdentifiers")
+    public List<SessionIdentifierDTO> getSessionIdentifiers() {
+        List<Session> sessions = sessionService.getSessions();
+        return sessions.stream()
+                .map(Session::toSessionIdentifierDTO)
                 .collect(Collectors.toList());
     }
 
