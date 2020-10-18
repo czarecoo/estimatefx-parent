@@ -18,6 +18,8 @@ import javafx.scene.layout.HBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static com.czareg.scene.fxml.FxmlScene.JOIN;
+
 public class VoteController implements ContextAware {
     private static final Logger LOG = LogManager.getLogger(VoteController.class);
     private Context context;
@@ -61,6 +63,13 @@ public class VoteController implements ContextAware {
                 usersStatusLabel, votingStatusLabel, voteTableView);
         getSessionScheduledService = new GetSessionScheduledService(context, voteContext);
         getSessionScheduledService.start();
+    }
+
+    @FXML
+    private void handleLeaveButtonClicked(ActionEvent event) {
+        getSessionScheduledService.cancel();
+        context.getTaskFactory().createLeaveSessionTask().run();
+        context.getSceneManager().setScene(JOIN);
     }
 
     @FXML
