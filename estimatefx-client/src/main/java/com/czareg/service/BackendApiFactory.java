@@ -1,9 +1,9 @@
 package com.czareg.service;
 
+import retrofit2.Retrofit;
+
 public class BackendApiFactory {
-    public BackendApi createBackendApi(String baseUrl) {
-        return new RetrofitClientFactory()
-                .getRetrofitClient(baseUrl)
-                .create(BackendApi.class);
+    public BackendApi createBackendApi(Retrofit retrofit) {
+        return retrofit.create(BackendApi.class);
     }
 }

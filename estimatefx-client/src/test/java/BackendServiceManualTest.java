@@ -1,16 +1,25 @@
 import com.czareg.service.*;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import retrofit2.Retrofit;
 
 @Ignore
 public class BackendServiceManualTest {
-    public static final String URL = "http://localhost:8080";
+    public static final String URL = "https://estimatefx-server.herokuapp.com";
     private BackendService backendService;
 
     @Before
     public void setUp() {
-        BackendApi backendApi = new BackendApiFactory().createBackendApi(URL);
+        PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration();
+        propertiesConfiguration.setFileName("test.properties");
+        propertiesConfiguration.addProperty("backend.url", URL);
+        propertiesConfiguration.addProperty("proxy.enabled", true);
+        propertiesConfiguration.addProperty("proxy.host", "201.91.82.155");
+        propertiesConfiguration.addProperty("proxy.port", 3128);
+        Retrofit retrofit = new RetrofitClientFactory().geRetrofitClient(propertiesConfiguration);
+        BackendApi backendApi = new BackendApiFactory().createBackendApi(retrofit);
         backendService = new BackendServiceImpl(backendApi);
     }
 
