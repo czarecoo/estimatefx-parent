@@ -3,11 +3,15 @@ package com.czareg.session;
 import com.czareg.dto.StateDTO;
 import com.czareg.session.exceptions.BadRequestException;
 
+import java.util.Map;
+
 public enum State {
     VOTING {
         @Override
         public void vote(Session session, String userName, String voteValue) {
-            session.getVotes().put(userName, voteValue);
+            Map<String, String> votes = session.getVotes();
+            votes.remove(userName);
+            votes.put(userName, voteValue);
         }
 
         @Override

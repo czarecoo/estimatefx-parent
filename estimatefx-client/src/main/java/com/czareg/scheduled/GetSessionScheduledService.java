@@ -14,6 +14,8 @@ public class GetSessionScheduledService extends ScheduledService<Void> {
         this.context = context;
         this.voteContext = voteContext;
         setPeriod(Duration.millis(500));
+        setBackoffStrategy(EXPONENTIAL_BACKOFF_STRATEGY);
+        setMaximumCumulativePeriod(Duration.seconds(5));
     }
 
     @Override

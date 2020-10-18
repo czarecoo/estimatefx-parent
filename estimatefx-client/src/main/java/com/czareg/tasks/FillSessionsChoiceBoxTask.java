@@ -9,7 +9,6 @@ import javafx.scene.control.ChoiceBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,33 +39,14 @@ public class FillSessionsChoiceBoxTask extends Task<Void> {
 
     @Override
     protected void succeeded() {
-        if (listsAreNotEqual()) {
-            addMissingSessionIdentifiers();
-            removeExtraSessionIdentifiers();
+        if (listsNotEqual()) {
+            LOG.info("Choice box list changed.");
+            choiceBox.getItems().clear();
+            choiceBox.getItems().addAll(sessionIdentifiers);
         }
     }
 
-    private boolean listsAreNotEqual() {
+    private boolean listsNotEqual() {
         return !sessionIdentifiers.equals(choiceBox.getItems());
-    }
-
-    private void removeExtraSessionIdentifiers() {
-        Iterator<SessionIdentifier> iterator = choiceBox.getItems().iterator();
-        while (iterator.hasNext()) {
-            SessionIdentifier sessionIdentifier = iterator.next();
-            if (!sessionIdentifiers.contains(sessionIdentifier)) {
-                iterator.remove();
-                LOG.info("Removed session id: {} from join choice box", sessionIdentifier.getSessionId());
-            }
-        }
-    }
-
-    private void addMissingSessionIdentifiers() {
-        for (SessionIdentifier sessionIdentifier : sessionIdentifiers) {
-            if (!choiceBox.getItems().contains(sessionIdentifier)) {
-                choiceBox.getItems().add(sessionIdentifier);
-                LOG.info("Added session id: {} to join choice box", sessionIdentifier.getSessionId());
-            }
-        }
     }
 }

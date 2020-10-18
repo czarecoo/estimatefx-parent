@@ -15,14 +15,12 @@ import static com.czareg.scene.fxml.FxmlScene.JOIN;
 public class CreateController implements ContextAware {
     private static final Logger LOG = LogManager.getLogger(CreateController.class);
     private Context context;
+    private UserNameTextFieldBooleanBinding userNameTextFieldBooleanBinding;
 
     @FXML
     private TextField nameTextField;
     @FXML
     private Button createSessionButton;
-    @FXML
-    private Button joinSessionButton;
-    private UserNameTextFieldBooleanBinding userNameTextFieldBooleanBinding;
 
     @Override
     public void initialize(Context context) {

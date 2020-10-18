@@ -14,7 +14,9 @@ public class FillSessionsChoiceBoxScheduledService extends ScheduledService<Void
     public FillSessionsChoiceBoxScheduledService(Context context, ChoiceBox<SessionIdentifier> existingSessionsChoiceBox) {
         this.context = context;
         this.existingSessionsChoiceBox = existingSessionsChoiceBox;
-        setPeriod(Duration.millis(500));
+        setPeriod(Duration.seconds(1));
+        setBackoffStrategy(EXPONENTIAL_BACKOFF_STRATEGY);
+        setMaximumCumulativePeriod(Duration.seconds(10));
     }
 
     @Override

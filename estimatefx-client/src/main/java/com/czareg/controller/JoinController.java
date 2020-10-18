@@ -26,8 +26,6 @@ public class JoinController implements ContextAware {
     @FXML
     private ChoiceBox<SessionIdentifier> existingSessionsChoiceBox;
     @FXML
-    private Button createSessionButton;
-    @FXML
     private Button joinSessionButton;
     private SessionChoiceBoxBooleanBinding sessionChoiceBoxBooleanBinding;
 

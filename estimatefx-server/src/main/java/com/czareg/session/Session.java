@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class Session {
         state = WAITING;
         sessionId = ID.getAndIncrement();
         users = new LinkedList<>();
-        votes = new HashMap<>();
+        votes = new LinkedHashMap<>();
     }
 
     public void addUser(User user) {
@@ -94,9 +94,20 @@ public class Session {
         sessionDTO.setState(state.toDTO());
         sessionDTO.setCreationTime(creationTime.toString());
         sessionDTO.setUsers(User.mapUsersToDTOs(users));
-        sessionDTO.setVotes(votes);
+        sessionDTO.setVotes(hideVotes());
         sessionDTO.setDescription(description);
         return sessionDTO;
+    }
+
+    private Map<String, String> hideVotes() {
+        if (state == VOTING) {
+            Map<String, String> newVoteMap = new LinkedHashMap<>();
+            for (Map.Entry<String, String> entry : votes.entrySet()) {
+                newVoteMap.put(entry.getKey(), "hidden");
+            }
+            return newVoteMap;
+        }
+        return votes;
     }
 
     public SessionIdentifierDTO toSessionIdentifierDTO() {

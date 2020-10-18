@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -103,9 +102,10 @@ public class GetSessionTask extends Task<Void> {
     private void updateVoteTable() {
         votes = createVoteList();
 
-        if (listsHaveDifferentContent()) {
-            addMissingVotes();
-            removeExtraVotes();
+        if (listsNotEqual()) {
+            LOG.info("Vote table list changed.");
+            voteTableView.getItems().clear();
+            voteTableView.getItems().addAll(votes);
         }
     }
 
@@ -118,27 +118,7 @@ public class GetSessionTask extends Task<Void> {
         return votes;
     }
 
-    private boolean listsHaveDifferentContent() {
-        return !votes.containsAll(voteTableView.getItems()) || !voteTableView.getItems().containsAll(votes);
-    }
-
-    private void removeExtraVotes() {
-        Iterator<Vote> iterator = voteTableView.getItems().iterator();
-        while (iterator.hasNext()) {
-            Vote vote = iterator.next();
-            if (!votes.contains(vote)) {
-                iterator.remove();
-                LOG.info("Removed vote: {} from vote table", vote);
-            }
-        }
-    }
-
-    private void addMissingVotes() {
-        for (Vote vote : votes) {
-            if (!voteTableView.getItems().contains(vote)) {
-                voteTableView.getItems().add(vote);
-                LOG.info("Added vote: {} to vote table", vote);
-            }
-        }
+    private boolean listsNotEqual() {
+        return !votes.equals(voteTableView.getItems());
     }
 }

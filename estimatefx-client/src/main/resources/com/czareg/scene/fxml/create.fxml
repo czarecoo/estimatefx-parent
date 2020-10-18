@@ -8,8 +8,28 @@
       fx:controller="com.czareg.controller.CreateController">
    <padding>
       <Insets bottom="20.0" left="40.0" right="40.0" top="20.0"/>
+      <Insets bottom="20.0" left="40.0" right="40.0" top="20.0"/>
    </padding>
    <children>
+      <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="I would like to:"/>
+      <HBox spacing="10.0">
+         <children>
+            <RadioButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Create Session"
+                         HBox.hgrow="ALWAYS">
+               <toggleGroup>
+                  <ToggleGroup fx:id="toggleGroup"/>
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                         onAction="#handleJoinSessionButtonClicked" text="Join Session" toggleGroup="$toggleGroup"
+                         HBox.hgrow="ALWAYS"/>
+         </children>
+      </HBox>
+      <Separator prefWidth="200.0">
+         <VBox.margin>
+            <Insets bottom="10.0" top="10.0"/>
+         </VBox.margin>
+      </Separator>
       <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Enter your name:"
              VBox.vgrow="ALWAYS"/>
       <TextField fx:id="nameTextField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
@@ -17,17 +37,5 @@
       <Button fx:id="createSessionButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
               mnemonicParsing="false" onAction="#handleCreateSessionButtonClicked" text="Create new session"
               VBox.vgrow="ALWAYS"/>
-      <Separator prefWidth="200.0">
-         <VBox.margin>
-            <Insets bottom="10.0" top="10.0"/>
-         </VBox.margin>
-      </Separator>
-      <Button fx:id="joinSessionButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-              mnemonicParsing="false" onAction="#handleJoinSessionButtonClicked"
-              text="I want to join existing session instead" VBox.vgrow="ALWAYS">
-         <VBox.margin>
-            <Insets/>
-         </VBox.margin>
-      </Button>
    </children>
 </VBox>
