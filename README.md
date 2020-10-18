@@ -7,5 +7,6 @@ java -jar estimatefx-server-1.0.jar --server.port=4040</p>
 client:
 <br>
 open estimatefx-client-1.0-jar-with-dependencies.jar
+<br>
 edit application.properties
 </p>
