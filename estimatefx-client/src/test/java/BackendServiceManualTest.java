@@ -7,7 +7,7 @@ import retrofit2.Retrofit;
 
 @Ignore
 public class BackendServiceManualTest {
-    public static final String URL = "https://estimatefx-server.herokuapp.com";
+    private static final String URL = "https://estimatefx-server.herokuapp.com";
     private BackendService backendService;
 
     @Before
