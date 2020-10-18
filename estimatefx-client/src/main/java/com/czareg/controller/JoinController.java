@@ -1,6 +1,8 @@
 package com.czareg.controller;
 
 import com.czareg.context.Context;
+import com.czareg.controller.bindings.SessionChoiceBoxBooleanBinding;
+import com.czareg.controller.bindings.UserNameTextFieldBooleanBinding;
 import com.czareg.model.SessionIdentifier;
 import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
 import com.czareg.stage.ContextAware;

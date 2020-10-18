@@ -1,4 +1,4 @@
-package com.czareg.controller;
+package com.czareg.controller.bindings;
 
 import com.czareg.model.SessionIdentifier;
 import javafx.beans.binding.BooleanBinding;

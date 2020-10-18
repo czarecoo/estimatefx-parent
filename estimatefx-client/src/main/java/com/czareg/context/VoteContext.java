@@ -7,17 +7,24 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 
 public class VoteContext {
-    private final Button startButton;
-    private final Button stopButton;
-    private final HBox buttonsHBox;
-    private final Label votingStatusLabel;
-    private final TableView<Vote> voteTableView;
+    private Button startButton;
+    private Button stopButton;
+    private HBox buttonsHBox;
+    private Label userStatusLabel;
+    private Label sessionStatusLabel;
+    private Label votingStatusLabel;
+    private Label usersStatusLabel;
+    private TableView<Vote> voteTableView;
 
-    public VoteContext(Button startButton, Button stopButton, HBox buttonsHBox, Label votingStatusLabel, TableView<Vote> voteTableView) {
+    public VoteContext(Button startButton, Button stopButton, HBox buttonsHBox, Label userStatusLabel,
+                       Label sessionStatusLabel, Label usersStatusLabel, Label votingStatusLabel, TableView<Vote> voteTableView) {
         this.startButton = startButton;
         this.stopButton = stopButton;
         this.buttonsHBox = buttonsHBox;
+        this.userStatusLabel = userStatusLabel;
+        this.sessionStatusLabel = sessionStatusLabel;
         this.votingStatusLabel = votingStatusLabel;
+        this.usersStatusLabel = usersStatusLabel;
         this.voteTableView = voteTableView;
     }
 
@@ -39,5 +46,17 @@ public class VoteContext {
 
     public TableView<Vote> getVoteTableView() {
         return voteTableView;
+    }
+
+    public Label getUserStatusLabel() {
+        return userStatusLabel;
+    }
+
+    public Label getSessionStatusLabel() {
+        return sessionStatusLabel;
+    }
+
+    public Label getUsersStatusLabel() {
+        return usersStatusLabel;
     }
 }

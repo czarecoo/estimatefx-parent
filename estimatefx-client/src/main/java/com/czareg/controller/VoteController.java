@@ -24,23 +24,23 @@ public class VoteController implements ContextAware {
     private GetSessionScheduledService getSessionScheduledService;
 
     @FXML
-    private Button startButton;
-
+    private Label userStatusLabel;
     @FXML
-    private Button stopButton;
-
+    private Label sessionStatusLabel;
     @FXML
-    private HBox buttonsHBox;
-
+    private Label usersStatusLabel;
     @FXML
     private Label votingStatusLabel;
-
+    @FXML
+    private Button startButton;
+    @FXML
+    private Button stopButton;
+    @FXML
+    private HBox buttonsHBox;
     @FXML
     private TableView<Vote> voteTableView;
-
     @FXML
     private TableColumn<Vote, String> nameColumn;
-
     @FXML
     private TableColumn<Vote, VoteValue> voteColumn;
 
@@ -57,7 +57,8 @@ public class VoteController implements ContextAware {
     @Override
     public void initialize(Context context) {
         this.context = context;
-        VoteContext voteContext = new VoteContext(startButton, stopButton, buttonsHBox, votingStatusLabel, voteTableView);
+        VoteContext voteContext = new VoteContext(startButton, stopButton, buttonsHBox, userStatusLabel, sessionStatusLabel,
+                usersStatusLabel, votingStatusLabel, voteTableView);
         getSessionScheduledService = new GetSessionScheduledService(context, voteContext);
         getSessionScheduledService.start();
     }

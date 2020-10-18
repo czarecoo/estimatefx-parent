@@ -4,6 +4,7 @@ import com.czareg.context.Context;
 import com.czareg.context.VoteContext;
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.UserDTO;
+import com.czareg.dto.UserTypeDTO;
 import com.czareg.model.Vote;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
@@ -30,6 +31,9 @@ public class GetSessionTask extends Task<Void> {
     private Button startButton;
     private Button stopButton;
     private HBox buttonsHBox;
+    private Label userStatusLabel;
+    private Label sessionStatusLabel;
+    private Label usersStatusLabel;
     private Label votingStatusLabel;
     private TableView<Vote> voteTableView;
     private List<Vote> votes;
@@ -40,6 +44,9 @@ public class GetSessionTask extends Task<Void> {
         this.startButton = voteContext.getStartButton();
         this.stopButton = voteContext.getStopButton();
         this.buttonsHBox = voteContext.getButtonsHBox();
+        this.userStatusLabel = voteContext.getUserStatusLabel();
+        this.sessionStatusLabel = voteContext.getSessionStatusLabel();
+        this.usersStatusLabel = voteContext.getUsersStatusLabel();
         this.votingStatusLabel = voteContext.getVotingStatusLabel();
         this.voteTableView = voteContext.getVoteTableView();
     }
@@ -60,9 +67,48 @@ public class GetSessionTask extends Task<Void> {
     protected void succeeded() {
         String userName = context.getUserName();
 
+        updateUserStatusLabel();
+
+        updateSessionStatusLabel();
+
+        updateUsersStatusLabel();
+
         updateControlsState(isCreator(userName));
 
         updateVoteTable();
+    }
+
+    private void updateUserStatusLabel() {
+        String userName = context.getUserName();
+        String userType = findUserType(userName);
+        if (userType == null) {
+            LOG.error("Failed to find userType for user {} in users {}", userName, sessionDTO.getUsers());
+            userType = "Unknown";
+        }
+        String userStatus = String.format("Name: %s (%s)", userName, userType);
+        userStatusLabel.setText(userStatus);
+    }
+
+    private String findUserType(String userName) {
+        return sessionDTO.getUsers().stream()
+                .filter(userDTO -> userDTO.getUserName().equals(userName))
+                .findFirst()
+                .map(UserDTO::getUserType)
+                .map(UserTypeDTO::toString)
+                .map(String::toLowerCase)
+                .orElse(null);
+    }
+
+    private void updateSessionStatusLabel() {
+        String sessionDescription = sessionDTO.getDescription();
+        String sessionStatus = String.format("Description: %s", sessionDescription);
+        sessionStatusLabel.setText(sessionStatus);
+    }
+
+    private void updateUsersStatusLabel() {
+        int usersCount = sessionDTO.getUsers().size();
+        String sessionStatus = String.format("Active users: %d", usersCount);
+        usersStatusLabel.setText(sessionStatus);
     }
 
     private boolean isCreator(String userName) {

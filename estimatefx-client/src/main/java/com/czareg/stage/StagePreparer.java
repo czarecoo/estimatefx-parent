@@ -1,5 +1,6 @@
 package com.czareg.stage;
 
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class StagePreparer {
@@ -12,5 +13,6 @@ public class StagePreparer {
     public void prepare() {
         stage.setTitle("EstimateFx");
         stage.setResizable(true);
+        stage.getIcons().add(new Image("icon.png"));
     }
 }

@@ -1,4 +1,4 @@
-package com.czareg.controller;
+package com.czareg.controller.bindings;
 
 import com.czareg.validator.UserNameValidator;
 import com.czareg.validator.ValidationResult;

@@ -1,6 +1,7 @@
 package com.czareg.controller;
 
 import com.czareg.context.Context;
+import com.czareg.controller.bindings.UserNameTextFieldBooleanBinding;
 import com.czareg.stage.ContextAware;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
