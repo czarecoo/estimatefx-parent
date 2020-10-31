@@ -8,6 +8,7 @@ import com.czareg.dto.UserTypeDTO;
 import com.czareg.model.Vote;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -148,7 +149,7 @@ public class GetSessionTask extends Task<Void> {
     private void updateVoteTable() {
         votes = createVoteList();
 
-        if (listsNotEqual()) {
+        if (listsDoNotContainThemselves()) {
             LOG.info("Vote table list changed.");
             voteTableView.getItems().clear();
             voteTableView.getItems().addAll(votes);
@@ -164,7 +165,12 @@ public class GetSessionTask extends Task<Void> {
         return votes;
     }
 
-    private boolean listsNotEqual() {
-        return !votes.equals(voteTableView.getItems());
+    private boolean listsDoNotContainThemselves() {
+        return !listsContainThemselves();
+    }
+
+    private boolean listsContainThemselves() {
+        ObservableList<Vote> itemsInTableView = voteTableView.getItems();
+        return votes.containsAll(itemsInTableView) && itemsInTableView.containsAll(votes);
     }
 }
