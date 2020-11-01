@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.czareg.controller.VoteController">
    <padding>
       <Insets bottom="20.0" left="40.0" right="40.0" top="10.0" />
    </padding>
    <children>
+      <Label fx:id="userStatusLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+             minHeight="-Infinity" minWidth="200.0" text="User Status"/>
+      <Separator prefWidth="200.0"/>
       <HBox spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
-            <Label fx:id="userStatusLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="200.0" text="User Status" />
-            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLeaveButtonClicked" text="Leave session" HBox.hgrow="ALWAYS" />
+            <Label fx:id="sessionStatusLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                   minHeight="-Infinity" minWidth="200.0" text="Session Status"/>
+            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                    onAction="#handleLeaveButtonClicked" text="Leave session" HBox.hgrow="ALWAYS"/>
          </children>
       </HBox>
-      <Label fx:id="sessionStatusLabel" layoutX="50.0" layoutY="20.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="200.0" text="Session Status" />
-      <Label fx:id="usersStatusLabel" layoutX="50.0" layoutY="47.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="200.0" text="Users Status" />
-      <Separator layoutX="50.0" layoutY="109.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+      <Label fx:id="usersStatusLabel" layoutX="50.0" layoutY="47.0" maxHeight="1.7976931348623157E308"
+             maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="200.0" text="Users Status"/>
+      <Separator layoutX="50.0" layoutY="109.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
       <HBox spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
             <Label fx:id="votingStatusLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="200.0" text="Voting Status" HBox.hgrow="ALWAYS" />

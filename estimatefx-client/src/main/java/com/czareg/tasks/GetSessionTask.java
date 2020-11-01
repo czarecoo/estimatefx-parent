@@ -127,13 +127,18 @@ public class GetSessionTask extends Task<Void> {
                 startButton.setDisable(true);
                 stopButton.setDisable(!isCreator);
                 buttonsHBox.setDisable(false);
-                votingStatusLabel.setText("Voting in progress");
+                int votedAlready = sessionDTO.getVotes().values().size();
+                int usersCount = sessionDTO.getUsers().size();
+                String votingStatus = String.format("Voting in progress. %s/%s already voted.", votedAlready, usersCount);
+                votingStatusLabel.setText(votingStatus);
                 break;
             case WAITING:
                 startButton.setDisable(!isCreator);
                 stopButton.setDisable(true);
                 buttonsHBox.setDisable(true);
-                votingStatusLabel.setText("Waiting for voting to start");
+                double average = getLastSessionVoteAverage();
+                String waitingStatus = String.format("Voting stopped. Last vote average: %s", average);
+                votingStatusLabel.setText(waitingStatus);
                 break;
             case CLOSED:
                 startButton.setDisable(true);
@@ -144,6 +149,14 @@ public class GetSessionTask extends Task<Void> {
             default:
                 throw new IllegalArgumentException("Unknown state");
         }
+    }
+
+    private double getLastSessionVoteAverage() {
+        return sessionDTO.getVotes().values().stream()
+                .filter(vote -> vote.matches("\\d+"))
+                .mapToInt(Integer::valueOf)
+                .average()
+                .orElse(0);
     }
 
     private void updateVoteTable() {
