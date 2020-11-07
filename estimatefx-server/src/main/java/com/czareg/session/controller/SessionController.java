@@ -1,9 +1,11 @@
-package com.czareg.session;
+package com.czareg.session.controller;
 
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.SessionIdentifierDTO;
 import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.session.exceptions.NotExistsException;
+import com.czareg.session.model.Session;
+import com.czareg.session.service.SessionService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

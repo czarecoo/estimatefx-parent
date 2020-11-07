@@ -1,9 +1,12 @@
-package com.czareg.session;
+package com.czareg.session.service;
 
 import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.session.exceptions.NotExistsException;
-import com.czareg.user.User;
-import com.czareg.user.UserType;
+import com.czareg.session.model.Session;
+import com.czareg.session.model.State;
+import com.czareg.session.model.user.User;
+import com.czareg.session.model.user.UserType;
+import com.czareg.session.repository.SessionRepository;
 import com.czareg.validator.UserNameValidator;
 import com.czareg.validator.ValidationResult;
 import org.springframework.beans.factory.ObjectFactory;
@@ -11,9 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.czareg.session.State.*;
-import static com.czareg.user.UserType.CREATOR;
-import static com.czareg.user.UserType.JOINER;
+import static com.czareg.session.model.State.*;
+import static com.czareg.session.model.user.UserType.CREATOR;
+import static com.czareg.session.model.user.UserType.JOINER;
 
 @Component
 public class SessionService {
@@ -31,7 +34,7 @@ public class SessionService {
     public Session create(String userName) throws BadRequestException {
         User creator = createUser(userName, CREATOR);
         Session session = sessionFactory.getObject();
-        session.addUser(creator);
+        session.addCreator(creator);
         sessionRepository.add(session);
         return session;
     }
@@ -47,7 +50,7 @@ public class SessionService {
     public void vote(Integer sessionId, String userName, String voteValue) throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
-        session.vote(user.getName(), voteValue);
+        session.vote(user, voteValue);
     }
 
     public Session join(Integer sessionId, String userName) throws NotExistsException, BadRequestException {
@@ -58,7 +61,7 @@ public class SessionService {
         }
 
         User user = createUser(userName, JOINER);
-        session.addUser(user);
+        session.addJoiner(user);
         return session;
     }
 
@@ -66,7 +69,7 @@ public class SessionService {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
         session.removeUser(user);
-        if (session.getUsers().isEmpty()) {
+        if (session.isEmpty()) {
             sessionRepository.delete(sessionId);
         }
         if (didCreatorLeave(session)) {
@@ -86,7 +89,7 @@ public class SessionService {
             throw new BadRequestException("Only creator can start voting.");
         }
 
-        session.getVotes().clear();
+        session.getUserVotes().clearVotes();
         session.setVotingState();
     }
 

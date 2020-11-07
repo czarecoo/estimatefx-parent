@@ -75,8 +75,6 @@ public class GetSessionTask extends Task<Void> {
         updateUsersStatusLabel();
 
         updateControlsState(isCreator(userName));
-
-        updateVoteTable();
     }
 
     private void updateUserStatusLabel() {
@@ -127,18 +125,19 @@ public class GetSessionTask extends Task<Void> {
                 startButton.setDisable(true);
                 stopButton.setDisable(!isCreator);
                 buttonsHBox.setDisable(false);
-                int votedAlready = sessionDTO.getVotes().values().size();
-                int usersCount = sessionDTO.getUsers().size();
-                String votingStatus = String.format("Voting in progress. %s/%s already voted.", votedAlready, usersCount);
-                votingStatusLabel.setText(votingStatus);
+                votingStatusLabel.setText("Voting in progress.");
+                voteTableView.getColumns().forEach((column) -> column.setSortable(false));
+                updateVoteTableInVotingState();
                 break;
             case WAITING:
                 startButton.setDisable(!isCreator);
                 stopButton.setDisable(true);
                 buttonsHBox.setDisable(true);
                 double average = getLastSessionVoteAverage();
-                String waitingStatus = String.format("Voting stopped. Last vote average: %s", average);
+                String waitingStatus = String.format("Voting stopped. Vote average: %.2f", average);
                 votingStatusLabel.setText(waitingStatus);
+                voteTableView.getColumns().forEach((column) -> column.setSortable(true));
+                updateVoteTableInWaitingState();
                 break;
             case CLOSED:
                 startButton.setDisable(true);
@@ -159,7 +158,17 @@ public class GetSessionTask extends Task<Void> {
                 .orElse(0);
     }
 
-    private void updateVoteTable() {
+    private void updateVoteTableInVotingState() {
+        votes = createVoteList();
+
+        if (!votes.equals(voteTableView.getItems())) {
+            LOG.info("Vote table list changed.");
+            voteTableView.getItems().clear();
+            voteTableView.getItems().addAll(votes);
+        }
+    }
+
+    private void updateVoteTableInWaitingState() {
         votes = createVoteList();
 
         if (listsDoNotContainThemselves()) {

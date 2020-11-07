@@ -1,17 +1,16 @@
-package com.czareg.session;
+package com.czareg.session.model;
 
 import com.czareg.dto.StateDTO;
 import com.czareg.session.exceptions.BadRequestException;
-
-import java.util.Map;
+import com.czareg.session.model.user.User;
+import com.czareg.session.model.vote.UserVotes;
 
 public enum State {
     VOTING {
         @Override
-        public void vote(Session session, String userName, String voteValue) {
-            Map<String, String> votes = session.getVotes();
-            votes.remove(userName);
-            votes.put(userName, voteValue);
+        public void vote(Session session, User user, String voteValue) {
+            UserVotes userVotes = session.getUserVotes();
+            userVotes.addVote(user, voteValue);
         }
 
         @Override
@@ -20,7 +19,7 @@ public enum State {
         }
     }, WAITING {
         @Override
-        public void vote(Session session, String userName, String voteValue) throws BadRequestException {
+        public void vote(Session session, User user, String voteValue) throws BadRequestException {
             throw new BadRequestException("Voting is disabled in WAITING state");
         }
 
@@ -30,7 +29,7 @@ public enum State {
         }
     }, CLOSED {
         @Override
-        public void vote(Session session, String userName, String voteValue) throws BadRequestException {
+        public void vote(Session session, User user, String voteValue) throws BadRequestException {
             throw new BadRequestException("Voting is disabled in CLOSED state");
         }
 
@@ -40,7 +39,7 @@ public enum State {
         }
     };
 
-    public abstract void vote(Session session, String userName, String voteValue) throws BadRequestException;
+    public abstract void vote(Session session, User user, String voteValue) throws BadRequestException;
 
     public abstract String getDescription();
 

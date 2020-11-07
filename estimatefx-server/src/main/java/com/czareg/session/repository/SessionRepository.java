@@ -1,6 +1,7 @@
-package com.czareg.session;
+package com.czareg.session.repository;
 
 import com.czareg.session.exceptions.NotExistsException;
+import com.czareg.session.model.Session;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;

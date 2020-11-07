@@ -1,4 +1,4 @@
-package com.czareg.user;
+package com.czareg.session.model.user;
 
 import com.czareg.dto.UserTypeDTO;
 

@@ -1,20 +1,22 @@
-package com.czareg.session;
+package com.czareg.session.model;
 
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.SessionIdentifierDTO;
+import com.czareg.dto.UserDTO;
 import com.czareg.session.exceptions.BadRequestException;
-import com.czareg.user.User;
+import com.czareg.session.model.user.User;
+import com.czareg.session.model.vote.UserVotes;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-import static com.czareg.session.State.*;
+import static com.czareg.session.model.State.*;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
 @Component
@@ -25,39 +27,39 @@ public class Session {
     private int sessionId;
     private State state;
     private Instant creationTime;
-    private List<User> users;
-    private Map<String, String> votes;
+    private UserVotes userVotes;
     private String description;
 
-    public Session() {
+    public Session(UserVotes userVotes) {
         creationTime = Instant.now();
         state = WAITING;
         sessionId = ID.getAndIncrement();
-        users = new LinkedList<>();
-        votes = new LinkedHashMap<>();
+        this.userVotes = userVotes;
     }
 
-    public void addUser(User user) {
-        if (users.isEmpty()) {
-            description = user.getName() + "'s session";
-        }
-        users.add(user);
+    public void addCreator(User user) {
+        description = user.getName() + "'s session";
+        addUser(user);
+    }
+
+    public void addJoiner(User user) {
+        addUser(user);
+    }
+
+    private void addUser(User user) {
+        userVotes.addUser(user);
     }
 
     public void removeUser(User user) {
-        users.remove(user);
+        userVotes.removeUser(user);
     }
 
     public int getSessionId() {
         return sessionId;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public Map<String, String> getVotes() {
-        return votes;
+    public UserVotes getUserVotes() {
+        return userVotes;
     }
 
     public Instant getCreationTime() {
@@ -84,8 +86,8 @@ public class Session {
         this.state = VOTING;
     }
 
-    public void vote(String name, String voteValue) throws BadRequestException {
-        getState().vote(this, name, voteValue);
+    public void vote(User user, String voteValue) throws BadRequestException {
+        getState().vote(this, user, voteValue);
     }
 
     public SessionDTO toSessionDTO() {
@@ -93,21 +95,17 @@ public class Session {
         sessionDTO.setSessionId(sessionId);
         sessionDTO.setState(state.toDTO());
         sessionDTO.setCreationTime(creationTime.toString());
-        sessionDTO.setUsers(User.mapUsersToDTOs(users));
-        sessionDTO.setVotes(hideVotes());
+        sessionDTO.setUsers(getUserList());
+        sessionDTO.setVotes(getVotesDependingOnState());
         sessionDTO.setDescription(description);
         return sessionDTO;
     }
 
-    private Map<String, String> hideVotes() {
-        if (state == VOTING) {
-            Map<String, String> newVoteMap = new LinkedHashMap<>();
-            for (Map.Entry<String, String> entry : votes.entrySet()) {
-                newVoteMap.put(entry.getKey(), "hidden");
-            }
-            return newVoteMap;
+    private Map<String, String> getVotesDependingOnState() {
+        if (state == WAITING) {
+            return userVotes.getNormalMap();
         }
-        return votes;
+        return userVotes.getHiddenMap();
     }
 
     public SessionIdentifierDTO toSessionIdentifierDTO() {
@@ -115,5 +113,19 @@ public class Session {
         sessionIdentifierDTO.setSessionId(sessionId);
         sessionIdentifierDTO.setDescription(description);
         return sessionIdentifierDTO;
+    }
+
+    public boolean isEmpty() {
+        return userVotes.isEmpty();
+    }
+
+    public List<UserDTO> getUserList() {
+        return getUsers().stream()
+                .map(User::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Set<User> getUsers() {
+        return userVotes.getUsers();
     }
 }

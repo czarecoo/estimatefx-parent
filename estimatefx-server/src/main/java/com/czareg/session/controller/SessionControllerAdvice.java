@@ -1,4 +1,4 @@
-package com.czareg.session;
+package com.czareg.session.controller;
 
 import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.session.exceptions.NotExistsException;
