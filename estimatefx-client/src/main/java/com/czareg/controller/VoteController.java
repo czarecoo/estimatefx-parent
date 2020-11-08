@@ -6,7 +6,6 @@ import com.czareg.model.Vote;
 import com.czareg.model.VoteValue;
 import com.czareg.scheduled.GetSessionScheduledService;
 import com.czareg.stage.ContextAware;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -23,6 +22,7 @@ import static com.czareg.scene.fxml.FxmlScene.JOIN;
 public class VoteController implements ContextAware {
     private static final Logger LOG = LogManager.getLogger(VoteController.class);
     private Context context;
+    private VoteContext voteContext;
     private GetSessionScheduledService getSessionScheduledService;
 
     @FXML
@@ -59,17 +59,19 @@ public class VoteController implements ContextAware {
     @Override
     public void initialize(Context context) {
         this.context = context;
-        VoteContext voteContext = new VoteContext(startButton, stopButton, buttonsHBox, userStatusLabel, sessionStatusLabel,
+        voteContext = new VoteContext(startButton, stopButton, buttonsHBox, userStatusLabel, sessionStatusLabel,
                 usersStatusLabel, votingStatusLabel, voteTableView);
-        getSessionScheduledService = new GetSessionScheduledService(context, voteContext);
+        context.setVoteContext(voteContext);
+        getSessionScheduledService = new GetSessionScheduledService(context);
         getSessionScheduledService.start();
     }
 
     @FXML
-    private void handleLeaveButtonClicked(ActionEvent event) {
+    private void handleLeaveButtonClicked() {
         getSessionScheduledService.cancel();
-        context.getTaskFactory().createLeaveSessionTask().run();
+        new Thread(context.getTaskFactory().createLeaveSessionTask()).start();
         context.getSceneManager().setScene(JOIN);
+        LOG.info("Left session");
     }
 
     @FXML
@@ -79,19 +81,19 @@ public class VoteController implements ContextAware {
         }
         String voteValue = ((Button) event.getSource()).getText();
 
-        Platform.runLater(context.getTaskFactory().createVoteOnSessionTask(voteValue));
+        new Thread(context.getTaskFactory().createVoteOnSessionTask(voteValue)).start();
         LOG.info("Voted {}", voteValue);
     }
 
     @FXML
-    private void handleStartButtonClicked(ActionEvent event) {
-        Platform.runLater(context.getTaskFactory().createStartVotingOnSessionTask());
+    private void handleStartButtonClicked() {
+        new Thread(context.getTaskFactory().createStartVotingOnSessionTask()).start();
         LOG.info("Started voting");
     }
 
     @FXML
-    private void handleStopButtonClicked(ActionEvent event) {
-        Platform.runLater(context.getTaskFactory().createStopVotingOnSessionTask());
+    private void handleStopButtonClicked() {
+        new Thread(context.getTaskFactory().createStopVotingOnSessionTask()).start();
         LOG.info("Stopped voting");
     }
 }

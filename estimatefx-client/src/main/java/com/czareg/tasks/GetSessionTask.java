@@ -6,6 +6,7 @@ import com.czareg.dto.SessionDTO;
 import com.czareg.dto.UserDTO;
 import com.czareg.dto.UserTypeDTO;
 import com.czareg.model.Vote;
+import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
 import javafx.collections.ObservableList;
@@ -62,6 +63,11 @@ public class GetSessionTask extends Task<Void> {
             LOG.error(e);
             throw e;
         }
+    }
+
+    @Override
+    protected void failed() {
+        EstimateFxNotification.showErrorNotification("Failed to get current session information from backend.");
     }
 
     @Override

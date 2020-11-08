@@ -14,6 +14,7 @@ public class Context {
     private Stage stage;
     private SceneManager sceneManager;
     private TaskFactory taskFactory;
+    private VoteContext voteContext;
 
     public Context() throws ConfigurationException {
         PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration("application.properties");
@@ -59,5 +60,13 @@ public class Context {
 
     public TaskFactory getTaskFactory() {
         return taskFactory;
+    }
+
+    public void setVoteContext(VoteContext voteContext) {
+        this.voteContext = voteContext;
+    }
+
+    public VoteContext getVoteContext() {
+        return voteContext;
     }
 }

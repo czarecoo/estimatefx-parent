@@ -2,6 +2,7 @@ package com.czareg.tasks;
 
 import com.czareg.context.Context;
 import com.czareg.dto.SessionDTO;
+import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
@@ -42,5 +43,10 @@ public class JoinSessionTask extends Task<Void> {
     protected void succeeded() {
         fillSessionsChoiceBoxScheduledService.cancel();
         context.getSceneManager().setScene(VOTE);
+    }
+
+    @Override
+    protected void failed() {
+        EstimateFxNotification.showErrorNotification("Failed to join session.");
     }
 }

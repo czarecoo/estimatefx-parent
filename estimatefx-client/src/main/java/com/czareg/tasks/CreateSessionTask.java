@@ -2,6 +2,7 @@ package com.czareg.tasks;
 
 import com.czareg.context.Context;
 import com.czareg.dto.SessionDTO;
+import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
 import javafx.concurrent.Task;
@@ -39,5 +40,10 @@ public class CreateSessionTask extends Task<Void> {
         int sessionId = session.getSessionId();
         context.setSessionId(sessionId);
         context.getSceneManager().setScene(VOTE);
+    }
+
+    @Override
+    protected void failed() {
+        EstimateFxNotification.showErrorNotification("Failed to create new session.");
     }
 }

@@ -1,7 +1,6 @@
 package com.czareg.tasks;
 
 import com.czareg.context.Context;
-import com.czareg.context.VoteContext;
 import com.czareg.model.SessionIdentifier;
 import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
 import com.czareg.service.BackendService;
@@ -21,7 +20,7 @@ public class TaskFactory {
         return new CreateSessionTask(context, backendService);
     }
 
-    public JoinSessionTask createJoinSessionTask(FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService) {
+    public Runnable createJoinSessionTask(FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService) {
         return new JoinSessionTask(context, backendService, fillSessionsChoiceBoxScheduledService);
     }
 
@@ -41,8 +40,8 @@ public class TaskFactory {
         return new StopVotingOnSessionTask(context, backendService);
     }
 
-    public Task<Void> createGetSessionTask(VoteContext voteContext) {
-        return new GetSessionTask(context, backendService, voteContext);
+    public Task<Void> createGetSessionTask() {
+        return new GetSessionTask(context, backendService, context.getVoteContext());
     }
 
     public Runnable createVoteOnSessionTask(String voteValue) {

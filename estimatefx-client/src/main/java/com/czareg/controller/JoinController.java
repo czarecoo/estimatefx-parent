@@ -6,8 +6,6 @@ import com.czareg.controller.bindings.UserNameTextFieldBooleanBinding;
 import com.czareg.model.SessionIdentifier;
 import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
 import com.czareg.stage.ContextAware;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -42,13 +40,13 @@ public class JoinController implements ContextAware {
     }
 
     @FXML
-    private void handleCreateSessionButtonClicked(ActionEvent event) {
+    private void handleCreateSessionButtonClicked() {
         fillSessionsChoiceBoxScheduledService.cancel();
         context.getSceneManager().setScene(CREATE);
     }
 
     @FXML
-    private void handleJoinSessionButtonClicked(ActionEvent event) {
+    private void handleJoinSessionButtonClicked() {
         String userName = nameTextField.getText();
 
         SessionIdentifier selectedItem = existingSessionsChoiceBox.getSelectionModel().getSelectedItem();
@@ -59,6 +57,6 @@ public class JoinController implements ContextAware {
         context.setUserName(userName);
         context.setSessionId(selectedItem.getSessionId());
 
-        Platform.runLater(context.getTaskFactory().createJoinSessionTask(fillSessionsChoiceBoxScheduledService));
+        new Thread(context.getTaskFactory().createJoinSessionTask(fillSessionsChoiceBoxScheduledService)).start();
     }
 }

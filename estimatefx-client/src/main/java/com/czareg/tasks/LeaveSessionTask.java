@@ -1,6 +1,7 @@
 package com.czareg.tasks;
 
 import com.czareg.context.Context;
+import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
 import javafx.concurrent.Task;
@@ -37,5 +38,10 @@ public class LeaveSessionTask extends Task<Void> {
             LOG.error(e);
             throw e;
         }
+    }
+
+    @Override
+    protected void failed() {
+        EstimateFxNotification.showErrorNotification("Failed to leave current session.");
     }
 }

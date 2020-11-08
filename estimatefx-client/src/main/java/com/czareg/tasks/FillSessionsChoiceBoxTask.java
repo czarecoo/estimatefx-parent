@@ -2,6 +2,7 @@ package com.czareg.tasks;
 
 import com.czareg.dto.SessionIdentifierDTO;
 import com.czareg.model.SessionIdentifier;
+import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
 import javafx.concurrent.Task;
@@ -44,6 +45,11 @@ public class FillSessionsChoiceBoxTask extends Task<Void> {
             choiceBox.getItems().clear();
             choiceBox.getItems().addAll(sessionIdentifiers);
         }
+    }
+
+    @Override
+    protected void failed() {
+        EstimateFxNotification.showErrorNotification("Failed to get existing session list from backend.");
     }
 
     private boolean listsNotEqual() {

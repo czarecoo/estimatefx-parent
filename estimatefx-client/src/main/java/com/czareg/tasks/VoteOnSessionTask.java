@@ -1,6 +1,7 @@
 package com.czareg.tasks;
 
 import com.czareg.context.Context;
+import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
 import javafx.concurrent.Task;
@@ -31,5 +32,16 @@ public class VoteOnSessionTask extends Task<Void> {
             LOG.error(e);
             throw e;
         }
+    }
+
+    @Override
+    protected void failed() {
+        EstimateFxNotification.showErrorNotification("Failed to vote on current session.");
+    }
+
+    @Override
+    protected void succeeded() {
+        Task<Void> getSessionTask = context.getTaskFactory().createGetSessionTask();
+        new Thread(getSessionTask).start();
     }
 }
