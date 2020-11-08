@@ -9,6 +9,7 @@ import com.czareg.model.Vote;
 import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
+import com.czareg.tasks.exception.TaskException;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.control.Button;
@@ -54,16 +55,30 @@ public class GetSessionTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws BackendServiceException {
+    protected Void call() throws BackendServiceException, TaskException {
         try {
             int sessionId = context.getSessionId();
             sessionDTO = backendService.getSession(sessionId);
+            String userName = context.getUserName();
+            if (userName == null) {
+                LOG.info("Username stored in context is null");
+                return null;
+            }
+            boolean hasUser = hasUser(userName, sessionDTO);
+            if (!hasUser) {
+                throw new TaskException("User is no longer in session");
+            }
             LOG.info("Received sessionId: {} info, from backend", sessionId);
             return null;
-        } catch (BackendServiceException e) {
+        } catch (BackendServiceException | TaskException e) {
             LOG.error(e);
             throw e;
         }
+    }
+
+    private boolean hasUser(String userName, SessionDTO sessionDTO) {
+        return sessionDTO.getUsers().stream()
+                .anyMatch((userDTO -> userDTO.getUserName().equals(userName)));
     }
 
     @Override

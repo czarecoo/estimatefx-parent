@@ -1,6 +1,7 @@
 package com.czareg.tasks;
 
 import com.czareg.context.Context;
+import com.czareg.dto.SessionDTO;
 import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.service.BackendService;
 import com.czareg.service.BackendServiceException;
@@ -31,6 +32,12 @@ public class LeaveSessionTask extends Task<Void> {
                 LOG.info("Stopping without leaving session because sessionId is null");
                 return null;
             }
+            SessionDTO sessionDTO = backendService.getSession(sessionId);
+            boolean hasUser = hasUser(userName, sessionDTO);
+            if (!hasUser) {
+                LOG.info("Stopping without leaving session because userName is not in session's user list");
+                return null;
+            }
             backendService.leaveSession(sessionId, userName);
             LOG.info("Left session");
             return null;
@@ -38,6 +45,11 @@ public class LeaveSessionTask extends Task<Void> {
             LOG.error(e);
             throw e;
         }
+    }
+
+    private boolean hasUser(String userName, SessionDTO sessionDTO) {
+        return sessionDTO.getUsers().stream()
+                .anyMatch((userDTO -> userDTO.getUserName().equals(userName)));
     }
 
     @Override
