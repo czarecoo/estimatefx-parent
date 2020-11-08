@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.czareg.session.model.vote.VoteState.NOT_VOTED;
-import static com.czareg.session.model.vote.VoteState.VOTED;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
 @Component
@@ -26,7 +24,7 @@ public class UserVotes {
     }
 
     public void addUser(User user) {
-        Vote notVoted = voteObjectProvider.getObject(NOT_VOTED);
+        Vote notVoted = voteObjectProvider.getObject();
         userVotes.put(user, notVoted);
     }
 
@@ -36,12 +34,12 @@ public class UserVotes {
 
     public void addVote(User user, String voteValue) {
         removeUser(user);
-        Vote vote = voteObjectProvider.getObject(VOTED, voteValue);
+        Vote vote = voteObjectProvider.getObject(voteValue);
         userVotes.put(user, vote);
     }
 
     public void clearVotes() {
-        Vote notVoted = voteObjectProvider.getObject(NOT_VOTED);
+        Vote notVoted = voteObjectProvider.getObject();
         userVotes.replaceAll(((user, vote) -> notVoted));
     }
 

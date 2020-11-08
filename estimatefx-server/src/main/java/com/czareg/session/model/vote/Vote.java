@@ -3,6 +3,8 @@ package com.czareg.session.model.vote;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import static com.czareg.session.model.vote.VoteState.NOT_VOTED;
+import static com.czareg.session.model.vote.VoteState.VOTED;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
 @Component
@@ -11,12 +13,13 @@ public class Vote {
     private VoteState voteState;
     private String voteValue;
 
-    public Vote(VoteState voteState) {
-        this(voteState, "?");
+    public Vote() {
+        this.voteState = NOT_VOTED;
+        this.voteValue = "?";
     }
 
-    public Vote(VoteState voteState, String voteValue) {
-        this.voteState = voteState;
+    public Vote(String voteValue) {
+        this.voteState = VOTED;
         this.voteValue = voteValue;
     }
 
