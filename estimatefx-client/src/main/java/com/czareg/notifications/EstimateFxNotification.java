@@ -1,14 +1,23 @@
 package com.czareg.notifications;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.Notifications;
+import org.controlsfx.tools.Utils;
 
 import static javafx.geometry.Pos.BOTTOM_CENTER;
 
 public final class EstimateFxNotification {
+    private static final Logger LOG = LogManager.getLogger(EstimateFxNotification.class);
+
     private EstimateFxNotification() {
     }
 
     public static void showErrorNotification(String failure) {
+        if (Utils.getWindow(null) == null) {
+            LOG.info("Skipping notification because window could not be found");
+            return;
+        }
         String errorMessage = String.format("%s\n\nSee logs for more information.", failure);
 
         Notifications.create()

@@ -43,6 +43,7 @@ public class JoinController implements ContextAware {
     private void handleCreateSessionButtonClicked() {
         fillSessionsChoiceBoxScheduledService.cancel();
         context.getSceneManager().setScene(CREATE);
+        LOG.info("Switched to create session scene");
     }
 
     @FXML
@@ -58,5 +59,6 @@ public class JoinController implements ContextAware {
         context.setSessionId(selectedItem.getSessionId());
 
         new Thread(context.getTaskFactory().createJoinSessionTask(fillSessionsChoiceBoxScheduledService)).start();
+        LOG.info("Joined session");
     }
 }
