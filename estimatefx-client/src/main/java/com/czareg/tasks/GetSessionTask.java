@@ -58,6 +58,7 @@ public class GetSessionTask extends Task<Void> {
         try {
             int sessionId = context.getSessionId();
             sessionDTO = backendService.getSession(sessionId);
+            LOG.info("Received sessionId: {} info, from backend", sessionId);
             return null;
         } catch (BackendServiceException e) {
             LOG.error(e);
@@ -168,7 +169,7 @@ public class GetSessionTask extends Task<Void> {
         votes = createVoteList();
 
         if (!votes.equals(voteTableView.getItems())) {
-            LOG.info("Vote table list changed.");
+            LOG.info("Vote table list changed. Updating");
             voteTableView.getItems().clear();
             voteTableView.getItems().addAll(votes);
         }
@@ -178,7 +179,7 @@ public class GetSessionTask extends Task<Void> {
         votes = createVoteList();
 
         if (listsDoNotContainThemselves()) {
-            LOG.info("Vote table list changed.");
+            LOG.info("Vote table list changed. Updating");
             voteTableView.getItems().clear();
             voteTableView.getItems().addAll(votes);
         }

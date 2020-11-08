@@ -31,6 +31,7 @@ public class FillSessionsChoiceBoxTask extends Task<Void> {
             sessionIdentifiers = sessionDTOs.stream()
                     .map(SessionIdentifier::new)
                     .collect(Collectors.toList());
+            LOG.info("Received session identifiers from backend: {}", sessionIdentifiers.size());
             return null;
         } catch (BackendServiceException e) {
             LOG.error("Failed to fill existing sessions choice box", e);
@@ -41,7 +42,7 @@ public class FillSessionsChoiceBoxTask extends Task<Void> {
     @Override
     protected void succeeded() {
         if (listsNotEqual()) {
-            LOG.info("Choice box list changed.");
+            LOG.info("Choice box list changed, updating");
             choiceBox.getItems().clear();
             choiceBox.getItems().addAll(sessionIdentifiers);
         }
