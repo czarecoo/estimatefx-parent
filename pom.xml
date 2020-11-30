@@ -14,7 +14,7 @@
     <groupId>org.czareg</groupId>
     <artifactId>estimatefx-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>2.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>com.czareg</groupId>
                 <artifactId>estimatefx-shared</artifactId>
-                <version>1.0</version>
+                <version>2.0</version>
                 <scope>compile</scope>
             </dependency>
 
