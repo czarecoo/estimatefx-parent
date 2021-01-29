@@ -55,7 +55,7 @@ public class GetSessionTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws BackendServiceException, TaskException {
+    protected Void call() {
         try {
             int sessionId = context.getSessionId();
             sessionDTO = backendService.getSession(sessionId);
@@ -69,11 +69,10 @@ public class GetSessionTask extends Task<Void> {
                 throw new TaskException("User is no longer in session");
             }
             LOG.info("Received sessionId: {} info, from backend", sessionId);
-            return null;
         } catch (BackendServiceException | TaskException e) {
             LOG.error(e);
-            throw e;
         }
+        return null;
     }
 
     private boolean hasUser(String userName, SessionDTO sessionDTO) {

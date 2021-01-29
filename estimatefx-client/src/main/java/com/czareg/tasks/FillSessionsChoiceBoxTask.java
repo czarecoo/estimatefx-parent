@@ -25,18 +25,17 @@ public class FillSessionsChoiceBoxTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws BackendServiceException {
+    protected Void call() {
         try {
             List<SessionIdentifierDTO> sessionDTOs = backendService.getSessionIdentifiers();
             sessionIdentifiers = sessionDTOs.stream()
                     .map(SessionIdentifier::new)
                     .collect(Collectors.toList());
             LOG.info("Received session identifiers from backend: {}", sessionIdentifiers.size());
-            return null;
         } catch (BackendServiceException e) {
             LOG.error("Failed to fill existing sessions choice box", e);
-            throw e;
         }
+        return null;
     }
 
     @Override

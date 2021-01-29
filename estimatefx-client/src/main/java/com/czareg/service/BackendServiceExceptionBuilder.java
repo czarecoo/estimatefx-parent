@@ -23,7 +23,7 @@ class BackendServiceExceptionBuilder {
         ResponseBody responseBody = response.errorBody();
         if (responseBody == null) {
             LOG.error("Response's error body is null");
-            LOG.error(response);
+            return this;
         }
         try {
             String serverMessage = responseBody.string();

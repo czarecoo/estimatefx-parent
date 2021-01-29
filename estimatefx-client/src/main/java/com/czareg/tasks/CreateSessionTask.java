@@ -23,16 +23,15 @@ public class CreateSessionTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws BackendServiceException {
+    protected Void call() {
         try {
             String userName = context.getUserName();
             session = backendService.createSession(userName);
             LOG.info("Received created session from backend: {}", session);
-            return null;
         } catch (BackendServiceException e) {
             LOG.error(e);
-            throw e;
         }
+        return null;
     }
 
     @Override

@@ -21,17 +21,16 @@ public class VoteOnSessionTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws BackendServiceException {
+    protected Void call() {
         try {
             String userName = context.getUserName();
             int sessionId = context.getSessionId();
             backendService.voteOnSession(sessionId, userName, voteValue);
             LOG.info("Voted on session");
-            return null;
         } catch (BackendServiceException e) {
             LOG.error(e);
-            throw e;
         }
+        return null;
     }
 
     @Override

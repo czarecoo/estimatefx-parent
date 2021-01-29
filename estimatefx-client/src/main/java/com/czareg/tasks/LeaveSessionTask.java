@@ -20,7 +20,7 @@ public class LeaveSessionTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws BackendServiceException {
+    protected Void call() {
         try {
             String userName = context.getUserName();
             if (userName == null) {
@@ -40,11 +40,10 @@ public class LeaveSessionTask extends Task<Void> {
             }
             backendService.leaveSession(sessionId, userName);
             LOG.info("Left session");
-            return null;
         } catch (BackendServiceException e) {
             LOG.error(e);
-            throw e;
         }
+        return null;
     }
 
     private boolean hasUser(String userName, SessionDTO sessionDTO) {

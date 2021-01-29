@@ -55,9 +55,9 @@
       </HBox>
       <TableView fx:id="voteTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="250.0" VBox.vgrow="ALWAYS">
          <columns>
-            <TableColumn fx:id="nameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="0.0"
+            <TableColumn fx:id="nameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="30.0"
                          prefWidth="220.0" text="Name"/>
-            <TableColumn fx:id="voteColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="0.0"
+            <TableColumn fx:id="voteColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="30.0"
                          text="Vote"/>
          </columns>
          <columnResizePolicy>

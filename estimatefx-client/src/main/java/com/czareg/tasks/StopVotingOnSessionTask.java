@@ -19,17 +19,16 @@ public class StopVotingOnSessionTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws BackendServiceException {
+    protected Void call() {
         try {
             String userName = context.getUserName();
             int sessionId = context.getSessionId();
             backendService.stopVotingOnSession(sessionId, userName);
             LOG.info("Stopped voting on session");
-            return null;
         } catch (BackendServiceException e) {
             LOG.error(e);
-            throw e;
         }
+        return null;
     }
 
     @Override
