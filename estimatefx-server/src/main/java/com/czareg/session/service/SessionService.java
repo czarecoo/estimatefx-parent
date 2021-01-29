@@ -23,12 +23,14 @@ public class SessionService {
     private SessionRepository sessionRepository;
     private ObjectFactory<Session> sessionFactory;
     private ObjectFactory<User> userFactory;
+    private ActivityService activityService;
 
     public SessionService(SessionRepository sessionRepository, ObjectFactory<Session> sessionFactory,
-                          ObjectFactory<User> userFactory) {
+                          ObjectFactory<User> userFactory, ActivityService activityService) {
         this.sessionRepository = sessionRepository;
         this.sessionFactory = sessionFactory;
         this.userFactory = userFactory;
+        this.activityService = activityService;
     }
 
     public Session create(String userName) throws BadRequestException {
@@ -36,6 +38,7 @@ public class SessionService {
         Session session = sessionFactory.getObject();
         session.addCreator(creator);
         sessionRepository.add(session);
+        activityService.add(session.getSessionId(), userName);
         return session;
     }
 
@@ -50,6 +53,7 @@ public class SessionService {
     public void vote(Integer sessionId, String userName, String voteValue) throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
+        activityService.add(sessionId, userName);
         session.vote(user, voteValue);
     }
 
@@ -62,6 +66,7 @@ public class SessionService {
 
         User user = createUser(userName, JOINER);
         session.addJoiner(user);
+        activityService.add(sessionId, userName);
         return session;
     }
 
@@ -75,11 +80,13 @@ public class SessionService {
         if (didCreatorLeave(session)) {
             session.setClosedState();
         }
+        activityService.remove(sessionId, userName);
     }
 
     public void startVoting(int sessionId, String userName) throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
+        activityService.add(sessionId, userName);
 
         State currentState = session.getState();
         if (currentState == VOTING || currentState == CLOSED) {
@@ -96,6 +103,8 @@ public class SessionService {
     public void stopVoting(int sessionId, String userName) throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
+        activityService.add(sessionId, userName);
+
         State currentState = session.getState();
         if (currentState == WAITING || currentState == CLOSED) {
             throw new BadRequestException("Cannot stop voting in current state:" + currentState);
