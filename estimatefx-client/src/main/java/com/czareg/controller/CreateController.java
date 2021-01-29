@@ -24,6 +24,8 @@ public class CreateController implements ContextAware {
     @Override
     public void initialize(Context context) {
         this.context = context;
+        nameTextField.setText(context.getUserName());
+        nameTextField.textProperty().addListener(((observable, oldValue, newValue) -> context.setUserName(newValue)));
         userNameTextFieldBooleanBinding = new UserNameTextFieldBooleanBinding(nameTextField);
         createSessionButton.disableProperty().bind(userNameTextFieldBooleanBinding);
     }

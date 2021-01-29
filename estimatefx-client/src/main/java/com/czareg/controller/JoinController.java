@@ -32,6 +32,8 @@ public class JoinController implements ContextAware {
     @Override
     public void initialize(Context context) {
         this.context = context;
+        nameTextField.setText(context.getUserName());
+        nameTextField.textProperty().addListener(((observable, oldValue, newValue) -> context.setUserName(newValue)));
         userNameTextFieldBooleanBinding = new UserNameTextFieldBooleanBinding(nameTextField);
         sessionChoiceBoxBooleanBinding = new SessionChoiceBoxBooleanBinding(existingSessionsChoiceBox);
         joinSessionButton.disableProperty().bind(userNameTextFieldBooleanBinding.or(sessionChoiceBoxBooleanBinding));
