@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -37,15 +39,26 @@ public class ActivityService {
 
     @Scheduled(cron = "0 0 * ? * *") //every hour
     public void cleanInactive() {
-        Instant cleaningTime = Instant.now();
-        LOGGER.info("Cleaning started");
         LOGGER.info(lastActivityMap.toString());
+        List<SessionUser> sessionUsersToClean = findInactiveUsers();
+        deleteInactiveUsers(sessionUsersToClean);
+    }
+
+    private List<SessionUser> findInactiveUsers() {
+        List<SessionUser> sessionUsersToClean = new ArrayList<>();
         for (Map.Entry<SessionUser, Instant> entry : lastActivityMap.entrySet()) {
             SessionUser sessionUser = entry.getKey();
             Instant lastActivity = entry.getValue();
-            if (Duration.between(lastActivity, cleaningTime).toHours() > MAX_HOURS_OF_INACTIVITY) {
-                cleanUser(sessionUser);
+            if (Duration.between(lastActivity, Instant.now()).toHours() >= MAX_HOURS_OF_INACTIVITY) {
+                sessionUsersToClean.add(sessionUser);
             }
+        }
+        return sessionUsersToClean;
+    }
+
+    private void deleteInactiveUsers(List<SessionUser> sessionUsersToClean) {
+        for (SessionUser sessionUser : sessionUsersToClean) {
+            cleanUser(sessionUser);
         }
     }
 
