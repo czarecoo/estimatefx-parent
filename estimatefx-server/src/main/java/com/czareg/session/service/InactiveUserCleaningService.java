@@ -1,7 +1,10 @@
 package com.czareg.session.service;
 
+import com.czareg.session.controller.SessionSink;
 import com.czareg.session.exceptions.NotExistsException;
+import com.czareg.session.model.Session;
 import com.czareg.session.model.user.SessionUser;
+import com.czareg.session.repository.SessionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
@@ -10,21 +13,22 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
-public class ActivityService {
-    private static Logger LOGGER = LoggerFactory.getLogger(ActivityService.class);
+public class InactiveUserCleaningService {
+    private static Logger LOGGER = LoggerFactory.getLogger(InactiveUserCleaningService.class);
     private static final int MAX_HOURS_OF_INACTIVITY = 8;
     private HashMap<SessionUser, Instant> lastActivityMap;
     private SessionService sessionService;
+    private SessionRepository sessionRepository;
+    private SessionSink sessionSink;
 
-    public ActivityService(@Lazy SessionService sessionService) {
+    public InactiveUserCleaningService(@Lazy SessionService sessionService, SessionRepository sessionRepository, SessionSink sessionSink) {
         lastActivityMap = new HashMap<>();
         this.sessionService = sessionService;
+        this.sessionRepository = sessionRepository;
+        this.sessionSink = sessionSink;
     }
 
     public void add(int sessionId, String userName) {
@@ -38,7 +42,7 @@ public class ActivityService {
     }
 
     @Scheduled(cron = "0 0 * ? * *") //every hour
-    public void cleanInactive() {
+    public void clean() {
         LOGGER.info(lastActivityMap.toString());
         List<SessionUser> sessionUsersToClean = findInactiveUsers();
         deleteInactiveUsers(sessionUsersToClean);
@@ -59,6 +63,9 @@ public class ActivityService {
     private void deleteInactiveUsers(List<SessionUser> sessionUsersToClean) {
         for (SessionUser sessionUser : sessionUsersToClean) {
             cleanUser(sessionUser);
+            int sessionId = sessionUser.getSessionId();
+            Optional<Session> sessionOptional = sessionRepository.getSessionOptional(sessionId);
+            sessionOptional.ifPresent(session -> sessionSink.emit(session));
         }
     }
 

@@ -119,7 +119,7 @@ public class Session {
         return userVotes.isEmpty();
     }
 
-    public List<UserDTO> getUserList() {
+    private List<UserDTO> getUserList() {
         return getUsers().stream()
                 .map(User::toDTO)
                 .collect(Collectors.toList());
@@ -127,5 +127,16 @@ public class Session {
 
     public Set<User> getUsers() {
         return userVotes.getUsers();
+    }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "sessionId=" + sessionId +
+                ", state=" + state +
+                ", creationTime=" + creationTime +
+                ", userVotes=" + userVotes +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

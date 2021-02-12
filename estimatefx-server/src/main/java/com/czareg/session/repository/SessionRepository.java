@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class SessionRepository {
@@ -16,18 +17,25 @@ public class SessionRepository {
     }
 
     public Session getSession(int sessionId) throws NotExistsException {
+        return getSessionOptional(sessionId)
+                .orElseThrow(() -> new NotExistsException("Session does not exist"));
+    }
+
+    public Optional<Session> getSessionOptional(int sessionId) {
         return sessions.stream()
                 .filter(session -> session.getSessionId() == sessionId)
-                .findFirst()
-                .orElseThrow(() -> new NotExistsException("Session does not exist"));
+                .findFirst();
     }
 
     public List<Session> getSessions() {
         return sessions;
     }
 
-    public void delete(int sessionId) throws NotExistsException {
-        Session session = getSession(sessionId);
+    public void delete(int sessionId) {
+        Session session = sessions.stream()
+                .filter(s -> s.getSessionId() == sessionId)
+                .findFirst()
+                .orElse(null);
         sessions.remove(session);
     }
 }

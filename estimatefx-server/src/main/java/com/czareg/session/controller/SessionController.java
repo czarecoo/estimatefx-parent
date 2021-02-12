@@ -7,21 +7,30 @@ import com.czareg.session.exceptions.NotExistsException;
 import com.czareg.session.model.Session;
 import com.czareg.session.service.SessionService;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
+
 @RestController
 public class SessionController {
     private SessionService sessionService;
+    private SessionSink sessionSink;
+    private SessionListSink sessionListSink;
 
-    public SessionController(SessionService sessionService) {
+    public SessionController(SessionService sessionService, SessionSink sessionSink, SessionListSink sessionListSink) {
         this.sessionService = sessionService;
+        this.sessionSink = sessionSink;
+        this.sessionListSink = sessionListSink;
     }
 
     @PostMapping(value = "/createSession")
     public SessionDTO createSession(@RequestParam String userName) throws BadRequestException {
         Session session = sessionService.create(userName);
+        sessionSink.emit(session);
+        sessionListSink.emit(sessionService.getSessions());
         return session.toSessionDTO();
     }
 
@@ -29,6 +38,7 @@ public class SessionController {
     public SessionDTO joinSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
             throws BadRequestException, NotExistsException {
         Session session = sessionService.join(sessionId, userName);
+        sessionSink.emit(session);
         return session.toSessionDTO();
     }
 
@@ -36,6 +46,11 @@ public class SessionController {
     public SessionDTO getSessionById(@PathVariable("sessionId") int sessionId) throws NotExistsException {
         Session session = sessionService.getSession(sessionId);
         return session.toSessionDTO();
+    }
+
+    @GetMapping(value = "/pollSession/{sessionId}", produces = TEXT_EVENT_STREAM_VALUE)
+    public Flux<SessionDTO> pollSessionById(@PathVariable("sessionId") int sessionId) {
+        return sessionSink.asSessionDTOFluxBySessionId(sessionId);
     }
 
     @GetMapping(value = "/getSessions")
@@ -46,6 +61,11 @@ public class SessionController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping(value = "/pollSessions", produces = TEXT_EVENT_STREAM_VALUE)
+    public Flux<SessionDTO> pollSessions() {
+        return sessionSink.asSessionDTOFlux();
+    }
+
     @GetMapping(value = "/getSessionIdentifiers")
     public List<SessionIdentifierDTO> getSessionIdentifiers() {
         List<Session> sessions = sessionService.getSessions();
@@ -54,28 +74,37 @@ public class SessionController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping(value = "/pollSessionIdentifiers", produces = TEXT_EVENT_STREAM_VALUE)
+    public Flux<List<SessionIdentifierDTO>> pollSessionIdentifiers() {
+        return sessionListSink.asSessionIdentifierDTOListFlux();
+    }
+
     @PutMapping(value = "/voteOnSession/{sessionId}")
     public void voteOnSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName,
                               @RequestParam String voteValue)
             throws BadRequestException, NotExistsException {
-        sessionService.vote(sessionId, userName, voteValue);
+        Session session = sessionService.vote(sessionId, userName, voteValue);
+        sessionSink.emit(session);
     }
 
     @DeleteMapping(value = "/leaveSession/{sessionId}")
     public void leaveSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
             throws NotExistsException {
-        sessionService.leave(sessionId, userName);
+        Session session = sessionService.leave(sessionId, userName);
+        sessionSink.emit(session);
     }
 
     @PutMapping(value = "/startVotingOnSession/{sessionId}")
     public void startVotingOnSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
             throws BadRequestException, NotExistsException {
-        sessionService.startVoting(sessionId, userName);
+        Session session = sessionService.startVoting(sessionId, userName);
+        sessionSink.emit(session);
     }
 
     @PutMapping(value = "/stopVotingOnSession/{sessionId}")
     public void stopVotingOnSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
             throws BadRequestException, NotExistsException {
-        sessionService.stopVoting(sessionId, userName);
+        Session session = sessionService.stopVoting(sessionId, userName);
+        sessionSink.emit(session);
     }
 }

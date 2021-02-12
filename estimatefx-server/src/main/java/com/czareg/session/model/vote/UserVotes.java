@@ -1,7 +1,6 @@
 package com.czareg.session.model.vote;
 
 import com.czareg.session.model.user.User;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +14,10 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 @Component
 @Scope(SCOPE_PROTOTYPE)
 public class UserVotes {
-    private Map<User, Vote> userVotes;
-    private ObjectProvider<Vote> voteObjectProvider;
-
-    public UserVotes(ObjectProvider<Vote> voteObjectProvider) {
-        this.voteObjectProvider = voteObjectProvider;
-        userVotes = new LinkedHashMap<>();
-    }
+    private Map<User, Vote> userVotes = new LinkedHashMap<>();
 
     public void addUser(User user) {
-        Vote notVoted = voteObjectProvider.getObject();
+        Vote notVoted = new Vote();
         userVotes.put(user, notVoted);
     }
 
@@ -34,13 +27,12 @@ public class UserVotes {
 
     public void addVote(User user, String voteValue) {
         removeUser(user);
-        Vote vote = voteObjectProvider.getObject(voteValue);
+        Vote vote = new Vote(voteValue);
         userVotes.put(user, vote);
     }
 
     public void clearVotes() {
-        Vote notVoted = voteObjectProvider.getObject();
-        userVotes.replaceAll(((user, vote) -> notVoted));
+        userVotes.replaceAll(((user, vote) -> new Vote()));
     }
 
     public boolean isEmpty() {
@@ -67,5 +59,10 @@ public class UserVotes {
             newVoteMap.put(userName, vote);
         }
         return newVoteMap;
+    }
+
+    @Override
+    public String toString() {
+        return userVotes.toString();
     }
 }

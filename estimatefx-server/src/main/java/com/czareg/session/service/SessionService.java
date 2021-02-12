@@ -23,14 +23,14 @@ public class SessionService {
     private SessionRepository sessionRepository;
     private ObjectFactory<Session> sessionFactory;
     private ObjectFactory<User> userFactory;
-    private ActivityService activityService;
+    private InactiveUserCleaningService inactiveUserCleaningService;
 
     public SessionService(SessionRepository sessionRepository, ObjectFactory<Session> sessionFactory,
-                          ObjectFactory<User> userFactory, ActivityService activityService) {
+                          ObjectFactory<User> userFactory, InactiveUserCleaningService inactiveUserCleaningService) {
         this.sessionRepository = sessionRepository;
         this.sessionFactory = sessionFactory;
         this.userFactory = userFactory;
-        this.activityService = activityService;
+        this.inactiveUserCleaningService = inactiveUserCleaningService;
     }
 
     public Session create(String userName) throws BadRequestException {
@@ -38,7 +38,7 @@ public class SessionService {
         Session session = sessionFactory.getObject();
         session.addCreator(creator);
         sessionRepository.add(session);
-        activityService.add(session.getSessionId(), userName);
+        inactiveUserCleaningService.add(session.getSessionId(), userName);
         return session;
     }
 
@@ -50,11 +50,12 @@ public class SessionService {
         return sessionRepository.getSessions();
     }
 
-    public void vote(Integer sessionId, String userName, String voteValue) throws NotExistsException, BadRequestException {
+    public Session vote(Integer sessionId, String userName, String voteValue) throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
-        activityService.add(sessionId, userName);
+        inactiveUserCleaningService.add(sessionId, userName);
         session.vote(user, voteValue);
+        return session;
     }
 
     public Session join(Integer sessionId, String userName) throws NotExistsException, BadRequestException {
@@ -66,27 +67,25 @@ public class SessionService {
 
         User user = createUser(userName, JOINER);
         session.addJoiner(user);
-        activityService.add(sessionId, userName);
+        inactiveUserCleaningService.add(sessionId, userName);
         return session;
     }
 
-    public void leave(Integer sessionId, String userName) throws NotExistsException {
+    public Session leave(Integer sessionId, String userName) throws NotExistsException {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
         session.removeUser(user);
-        if (session.isEmpty()) {
-            sessionRepository.delete(sessionId);
-        }
         if (didCreatorLeave(session)) {
             session.setClosedState();
         }
-        activityService.remove(sessionId, userName);
+        inactiveUserCleaningService.remove(sessionId, userName);
+        return session;
     }
 
-    public void startVoting(int sessionId, String userName) throws NotExistsException, BadRequestException {
+    public Session startVoting(int sessionId, String userName) throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
-        activityService.add(sessionId, userName);
+        inactiveUserCleaningService.add(sessionId, userName);
 
         State currentState = session.getState();
         if (currentState == VOTING || currentState == CLOSED) {
@@ -98,12 +97,13 @@ public class SessionService {
 
         session.getUserVotes().clearVotes();
         session.setVotingState();
+        return session;
     }
 
-    public void stopVoting(int sessionId, String userName) throws NotExistsException, BadRequestException {
+    public Session stopVoting(int sessionId, String userName) throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
-        activityService.add(sessionId, userName);
+        inactiveUserCleaningService.add(sessionId, userName);
 
         State currentState = session.getState();
         if (currentState == WAITING || currentState == CLOSED) {
@@ -114,6 +114,7 @@ public class SessionService {
         }
 
         session.setWaitingState();
+        return session;
     }
 
     private boolean isNameTakenForSession(Session session, String userName) {
