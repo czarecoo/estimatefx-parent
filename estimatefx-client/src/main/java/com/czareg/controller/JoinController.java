@@ -41,7 +41,7 @@ public class JoinController implements ContextAware {
         joinSessionButton.disableProperty().bind(userNameTextFieldBooleanBinding.or(sessionChoiceBoxBooleanBinding));
 
         SessionIdentifiersListener sessionIdentifiersListener = new SessionIdentifiersListener(existingSessionsChoiceBox);
-        sessionIdentifierPollingService = new SessionIdentifierPollingService(sessionIdentifiersListener);
+        sessionIdentifierPollingService = new SessionIdentifierPollingService(context, sessionIdentifiersListener);
     }
 
     @FXML

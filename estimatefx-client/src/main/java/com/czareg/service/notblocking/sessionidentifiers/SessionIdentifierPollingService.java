@@ -1,18 +1,21 @@
 package com.czareg.service.notblocking.sessionidentifiers;
 
+import com.czareg.context.Context;
+import com.czareg.service.notblocking.PollingService;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.internal.sse.RealEventSource;
 import okhttp3.sse.EventSourceListener;
-import org.jetbrains.annotations.NotNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.time.Duration;
-
-public class SessionIdentifierPollingService implements AutoCloseable {
+public class SessionIdentifierPollingService extends PollingService {
+    private static final Logger LOG = LogManager.getLogger(SessionIdentifierPollingService.class);
     private final OkHttpClient client;
     private final RealEventSource realEventSource;
 
-    public SessionIdentifierPollingService(EventSourceListener eventSourceListener) {
+    public SessionIdentifierPollingService(Context context, EventSourceListener eventSourceListener) {
+        super(context);
         Request request = new Request.Builder()
                 .url("http://localhost/pollSessionIdentifiers")
                 .build();
@@ -21,15 +24,9 @@ public class SessionIdentifierPollingService implements AutoCloseable {
         realEventSource.connect(client);
     }
 
-    @NotNull
-    private OkHttpClient createClient() {
-        return new OkHttpClient.Builder()
-                .readTimeout(Duration.ZERO)
-                .build();
-    }
-
     @Override
-    public void close() {
+    public void doClose() {
+        LOG.info("Closing");
         realEventSource.cancel();
         client.dispatcher().executorService().shutdown();
     }

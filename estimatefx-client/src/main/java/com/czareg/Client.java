@@ -39,5 +39,6 @@ public class Client extends Application {
     @Override
     public void stop() {
         context.getTaskFactory().createLeaveSessionTask().run();
+        context.close();
     }
 }
