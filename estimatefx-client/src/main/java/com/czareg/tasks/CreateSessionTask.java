@@ -43,6 +43,6 @@ public class CreateSessionTask extends Task<Void> {
 
     @Override
     protected void failed() {
-        EstimateFxNotification.showErrorNotification("Failed to create new session.");
+        EstimateFxNotification.showErrorNotificationFromUiThread("Failed to create new session.");
     }
 }

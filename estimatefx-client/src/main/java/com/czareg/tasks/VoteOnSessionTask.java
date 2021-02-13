@@ -35,7 +35,7 @@ public class VoteOnSessionTask extends Task<Void> {
 
     @Override
     protected void failed() {
-        EstimateFxNotification.showErrorNotification("Failed to vote on current session.");
+        EstimateFxNotification.showErrorNotificationFromUiThread("Failed to vote on current session.");
     }
 
     @Override

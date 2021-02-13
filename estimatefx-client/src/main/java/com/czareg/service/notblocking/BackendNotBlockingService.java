@@ -1,15 +1,43 @@
 package com.czareg.service.notblocking;
 
-import com.czareg.dto.SessionDTO;
-import com.czareg.dto.SessionIdentifierDTO;
-import io.reactivex.Observable;
+import com.czareg.listeners.SessionIdentifiersListener;
+import com.czareg.listeners.SessionListener;
+import com.czareg.model.SessionIdentifier;
+import javafx.scene.control.ChoiceBox;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.internal.sse.RealEventSource;
+import okhttp3.sse.EventSourceListener;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.time.Duration;
 
-public interface BackendNotBlockingService {
-    Observable<SessionDTO> pollSession(int sessionId);
+public class BackendNotBlockingService {
+    public RealEventSource pollSession(int sessionId) {
+        Request request = new Request.Builder()
+                .url("http://localhost/pollSession/" + sessionId)
+                .build();
+        EventSourceListener eventSourceListener = new SessionListener();
+        RealEventSource realEventSource = new RealEventSource(request, eventSourceListener);
+        realEventSource.connect(createClient());
+        return realEventSource;
+    }
 
-    Observable<SessionDTO> pollSessions();
+    public RealEventSource pollSessionIdentifiers(ChoiceBox<SessionIdentifier> choiceBox) {
+        Request request = new Request.Builder()
+                .url("http://localhost/pollSessionIdentifiers")
+                .build();
+        EventSourceListener eventSourceListener = new SessionIdentifiersListener(choiceBox);
+        RealEventSource realEventSource = new RealEventSource(request, eventSourceListener);
+        realEventSource.connect(createClient());
+        return realEventSource;
+    }
 
-    Observable<List<SessionIdentifierDTO>> pollSessionIdentifiers();
+    @NotNull
+    private OkHttpClient createClient() {
+        return new OkHttpClient.Builder()
+                .readTimeout(Duration.ZERO)
+                .build();
+    }
+
 }

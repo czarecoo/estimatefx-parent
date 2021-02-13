@@ -33,7 +33,7 @@ public class StopVotingOnSessionTask extends Task<Void> {
 
     @Override
     protected void failed() {
-        EstimateFxNotification.showErrorNotification("Failed to stop voting on current session.");
+        EstimateFxNotification.showErrorNotificationFromUiThread("Failed to stop voting on current session.");
     }
 
     @Override

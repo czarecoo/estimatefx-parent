@@ -4,12 +4,13 @@ import com.czareg.context.Context;
 import com.czareg.controller.bindings.SessionChoiceBoxBooleanBinding;
 import com.czareg.controller.bindings.UserNameTextFieldBooleanBinding;
 import com.czareg.model.SessionIdentifier;
-import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
+import com.czareg.service.notblocking.BackendNotBlockingService;
 import com.czareg.stage.ContextAware;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import okhttp3.internal.sse.RealEventSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +19,6 @@ import static com.czareg.scene.fxml.FxmlScene.CREATE;
 public class JoinController implements ContextAware {
     private static final Logger LOG = LogManager.getLogger(JoinController.class);
     private Context context;
-    private FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService;
     private UserNameTextFieldBooleanBinding userNameTextFieldBooleanBinding;
 
     @FXML
@@ -29,6 +29,8 @@ public class JoinController implements ContextAware {
     private Button joinSessionButton;
     private SessionChoiceBoxBooleanBinding sessionChoiceBoxBooleanBinding;
 
+    private RealEventSource realEventSource;
+
     @Override
     public void initialize(Context context) {
         this.context = context;
@@ -37,13 +39,14 @@ public class JoinController implements ContextAware {
         userNameTextFieldBooleanBinding = new UserNameTextFieldBooleanBinding(nameTextField);
         sessionChoiceBoxBooleanBinding = new SessionChoiceBoxBooleanBinding(existingSessionsChoiceBox);
         joinSessionButton.disableProperty().bind(userNameTextFieldBooleanBinding.or(sessionChoiceBoxBooleanBinding));
-        fillSessionsChoiceBoxScheduledService = new FillSessionsChoiceBoxScheduledService(context, existingSessionsChoiceBox);
-        fillSessionsChoiceBoxScheduledService.start();
+
+        BackendNotBlockingService backendNotBlockingService = new BackendNotBlockingService();
+        realEventSource = backendNotBlockingService.pollSessionIdentifiers(existingSessionsChoiceBox);
     }
 
     @FXML
     private void handleCreateSessionButtonClicked() {
-        fillSessionsChoiceBoxScheduledService.cancel();
+        realEventSource.cancel();
         context.getSceneManager().setScene(CREATE);
         LOG.info("Switched to create session scene");
     }
@@ -60,7 +63,7 @@ public class JoinController implements ContextAware {
         context.setUserName(userName);
         context.setSessionId(selectedItem.getSessionId());
 
-        new Thread(context.getTaskFactory().createJoinSessionTask(fillSessionsChoiceBoxScheduledService)).start();
+        new Thread(context.getTaskFactory().createJoinSessionTask(realEventSource)).start();
         LOG.info("Joined session");
     }
 }

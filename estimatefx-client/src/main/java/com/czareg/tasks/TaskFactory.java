@@ -1,11 +1,9 @@
 package com.czareg.tasks;
 
 import com.czareg.context.Context;
-import com.czareg.model.SessionIdentifier;
-import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
 import com.czareg.service.blocking.BackendBlockingService;
 import javafx.concurrent.Task;
-import javafx.scene.control.ChoiceBox;
+import okhttp3.internal.sse.RealEventSource;
 
 public class TaskFactory {
     private BackendBlockingService backendBlockingService;
@@ -20,12 +18,8 @@ public class TaskFactory {
         return new CreateSessionTask(context, backendBlockingService);
     }
 
-    public Runnable createJoinSessionTask(FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService) {
-        return new JoinSessionTask(context, backendBlockingService, fillSessionsChoiceBoxScheduledService);
-    }
-
-    public Task<Void> createSessionsFillChoiceBoxTask(ChoiceBox<SessionIdentifier> sessionChoiceBox) {
-        return new FillSessionsChoiceBoxTask(sessionChoiceBox, backendBlockingService);
+    public Runnable createJoinSessionTask(RealEventSource realEventSource) {
+        return new JoinSessionTask(context, backendBlockingService, realEventSource);
     }
 
     public Runnable createLeaveSessionTask() {

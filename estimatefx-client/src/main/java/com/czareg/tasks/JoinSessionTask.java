@@ -3,10 +3,10 @@ package com.czareg.tasks;
 import com.czareg.context.Context;
 import com.czareg.dto.SessionDTO;
 import com.czareg.notifications.EstimateFxNotification;
-import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
 import com.czareg.service.blocking.BackendBlockingService;
 import com.czareg.service.shared.BackendServiceException;
 import javafx.concurrent.Task;
+import okhttp3.internal.sse.RealEventSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +17,12 @@ public class JoinSessionTask extends Task<Void> {
     private SessionDTO session;
     private Context context;
     private BackendBlockingService backendBlockingService;
-    private FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService;
+    private RealEventSource realEventSource;
 
-    public JoinSessionTask(Context context, BackendBlockingService backendBlockingService, FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService) {
+    public JoinSessionTask(Context context, BackendBlockingService backendBlockingService, RealEventSource realEventSource) {
         this.context = context;
         this.backendBlockingService = backendBlockingService;
-        this.fillSessionsChoiceBoxScheduledService = fillSessionsChoiceBoxScheduledService;
+        this.realEventSource = realEventSource;
     }
 
     @Override
@@ -40,12 +40,12 @@ public class JoinSessionTask extends Task<Void> {
 
     @Override
     protected void succeeded() {
-        fillSessionsChoiceBoxScheduledService.cancel();
+        realEventSource.cancel();
         context.getSceneManager().setScene(VOTE);
     }
 
     @Override
     protected void failed() {
-        EstimateFxNotification.showErrorNotification("Failed to join session.");
+        EstimateFxNotification.showErrorNotificationFromUiThread("Failed to join session.");
     }
 }

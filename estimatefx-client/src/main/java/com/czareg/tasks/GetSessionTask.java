@@ -82,7 +82,7 @@ public class GetSessionTask extends Task<Void> {
 
     @Override
     protected void failed() {
-        EstimateFxNotification.showErrorNotification("Failed to get current session information from backend.");
+        EstimateFxNotification.showErrorNotificationFromUiThread("Failed to get current session information from backend.");
     }
 
     @Override

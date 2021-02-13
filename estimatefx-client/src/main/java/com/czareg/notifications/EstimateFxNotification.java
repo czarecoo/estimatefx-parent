@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.tools.Utils;
 
+import static javafx.application.Platform.runLater;
 import static javafx.geometry.Pos.BOTTOM_CENTER;
 
 public final class EstimateFxNotification {
@@ -13,7 +14,15 @@ public final class EstimateFxNotification {
     private EstimateFxNotification() {
     }
 
-    public static void showErrorNotification(String failure) {
+    public static void showErrorNotificationFromUiThread(String failure) {
+        doShowErrorNotification(failure);
+    }
+
+    public static void showErrorNotificationFromCustomThread(String failure) {
+        runLater(() -> doShowErrorNotification(failure));
+    }
+
+    private static void doShowErrorNotification(String failure) {
         if (Utils.getWindow(null) == null) {
             LOG.info("Skipping notification because window could not be found");
             return;

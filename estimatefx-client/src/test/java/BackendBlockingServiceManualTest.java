@@ -3,8 +3,10 @@ import com.czareg.service.blocking.BackendBlockingServiceFactory;
 import com.czareg.service.shared.BackendServiceException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class BackendBlockingServiceManualTest {
     //private static final String URL = "https://estimatefx-server.herokuapp.com";
     private static final String URL = "http://localhost";

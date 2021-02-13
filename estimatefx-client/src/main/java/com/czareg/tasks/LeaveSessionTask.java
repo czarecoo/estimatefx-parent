@@ -53,6 +53,6 @@ public class LeaveSessionTask extends Task<Void> {
 
     @Override
     protected void failed() {
-        EstimateFxNotification.showErrorNotification("Failed to leave current session.");
+        EstimateFxNotification.showErrorNotificationFromUiThread("Failed to leave current session.");
     }
 }

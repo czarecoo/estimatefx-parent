@@ -20,7 +20,6 @@ public class Context {
         PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration("application.properties");
         propertiesConfiguration.setThrowExceptionOnMissing(true);
         BackendBlockingService backendBlockingService = new BackendBlockingServiceFactory().create(propertiesConfiguration);
-        //BackendNotBlockingService backendNotBlockingService = new BackendNotBlockingServiceFactory().create(propertiesConfiguration);
         taskFactory = new TaskFactory(backendBlockingService, this);
     }
 
