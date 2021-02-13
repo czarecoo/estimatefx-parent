@@ -1,12 +1,12 @@
 package com.czareg.context;
 
 import com.czareg.scene.SceneManager;
-import com.czareg.service.*;
+import com.czareg.service.blocking.BackendBlockingService;
+import com.czareg.service.blocking.BackendBlockingServiceFactory;
 import com.czareg.tasks.TaskFactory;
 import javafx.stage.Stage;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import retrofit2.Retrofit;
 
 public class Context {
     private String userName;
@@ -19,11 +19,9 @@ public class Context {
     public Context() throws ConfigurationException {
         PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration("application.properties");
         propertiesConfiguration.setThrowExceptionOnMissing(true);
-
-        Retrofit retrofit = new RetrofitClientFactory().geRetrofitClient(propertiesConfiguration);
-        BackendApi backendApi = new BackendApiFactory().createBackendApi(retrofit);
-        BackendService backendService = new BackendServiceImpl(backendApi);
-        taskFactory = new TaskFactory(backendService, this);
+        BackendBlockingService backendBlockingService = new BackendBlockingServiceFactory().create(propertiesConfiguration);
+        //BackendNotBlockingService backendNotBlockingService = new BackendNotBlockingServiceFactory().create(propertiesConfiguration);
+        taskFactory = new TaskFactory(backendBlockingService, this);
     }
 
     public Stage getStage() {

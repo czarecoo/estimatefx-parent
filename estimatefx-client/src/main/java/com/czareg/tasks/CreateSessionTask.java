@@ -3,8 +3,8 @@ package com.czareg.tasks;
 import com.czareg.context.Context;
 import com.czareg.dto.SessionDTO;
 import com.czareg.notifications.EstimateFxNotification;
-import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceException;
+import com.czareg.service.blocking.BackendBlockingService;
+import com.czareg.service.shared.BackendServiceException;
 import javafx.concurrent.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,18 +15,18 @@ public class CreateSessionTask extends Task<Void> {
     private static final Logger LOG = LogManager.getLogger(CreateSessionTask.class);
     private SessionDTO session;
     private Context context;
-    private BackendService backendService;
+    private BackendBlockingService backendBlockingService;
 
-    public CreateSessionTask(Context context, BackendService backendService) {
+    public CreateSessionTask(Context context, BackendBlockingService backendBlockingService) {
         this.context = context;
-        this.backendService = backendService;
+        this.backendBlockingService = backendBlockingService;
     }
 
     @Override
     protected Void call() {
         try {
             String userName = context.getUserName();
-            session = backendService.createSession(userName);
+            session = backendBlockingService.createSession(userName);
             LOG.info("Received created session from backend: {}", session);
         } catch (BackendServiceException e) {
             LOG.error(e);

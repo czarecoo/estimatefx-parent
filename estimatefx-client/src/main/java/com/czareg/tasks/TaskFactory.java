@@ -3,48 +3,48 @@ package com.czareg.tasks;
 import com.czareg.context.Context;
 import com.czareg.model.SessionIdentifier;
 import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
-import com.czareg.service.BackendService;
+import com.czareg.service.blocking.BackendBlockingService;
 import javafx.concurrent.Task;
 import javafx.scene.control.ChoiceBox;
 
 public class TaskFactory {
-    private BackendService backendService;
+    private BackendBlockingService backendBlockingService;
     private Context context;
 
-    public TaskFactory(BackendService backendService, Context context) {
-        this.backendService = backendService;
+    public TaskFactory(BackendBlockingService backendBlockingService, Context context) {
+        this.backendBlockingService = backendBlockingService;
         this.context = context;
     }
 
     public Runnable createCreateSessionTask() {
-        return new CreateSessionTask(context, backendService);
+        return new CreateSessionTask(context, backendBlockingService);
     }
 
     public Runnable createJoinSessionTask(FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService) {
-        return new JoinSessionTask(context, backendService, fillSessionsChoiceBoxScheduledService);
+        return new JoinSessionTask(context, backendBlockingService, fillSessionsChoiceBoxScheduledService);
     }
 
     public Task<Void> createSessionsFillChoiceBoxTask(ChoiceBox<SessionIdentifier> sessionChoiceBox) {
-        return new FillSessionsChoiceBoxTask(sessionChoiceBox, backendService);
+        return new FillSessionsChoiceBoxTask(sessionChoiceBox, backendBlockingService);
     }
 
     public Runnable createLeaveSessionTask() {
-        return new LeaveSessionTask(context, backendService);
+        return new LeaveSessionTask(context, backendBlockingService);
     }
 
     public Runnable createStartVotingOnSessionTask() {
-        return new StartVotingOnSessionTask(context, backendService);
+        return new StartVotingOnSessionTask(context, backendBlockingService);
     }
 
     public Runnable createStopVotingOnSessionTask() {
-        return new StopVotingOnSessionTask(context, backendService);
+        return new StopVotingOnSessionTask(context, backendBlockingService);
     }
 
     public Task<Void> createGetSessionTask() {
-        return new GetSessionTask(context, backendService, context.getVoteContext());
+        return new GetSessionTask(context, backendBlockingService, context.getVoteContext());
     }
 
     public Runnable createVoteOnSessionTask(String voteValue) {
-        return new VoteOnSessionTask(context, backendService, voteValue);
+        return new VoteOnSessionTask(context, backendBlockingService, voteValue);
     }
 }

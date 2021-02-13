@@ -1,4 +1,4 @@
-package com.czareg.service;
+package com.czareg.service.blocking;
 
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.SessionIdentifierDTO;
@@ -7,7 +7,7 @@ import retrofit2.http.*;
 
 import java.util.List;
 
-public interface BackendApi {
+public interface BackendBlockingApi {
     @POST("/createSession")
     Call<SessionDTO> createSession(@Query(value = "userName") String userName);
 

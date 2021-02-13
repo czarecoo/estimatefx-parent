@@ -2,8 +2,8 @@ package com.czareg.tasks;
 
 import com.czareg.context.Context;
 import com.czareg.notifications.EstimateFxNotification;
-import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceException;
+import com.czareg.service.blocking.BackendBlockingService;
+import com.czareg.service.shared.BackendServiceException;
 import javafx.concurrent.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,12 +11,12 @@ import org.apache.logging.log4j.Logger;
 public class VoteOnSessionTask extends Task<Void> {
     private static final Logger LOG = LogManager.getLogger(VoteOnSessionTask.class);
     private Context context;
-    private BackendService backendService;
+    private BackendBlockingService backendBlockingService;
     private String voteValue;
 
-    public VoteOnSessionTask(Context context, BackendService backendService, String voteValue) {
+    public VoteOnSessionTask(Context context, BackendBlockingService backendBlockingService, String voteValue) {
         this.context = context;
-        this.backendService = backendService;
+        this.backendBlockingService = backendBlockingService;
         this.voteValue = voteValue;
     }
 
@@ -25,7 +25,7 @@ public class VoteOnSessionTask extends Task<Void> {
         try {
             String userName = context.getUserName();
             int sessionId = context.getSessionId();
-            backendService.voteOnSession(sessionId, userName, voteValue);
+            backendBlockingService.voteOnSession(sessionId, userName, voteValue);
             LOG.info("Voted on session");
         } catch (BackendServiceException e) {
             LOG.error(e);

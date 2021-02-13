@@ -2,8 +2,8 @@ package com.czareg.tasks;
 
 import com.czareg.context.Context;
 import com.czareg.notifications.EstimateFxNotification;
-import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceException;
+import com.czareg.service.blocking.BackendBlockingService;
+import com.czareg.service.shared.BackendServiceException;
 import javafx.concurrent.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,11 +11,11 @@ import org.apache.logging.log4j.Logger;
 public class StopVotingOnSessionTask extends Task<Void> {
     private static final Logger LOG = LogManager.getLogger(StopVotingOnSessionTask.class);
     private Context context;
-    private BackendService backendService;
+    private BackendBlockingService backendBlockingService;
 
-    public StopVotingOnSessionTask(Context context, BackendService backendService) {
+    public StopVotingOnSessionTask(Context context, BackendBlockingService backendBlockingService) {
         this.context = context;
-        this.backendService = backendService;
+        this.backendBlockingService = backendBlockingService;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class StopVotingOnSessionTask extends Task<Void> {
         try {
             String userName = context.getUserName();
             int sessionId = context.getSessionId();
-            backendService.stopVotingOnSession(sessionId, userName);
+            backendBlockingService.stopVotingOnSession(sessionId, userName);
             LOG.info("Stopped voting on session");
         } catch (BackendServiceException e) {
             LOG.error(e);

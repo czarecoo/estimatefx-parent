@@ -3,8 +3,8 @@ package com.czareg.tasks;
 import com.czareg.dto.SessionIdentifierDTO;
 import com.czareg.model.SessionIdentifier;
 import com.czareg.notifications.EstimateFxNotification;
-import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceException;
+import com.czareg.service.blocking.BackendBlockingService;
+import com.czareg.service.shared.BackendServiceException;
 import javafx.concurrent.Task;
 import javafx.scene.control.ChoiceBox;
 import org.apache.logging.log4j.LogManager;
@@ -16,18 +16,18 @@ import java.util.stream.Collectors;
 public class FillSessionsChoiceBoxTask extends Task<Void> {
     private static final Logger LOG = LogManager.getLogger(FillSessionsChoiceBoxTask.class);
     private ChoiceBox<SessionIdentifier> choiceBox;
-    private BackendService backendService;
+    private BackendBlockingService backendBlockingService;
     private List<SessionIdentifier> sessionIdentifiers;
 
-    public FillSessionsChoiceBoxTask(ChoiceBox<SessionIdentifier> choiceBox, BackendService backendService) {
+    public FillSessionsChoiceBoxTask(ChoiceBox<SessionIdentifier> choiceBox, BackendBlockingService backendBlockingService) {
         this.choiceBox = choiceBox;
-        this.backendService = backendService;
+        this.backendBlockingService = backendBlockingService;
     }
 
     @Override
     protected Void call() {
         try {
-            List<SessionIdentifierDTO> sessionDTOs = backendService.getSessionIdentifiers();
+            List<SessionIdentifierDTO> sessionDTOs = backendBlockingService.getSessionIdentifiers();
             sessionIdentifiers = sessionDTOs.stream()
                     .map(SessionIdentifier::new)
                     .collect(Collectors.toList());

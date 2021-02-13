@@ -4,8 +4,8 @@ import com.czareg.context.Context;
 import com.czareg.dto.SessionDTO;
 import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.scheduled.FillSessionsChoiceBoxScheduledService;
-import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceException;
+import com.czareg.service.blocking.BackendBlockingService;
+import com.czareg.service.shared.BackendServiceException;
 import javafx.concurrent.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,12 +16,12 @@ public class JoinSessionTask extends Task<Void> {
     private static final Logger LOG = LogManager.getLogger(JoinSessionTask.class);
     private SessionDTO session;
     private Context context;
-    private BackendService backendService;
+    private BackendBlockingService backendBlockingService;
     private FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService;
 
-    public JoinSessionTask(Context context, BackendService backendService, FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService) {
+    public JoinSessionTask(Context context, BackendBlockingService backendBlockingService, FillSessionsChoiceBoxScheduledService fillSessionsChoiceBoxScheduledService) {
         this.context = context;
-        this.backendService = backendService;
+        this.backendBlockingService = backendBlockingService;
         this.fillSessionsChoiceBoxScheduledService = fillSessionsChoiceBoxScheduledService;
     }
 
@@ -30,7 +30,7 @@ public class JoinSessionTask extends Task<Void> {
         try {
             String userName = context.getUserName();
             int sessionId = context.getSessionId();
-            session = backendService.joinSession(sessionId, userName);
+            session = backendBlockingService.joinSession(sessionId, userName);
             LOG.info("Received join session from backend: {}", session);
         } catch (BackendServiceException e) {
             LOG.error(e);

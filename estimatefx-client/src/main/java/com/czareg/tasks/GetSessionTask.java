@@ -7,8 +7,8 @@ import com.czareg.dto.UserDTO;
 import com.czareg.dto.UserTypeDTO;
 import com.czareg.model.Vote;
 import com.czareg.notifications.EstimateFxNotification;
-import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceException;
+import com.czareg.service.blocking.BackendBlockingService;
+import com.czareg.service.shared.BackendServiceException;
 import com.czareg.tasks.exception.TaskException;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -28,7 +28,7 @@ import static com.czareg.dto.UserTypeDTO.CREATOR;
 public class GetSessionTask extends Task<Void> {
     private static final Logger LOG = LogManager.getLogger(GetSessionTask.class);
     private Context context;
-    private BackendService backendService;
+    private BackendBlockingService backendBlockingService;
     private SessionDTO sessionDTO;
 
     private Button startButton;
@@ -41,9 +41,9 @@ public class GetSessionTask extends Task<Void> {
     private TableView<Vote> voteTableView;
     private List<Vote> votes;
 
-    public GetSessionTask(Context context, BackendService backendService, VoteContext voteContext) {
+    public GetSessionTask(Context context, BackendBlockingService backendBlockingService, VoteContext voteContext) {
         this.context = context;
-        this.backendService = backendService;
+        this.backendBlockingService = backendBlockingService;
         this.startButton = voteContext.getStartButton();
         this.stopButton = voteContext.getStopButton();
         this.buttonsHBox = voteContext.getButtonsHBox();
@@ -58,7 +58,7 @@ public class GetSessionTask extends Task<Void> {
     protected Void call() {
         try {
             int sessionId = context.getSessionId();
-            sessionDTO = backendService.getSession(sessionId);
+            sessionDTO = backendBlockingService.getSession(sessionId);
             String userName = context.getUserName();
             if (userName == null) {
                 LOG.info("Username stored in context is null");

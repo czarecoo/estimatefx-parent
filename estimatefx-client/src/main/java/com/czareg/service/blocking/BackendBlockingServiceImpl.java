@@ -1,23 +1,25 @@
-package com.czareg.service;
+package com.czareg.service.blocking;
 
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.SessionIdentifierDTO;
+import com.czareg.service.shared.BackendServiceException;
+import com.czareg.service.shared.BackendServiceExceptionBuilder;
 import retrofit2.Response;
 
 import java.io.IOException;
 import java.util.List;
 
-public class BackendServiceImpl implements BackendService {
-    private final BackendApi backendApi;
+public class BackendBlockingServiceImpl implements BackendBlockingService {
+    private final BackendBlockingApi backendBlockingApi;
 
-    public BackendServiceImpl(BackendApi backendApi) {
-        this.backendApi = backendApi;
+    public BackendBlockingServiceImpl(BackendBlockingApi backendBlockingApi) {
+        this.backendBlockingApi = backendBlockingApi;
     }
 
     @Override
     public SessionDTO createSession(String userName) throws BackendServiceException {
         try {
-            Response<SessionDTO> sessionDTOResponse = backendApi.createSession(userName).execute();
+            Response<SessionDTO> sessionDTOResponse = backendBlockingApi.createSession(userName).execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return sessionDTOResponse.body();
             }
@@ -39,7 +41,7 @@ public class BackendServiceImpl implements BackendService {
     @Override
     public SessionDTO joinSession(int sessionId, String userName) throws BackendServiceException {
         try {
-            Response<SessionDTO> sessionDTOResponse = backendApi.joinSession(sessionId, userName).execute();
+            Response<SessionDTO> sessionDTOResponse = backendBlockingApi.joinSession(sessionId, userName).execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return sessionDTOResponse.body();
             }
@@ -63,7 +65,7 @@ public class BackendServiceImpl implements BackendService {
     @Override
     public SessionDTO getSession(int sessionId) throws BackendServiceException {
         try {
-            Response<SessionDTO> sessionDTOResponse = backendApi.getSessionById(sessionId).execute();
+            Response<SessionDTO> sessionDTOResponse = backendBlockingApi.getSessionById(sessionId).execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return sessionDTOResponse.body();
             }
@@ -85,7 +87,7 @@ public class BackendServiceImpl implements BackendService {
     @Override
     public List<SessionDTO> getSessions() throws BackendServiceException {
         try {
-            Response<List<SessionDTO>> sessionDTOResponse = backendApi.getSessions().execute();
+            Response<List<SessionDTO>> sessionDTOResponse = backendBlockingApi.getSessions().execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return sessionDTOResponse.body();
             }
@@ -105,7 +107,7 @@ public class BackendServiceImpl implements BackendService {
     @Override
     public List<SessionIdentifierDTO> getSessionIdentifiers() throws BackendServiceException {
         try {
-            Response<List<SessionIdentifierDTO>> sessionDTOResponse = backendApi.getSessionIdentifiers().execute();
+            Response<List<SessionIdentifierDTO>> sessionDTOResponse = backendBlockingApi.getSessionIdentifiers().execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return sessionDTOResponse.body();
             }
@@ -125,7 +127,7 @@ public class BackendServiceImpl implements BackendService {
     @Override
     public void startVotingOnSession(int sessionId, String userName) throws BackendServiceException {
         try {
-            Response<Void> sessionDTOResponse = backendApi.startVotingOnSession(sessionId, userName).execute();
+            Response<Void> sessionDTOResponse = backendBlockingApi.startVotingOnSession(sessionId, userName).execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return;
             }
@@ -149,7 +151,7 @@ public class BackendServiceImpl implements BackendService {
     @Override
     public void stopVotingOnSession(int sessionId, String userName) throws BackendServiceException {
         try {
-            Response<Void> sessionDTOResponse = backendApi.stopVotingOnSession(sessionId, userName).execute();
+            Response<Void> sessionDTOResponse = backendBlockingApi.stopVotingOnSession(sessionId, userName).execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return;
             }
@@ -173,7 +175,7 @@ public class BackendServiceImpl implements BackendService {
     @Override
     public void leaveSession(int sessionId, String userName) throws BackendServiceException {
         try {
-            Response<Void> sessionDTOResponse = backendApi.leaveSession(sessionId, userName).execute();
+            Response<Void> sessionDTOResponse = backendBlockingApi.leaveSession(sessionId, userName).execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return;
             }
@@ -197,7 +199,7 @@ public class BackendServiceImpl implements BackendService {
     @Override
     public void voteOnSession(int sessionId, String userName, String voteValue) throws BackendServiceException {
         try {
-            Response<Void> sessionDTOResponse = backendApi.voteOnSession(sessionId, userName, voteValue).execute();
+            Response<Void> sessionDTOResponse = backendBlockingApi.voteOnSession(sessionId, userName, voteValue).execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return;
             }

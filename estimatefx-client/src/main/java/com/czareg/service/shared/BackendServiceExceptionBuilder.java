@@ -1,4 +1,4 @@
-package com.czareg.service;
+package com.czareg.service.shared;
 
 import okhttp3.ResponseBody;
 import org.apache.logging.log4j.LogManager;
@@ -7,19 +7,19 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
-class BackendServiceExceptionBuilder {
+public class BackendServiceExceptionBuilder {
     private static final Logger LOG = LogManager.getLogger(BackendServiceExceptionBuilder.class);
 
     private StringBuilder stringBuilder = new StringBuilder();
     private Throwable cause;
 
-    BackendServiceExceptionBuilder failedTo(String problemDescription) {
+    public BackendServiceExceptionBuilder failedTo(String problemDescription) {
         String message = String.format("Failed to %s", problemDescription);
         stringBuilder.append(message);
         return this;
     }
 
-    BackendServiceExceptionBuilder serverMessage(Response<?> response) {
+    public BackendServiceExceptionBuilder serverMessage(Response<?> response) {
         ResponseBody responseBody = response.errorBody();
         if (responseBody == null) {
             LOG.error("Response's error body is null");
@@ -36,30 +36,30 @@ class BackendServiceExceptionBuilder {
         return this;
     }
 
-    BackendServiceExceptionBuilder sessionId(int sessionId) {
+    public BackendServiceExceptionBuilder sessionId(int sessionId) {
         String message = String.format(", sessionId: %d", sessionId);
         stringBuilder.append(message);
         return this;
     }
 
-    BackendServiceExceptionBuilder userName(String userName) {
+    public BackendServiceExceptionBuilder userName(String userName) {
         String message = String.format(", userName: %s", userName);
         stringBuilder.append(message);
         return this;
     }
 
-    BackendServiceExceptionBuilder voteValue(String voteValue) {
+    public BackendServiceExceptionBuilder voteValue(String voteValue) {
         String message = String.format(", voteValue: %s", voteValue);
         stringBuilder.append(message);
         return this;
     }
 
-    BackendServiceExceptionBuilder cause(Throwable cause) {
+    public BackendServiceExceptionBuilder cause(Throwable cause) {
         this.cause = cause;
         return this;
     }
 
-    BackendServiceException build() {
+    public BackendServiceException build() {
         stringBuilder.append(".");
         String message = stringBuilder.toString();
         if (cause == null) {

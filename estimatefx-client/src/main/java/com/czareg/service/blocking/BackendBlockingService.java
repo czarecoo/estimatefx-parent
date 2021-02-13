@@ -1,11 +1,12 @@
-package com.czareg.service;
+package com.czareg.service.blocking;
 
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.SessionIdentifierDTO;
+import com.czareg.service.shared.BackendServiceException;
 
 import java.util.List;
 
-public interface BackendService {
+public interface BackendBlockingService {
     SessionDTO createSession(String userName) throws BackendServiceException;
 
     SessionDTO joinSession(int sessionId, String userName) throws BackendServiceException;

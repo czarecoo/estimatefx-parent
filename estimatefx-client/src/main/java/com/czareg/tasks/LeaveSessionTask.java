@@ -3,8 +3,8 @@ package com.czareg.tasks;
 import com.czareg.context.Context;
 import com.czareg.dto.SessionDTO;
 import com.czareg.notifications.EstimateFxNotification;
-import com.czareg.service.BackendService;
-import com.czareg.service.BackendServiceException;
+import com.czareg.service.blocking.BackendBlockingService;
+import com.czareg.service.shared.BackendServiceException;
 import javafx.concurrent.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,11 +12,11 @@ import org.apache.logging.log4j.Logger;
 public class LeaveSessionTask extends Task<Void> {
     private static final Logger LOG = LogManager.getLogger(LeaveSessionTask.class);
     private Context context;
-    private BackendService backendService;
+    private BackendBlockingService backendBlockingService;
 
-    public LeaveSessionTask(Context context, BackendService backendService) {
+    public LeaveSessionTask(Context context, BackendBlockingService backendBlockingService) {
         this.context = context;
-        this.backendService = backendService;
+        this.backendBlockingService = backendBlockingService;
     }
 
     @Override
@@ -32,13 +32,13 @@ public class LeaveSessionTask extends Task<Void> {
                 LOG.info("Stopping without leaving session because sessionId is null");
                 return null;
             }
-            SessionDTO sessionDTO = backendService.getSession(sessionId);
+            SessionDTO sessionDTO = backendBlockingService.getSession(sessionId);
             boolean hasUser = hasUser(userName, sessionDTO);
             if (!hasUser) {
                 LOG.info("Stopping without leaving session because userName is not in session's user list");
                 return null;
             }
-            backendService.leaveSession(sessionId, userName);
+            backendBlockingService.leaveSession(sessionId, userName);
             LOG.info("Left session");
         } catch (BackendServiceException e) {
             LOG.error(e);
