@@ -1,4 +1,4 @@
-package com.czareg.tasks;
+package com.czareg.service.notblocking.session;
 
 import com.czareg.context.Context;
 import com.czareg.context.VoteContext;
@@ -7,28 +7,33 @@ import com.czareg.dto.UserDTO;
 import com.czareg.dto.UserTypeDTO;
 import com.czareg.model.Vote;
 import com.czareg.notifications.EstimateFxNotification;
-import com.czareg.service.blocking.BackendBlockingService;
-import com.czareg.service.shared.BackendServiceException;
-import com.czareg.tasks.exception.TaskException;
+import com.google.gson.Gson;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
+import okhttp3.Response;
+import okhttp3.sse.EventSource;
+import okhttp3.sse.EventSourceListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.czareg.dto.UserTypeDTO.CREATOR;
 
-public class GetSessionTask extends Task<Void> {
-    private static final Logger LOG = LogManager.getLogger(GetSessionTask.class);
+public class SessionListener extends EventSourceListener {
+    private static final Logger LOG = LogManager.getLogger(SessionListener.class);
+
+    private Gson gson;
     private Context context;
-    private BackendBlockingService backendBlockingService;
     private SessionDTO sessionDTO;
 
     private Button startButton;
@@ -41,9 +46,10 @@ public class GetSessionTask extends Task<Void> {
     private TableView<Vote> voteTableView;
     private List<Vote> votes;
 
-    public GetSessionTask(Context context, BackendBlockingService backendBlockingService, VoteContext voteContext) {
+    public SessionListener(Context context) {
+        gson = new Gson();
         this.context = context;
-        this.backendBlockingService = backendBlockingService;
+        VoteContext voteContext = context.getVoteContext();
         this.startButton = voteContext.getStartButton();
         this.stopButton = voteContext.getStopButton();
         this.buttonsHBox = voteContext.getButtonsHBox();
@@ -55,24 +61,49 @@ public class GetSessionTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() {
-        try {
-            int sessionId = context.getSessionId();
-            sessionDTO = backendBlockingService.getSession(sessionId);
-            String userName = context.getUserName();
-            if (userName == null) {
-                LOG.info("Username stored in context is null");
-                return null;
-            }
-            boolean hasUser = hasUser(userName, sessionDTO);
-            if (!hasUser) {
-                throw new TaskException("User is no longer in session");
-            }
-            LOG.info("Received sessionId: {} info, from backend", sessionId);
-        } catch (BackendServiceException | TaskException e) {
-            LOG.error(e);
+    public void onClosed(@NotNull EventSource eventSource) {
+        super.onClosed(eventSource);
+        LOG.info("Closed");
+    }
+
+    @Override
+    public void onOpen(@NotNull EventSource eventSource, @NotNull Response response) {
+        super.onOpen(eventSource, response);
+        LOG.info("Open");
+    }
+
+    @Override
+    public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
+        super.onFailure(eventSource, t, response);
+        if (exceptionCausedByCancelingEventSource(t)) {
+            LOG.info("Cancelled");
+        } else {
+            LOG.error("Failed to get current session information from backend.", t);
+            EstimateFxNotification.showErrorNotificationFromCustomThread("Failed to get current session information from backend.");
         }
-        return null;
+    }
+
+    private boolean exceptionCausedByCancelingEventSource(@Nullable Throwable t) {
+        return t instanceof SocketException && "Socket closed".equals(t.getMessage());
+    }
+
+    @Override
+    public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
+        super.onEvent(eventSource, id, type, data);
+        LOG.info("Event");
+        String userName = context.getUserName();
+        if (userName == null) {
+            LOG.error("Username stored in context is null");
+            return;
+        }
+        sessionDTO = gson.fromJson(data, SessionDTO.class);
+        boolean hasUser = hasUser(userName, sessionDTO);
+        if (!hasUser) {
+            LOG.error("User is no longer in session");
+            return;
+        }
+
+        Platform.runLater(() -> updateStuff());
     }
 
     private boolean hasUser(String userName, SessionDTO sessionDTO) {
@@ -80,13 +111,7 @@ public class GetSessionTask extends Task<Void> {
                 .anyMatch((userDTO -> userDTO.getUserName().equals(userName)));
     }
 
-    @Override
-    protected void failed() {
-        EstimateFxNotification.showErrorNotificationFromUiThread("Failed to get current session information from backend.");
-    }
-
-    @Override
-    protected void succeeded() {
+    private void updateStuff() {
         String userName = context.getUserName();
 
         updateUserStatusLabel();

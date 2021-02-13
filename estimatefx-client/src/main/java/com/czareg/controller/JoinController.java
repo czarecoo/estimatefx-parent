@@ -4,13 +4,13 @@ import com.czareg.context.Context;
 import com.czareg.controller.bindings.SessionChoiceBoxBooleanBinding;
 import com.czareg.controller.bindings.UserNameTextFieldBooleanBinding;
 import com.czareg.model.SessionIdentifier;
-import com.czareg.service.notblocking.BackendNotBlockingService;
+import com.czareg.service.notblocking.sessionidentifiers.SessionIdentifierPollingService;
+import com.czareg.service.notblocking.sessionidentifiers.SessionIdentifiersListener;
 import com.czareg.stage.ContextAware;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import okhttp3.internal.sse.RealEventSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +29,7 @@ public class JoinController implements ContextAware {
     private Button joinSessionButton;
     private SessionChoiceBoxBooleanBinding sessionChoiceBoxBooleanBinding;
 
-    private RealEventSource realEventSource;
+    private SessionIdentifierPollingService sessionIdentifierPollingService;
 
     @Override
     public void initialize(Context context) {
@@ -40,13 +40,13 @@ public class JoinController implements ContextAware {
         sessionChoiceBoxBooleanBinding = new SessionChoiceBoxBooleanBinding(existingSessionsChoiceBox);
         joinSessionButton.disableProperty().bind(userNameTextFieldBooleanBinding.or(sessionChoiceBoxBooleanBinding));
 
-        BackendNotBlockingService backendNotBlockingService = new BackendNotBlockingService();
-        realEventSource = backendNotBlockingService.pollSessionIdentifiers(existingSessionsChoiceBox);
+        SessionIdentifiersListener sessionIdentifiersListener = new SessionIdentifiersListener(existingSessionsChoiceBox);
+        sessionIdentifierPollingService = new SessionIdentifierPollingService(sessionIdentifiersListener);
     }
 
     @FXML
     private void handleCreateSessionButtonClicked() {
-        realEventSource.cancel();
+        sessionIdentifierPollingService.close();
         context.getSceneManager().setScene(CREATE);
         LOG.info("Switched to create session scene");
     }
@@ -63,7 +63,7 @@ public class JoinController implements ContextAware {
         context.setUserName(userName);
         context.setSessionId(selectedItem.getSessionId());
 
-        new Thread(context.getTaskFactory().createJoinSessionTask(realEventSource)).start();
+        new Thread(context.getTaskFactory().createJoinSessionTask(sessionIdentifierPollingService)).start();
         LOG.info("Joined session");
     }
 }

@@ -33,7 +33,7 @@ public final class EstimateFxNotification {
                 .title("EstimateFx Error")
                 .text(errorMessage)
                 .position(BOTTOM_CENTER)
-                .threshold(3, Notifications.create().title("Stop clicking so many times!"))
+                .threshold(3, Notifications.create().title("Too many errors in short time."))
                 .showError();
     }
 }

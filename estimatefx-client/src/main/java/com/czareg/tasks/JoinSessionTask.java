@@ -4,9 +4,9 @@ import com.czareg.context.Context;
 import com.czareg.dto.SessionDTO;
 import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.service.blocking.BackendBlockingService;
+import com.czareg.service.notblocking.sessionidentifiers.SessionIdentifierPollingService;
 import com.czareg.service.shared.BackendServiceException;
 import javafx.concurrent.Task;
-import okhttp3.internal.sse.RealEventSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +17,13 @@ public class JoinSessionTask extends Task<Void> {
     private SessionDTO session;
     private Context context;
     private BackendBlockingService backendBlockingService;
-    private RealEventSource realEventSource;
+    private SessionIdentifierPollingService sessionIdentifierPollingService;
 
-    public JoinSessionTask(Context context, BackendBlockingService backendBlockingService, RealEventSource realEventSource) {
+    public JoinSessionTask(Context context, BackendBlockingService backendBlockingService,
+                           SessionIdentifierPollingService sessionIdentifierPollingService) {
         this.context = context;
         this.backendBlockingService = backendBlockingService;
-        this.realEventSource = realEventSource;
+        this.sessionIdentifierPollingService = sessionIdentifierPollingService;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class JoinSessionTask extends Task<Void> {
 
     @Override
     protected void succeeded() {
-        realEventSource.cancel();
+        sessionIdentifierPollingService.close();
         context.getSceneManager().setScene(VOTE);
     }
 

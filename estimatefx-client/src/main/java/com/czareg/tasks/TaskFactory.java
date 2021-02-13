@@ -2,8 +2,7 @@ package com.czareg.tasks;
 
 import com.czareg.context.Context;
 import com.czareg.service.blocking.BackendBlockingService;
-import javafx.concurrent.Task;
-import okhttp3.internal.sse.RealEventSource;
+import com.czareg.service.notblocking.sessionidentifiers.SessionIdentifierPollingService;
 
 public class TaskFactory {
     private BackendBlockingService backendBlockingService;
@@ -18,8 +17,8 @@ public class TaskFactory {
         return new CreateSessionTask(context, backendBlockingService);
     }
 
-    public Runnable createJoinSessionTask(RealEventSource realEventSource) {
-        return new JoinSessionTask(context, backendBlockingService, realEventSource);
+    public Runnable createJoinSessionTask(SessionIdentifierPollingService sessionIdentifierPollingService) {
+        return new JoinSessionTask(context, backendBlockingService, sessionIdentifierPollingService);
     }
 
     public Runnable createLeaveSessionTask() {
@@ -32,10 +31,6 @@ public class TaskFactory {
 
     public Runnable createStopVotingOnSessionTask() {
         return new StopVotingOnSessionTask(context, backendBlockingService);
-    }
-
-    public Task<Void> createGetSessionTask() {
-        return new GetSessionTask(context, backendBlockingService, context.getVoteContext());
     }
 
     public Runnable createVoteOnSessionTask(String voteValue) {

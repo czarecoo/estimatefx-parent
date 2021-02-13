@@ -37,10 +37,4 @@ public class VoteOnSessionTask extends Task<Void> {
     protected void failed() {
         EstimateFxNotification.showErrorNotificationFromUiThread("Failed to vote on current session.");
     }
-
-    @Override
-    protected void succeeded() {
-        Task<Void> getSessionTask = context.getTaskFactory().createGetSessionTask();
-        new Thread(getSessionTask).start();
-    }
 }

@@ -4,7 +4,8 @@ import com.czareg.context.Context;
 import com.czareg.context.VoteContext;
 import com.czareg.model.Vote;
 import com.czareg.model.VoteValue;
-import com.czareg.scheduled.GetSessionScheduledService;
+import com.czareg.service.notblocking.session.SessionListener;
+import com.czareg.service.notblocking.session.SessionPollingService;
 import com.czareg.stage.ContextAware;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,7 +24,7 @@ public class VoteController implements ContextAware {
     private static final Logger LOG = LogManager.getLogger(VoteController.class);
     private Context context;
     private VoteContext voteContext;
-    private GetSessionScheduledService getSessionScheduledService;
+    private SessionPollingService sessionPollingService;
 
     @FXML
     private Label userStatusLabel;
@@ -62,13 +63,13 @@ public class VoteController implements ContextAware {
         voteContext = new VoteContext(startButton, stopButton, buttonsHBox, userStatusLabel, sessionStatusLabel,
                 usersStatusLabel, votingStatusLabel, voteTableView);
         context.setVoteContext(voteContext);
-        getSessionScheduledService = new GetSessionScheduledService(context);
-        getSessionScheduledService.start();
+        SessionListener sessionListener = new SessionListener(context);
+        sessionPollingService = new SessionPollingService(context, sessionListener);
     }
 
     @FXML
     private void handleLeaveButtonClicked() {
-        getSessionScheduledService.cancel();
+        sessionPollingService.close();
         new Thread(context.getTaskFactory().createLeaveSessionTask()).start();
         context.getSceneManager().setScene(JOIN);
         LOG.info("Left session");
