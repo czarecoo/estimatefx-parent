@@ -1,17 +1,19 @@
 package com.czareg.service.blocking.utils;
 
+import com.czareg.context.PropertiesManager;
 import okhttp3.OkHttpClient;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.util.Objects;
-
 public class RetrofitClientFactory {
-    public Retrofit create(OkHttpClient httpClient, PropertiesConfiguration propertiesConfiguration) {
-        String baseUrl = propertiesConfiguration.getString("backend.url");
-        Objects.requireNonNull(baseUrl, "Base url is not defined in " + propertiesConfiguration.getFileName());
+    private PropertiesManager propertiesManager;
 
+    public RetrofitClientFactory(PropertiesManager propertiesManager) {
+        this.propertiesManager = propertiesManager;
+    }
+
+    public Retrofit create(OkHttpClient httpClient) {
+        String baseUrl = propertiesManager.getBaseUrl();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())

@@ -7,8 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.net.SocketException;
+import static com.czareg.service.shared.NetworkUtils.exceptionCausedByCancelingEventSource;
+import static com.czareg.service.shared.NetworkUtils.exceptionCausedBySocketClosing;
 
 public abstract class Listener extends EventSourceListener {
     private Logger logger;
@@ -60,13 +60,5 @@ public abstract class Listener extends EventSourceListener {
         super.onOpen(eventSource, response);
         logger.info("Open");
         onOpen();
-    }
-
-    private boolean exceptionCausedBySocketClosing(@Nullable Throwable t) {
-        return t instanceof SocketException && "Socket closed".equals(t.getMessage());
-    }
-
-    private boolean exceptionCausedByCancelingEventSource(@Nullable Throwable t) {
-        return t instanceof IOException && "Canceled".equals(t.getMessage());
     }
 }

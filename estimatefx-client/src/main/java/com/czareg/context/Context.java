@@ -7,21 +7,21 @@ import com.czareg.service.notblocking.polling.PollingService;
 import com.czareg.tasks.TaskFactory;
 import javafx.stage.Stage;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 
 public class Context {
     private String userName;
     private Integer sessionId;
     private Stage stage;
     private SceneManager sceneManager;
-    private TaskFactory taskFactory;
+    private final TaskFactory taskFactory;
     private VoteContext voteContext;
-    private PollingServicesManager pollingServicesManager;
+    private final PollingServicesManager pollingServicesManager;
+    private final PropertiesManager propertiesManager;
 
     public Context() throws ConfigurationException {
-        PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration("application.properties");
-        propertiesConfiguration.setThrowExceptionOnMissing(true);
-        BackendBlockingService backendBlockingService = new BackendBlockingServiceFactory().create(propertiesConfiguration);
+        propertiesManager = new PropertiesManager();
+        BackendBlockingServiceFactory backendBlockingServiceFactory = new BackendBlockingServiceFactory(propertiesManager);
+        BackendBlockingService backendBlockingService = backendBlockingServiceFactory.create();
         taskFactory = new TaskFactory(backendBlockingService, this);
         pollingServicesManager = new PollingServicesManager();
     }
@@ -80,5 +80,9 @@ public class Context {
 
     public VoteContext getVoteContext() {
         return voteContext;
+    }
+
+    public PropertiesManager getPropertiesManager() {
+        return propertiesManager;
     }
 }

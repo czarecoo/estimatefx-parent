@@ -1,18 +1,23 @@
 package com.czareg.service.blocking;
 
+import com.czareg.context.PropertiesManager;
 import com.czareg.service.blocking.utils.RetrofitClientFactory;
 import com.czareg.service.shared.OkHttpClientFactory;
 import okhttp3.OkHttpClient;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import retrofit2.Retrofit;
 
 public class BackendBlockingServiceFactory {
-    private OkHttpClientFactory okHttpClientFactory = new OkHttpClientFactory();
-    private RetrofitClientFactory retrofitClientFactory = new RetrofitClientFactory();
+    private final OkHttpClientFactory okHttpClientFactory;
+    private final RetrofitClientFactory retrofitClientFactory;
 
-    public BackendBlockingService create(PropertiesConfiguration propertiesConfiguration) {
-        OkHttpClient okHttpClient = okHttpClientFactory.create(propertiesConfiguration);
-        Retrofit retrofit = retrofitClientFactory.create(okHttpClient, propertiesConfiguration);
+    public BackendBlockingServiceFactory(PropertiesManager propertiesManager) {
+        okHttpClientFactory = new OkHttpClientFactory(propertiesManager);
+        retrofitClientFactory = new RetrofitClientFactory(propertiesManager);
+    }
+
+    public BackendBlockingService create() {
+        OkHttpClient okHttpClient = okHttpClientFactory.createClientForBlockingService();
+        Retrofit retrofit = retrofitClientFactory.create(okHttpClient);
         BackendBlockingApi backendBlockingApi = retrofit.create(BackendBlockingApi.class);
         return new BackendBlockingServiceImpl(backendBlockingApi);
     }

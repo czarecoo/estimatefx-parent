@@ -6,7 +6,6 @@ import com.czareg.dto.SessionDTO;
 import com.czareg.dto.UserDTO;
 import com.czareg.dto.UserTypeDTO;
 import com.czareg.model.Vote;
-import com.czareg.notifications.EstimateFxNotification;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.czareg.dto.UserTypeDTO.CREATOR;
+import static com.czareg.notifications.EstimateFxNotification.showErrorNotificationFromCustomThread;
 
 public class SessionListener extends Listener {
     private static final Logger LOG = LogManager.getLogger(SessionListener.class);
@@ -66,6 +66,7 @@ public class SessionListener extends Listener {
         boolean hasUser = hasUser(userName, sessionDTO);
         if (!hasUser) {
             LOG.error("User is no longer in session");
+            showErrorNotificationFromCustomThread("User is no longer in session\n\n Try leaving and rejoining session.");
             return;
         }
 
@@ -75,7 +76,7 @@ public class SessionListener extends Listener {
     @Override
     protected void onFailure(Throwable t) {
         LOG.error("Failed to get current session information from backend.", t);
-        EstimateFxNotification.showErrorNotificationFromCustomThread("Failed to get current session information from backend.\n\nThere is a high probability that session polling mechanism is broken now. \nIn that case leave the session and try to rejoin.");
+        showErrorNotificationFromCustomThread("Failed to get current session information from backend.\n\nThere is a high probability that session polling mechanism is broken now. \nIn that case leave the session and try to rejoin.");
 
     }
 
@@ -146,7 +147,7 @@ public class SessionListener extends Listener {
                 buttonsHBox.setDisable(false);
                 votingStatusLabel.setText("Voting in progress.");
                 voteTableView.getColumns().forEach((column) -> column.setSortable(false));
-                updateVoteTableInVotingState();
+                updateVoteTableForceOrder();
                 break;
             case WAITING:
                 startButton.setDisable(!isCreator);
@@ -156,13 +157,14 @@ public class SessionListener extends Listener {
                 String waitingStatus = String.format("Voting stopped. Vote average: %.2f", average);
                 votingStatusLabel.setText(waitingStatus);
                 voteTableView.getColumns().forEach((column) -> column.setSortable(true));
-                updateVoteTableInWaitingState();
+                updateVoteTableDoNotForceOrder();
                 break;
             case CLOSED:
                 startButton.setDisable(true);
                 stopButton.setDisable(true);
                 buttonsHBox.setDisable(true);
                 votingStatusLabel.setText("Session is closed");
+                updateVoteTableDoNotForceOrder();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown state");
@@ -177,7 +179,7 @@ public class SessionListener extends Listener {
                 .orElse(0);
     }
 
-    private void updateVoteTableInVotingState() {
+    private void updateVoteTableForceOrder() {
         votes = createVoteList();
 
         if (!votes.equals(voteTableView.getItems())) {
@@ -187,7 +189,7 @@ public class SessionListener extends Listener {
         }
     }
 
-    private void updateVoteTableInWaitingState() {
+    private void updateVoteTableDoNotForceOrder() {
         votes = createVoteList();
 
         if (listsDoNotContainThemselves()) {

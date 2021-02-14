@@ -1,6 +1,8 @@
 package com.czareg.service.notblocking.polling;
 
 import com.czareg.context.Context;
+import com.czareg.context.PropertiesManager;
+import com.czareg.service.shared.OkHttpClientFactory;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.internal.sse.RealEventSource;
@@ -19,7 +21,9 @@ public class SessionIdentifierPollingService extends PollingService {
                 .url("http://localhost/pollSessionIdentifiers")
                 .build();
         realEventSource = new RealEventSource(request, eventSourceListener);
-        client = createClient();
+        PropertiesManager propertiesManager = context.getPropertiesManager();
+        OkHttpClientFactory okHttpClientFactory = new OkHttpClientFactory(propertiesManager);
+        client = okHttpClientFactory.createClientForNotBlockingService();
         realEventSource.connect(client);
     }
 

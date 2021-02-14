@@ -1,20 +1,37 @@
 package com.czareg.service.shared;
 
+import com.czareg.context.PropertiesManager;
+import com.czareg.service.notblocking.polling.RetryInterceptor;
 import okhttp3.OkHttpClient;
-import org.apache.commons.configuration.PropertiesConfiguration;
 
 import java.net.Proxy;
+import java.time.Duration;
 
 public class OkHttpClientFactory {
-    public OkHttpClient create(PropertiesConfiguration propertiesConfiguration) {
-        boolean useProxy = propertiesConfiguration.getBoolean("proxy.enabled", false);
-        if (useProxy) {
-            Proxy proxy = new ProxyFactory().create(propertiesConfiguration);
+    private PropertiesManager propertiesManager;
+    private ProxyFactory proxyFactory;
+
+    public OkHttpClientFactory(PropertiesManager propertiesManager) {
+        proxyFactory = new ProxyFactory(propertiesManager);
+        this.propertiesManager = propertiesManager;
+    }
+
+    public OkHttpClient createClientForBlockingService() {
+        if (propertiesManager.shouldUseProxy()) {
+            Proxy proxy = proxyFactory.create();
             return new OkHttpClient.Builder()
                     .proxy(proxy)
                     .build();
         } else {
             return new OkHttpClient();
         }
+    }
+
+    public OkHttpClient createClientForNotBlockingService() {
+        return new OkHttpClient.Builder()
+                .readTimeout(Duration.ZERO)
+                .retryOnConnectionFailure(true)
+                .addInterceptor(new RetryInterceptor())
+                .build();
     }
 }
