@@ -1,6 +1,6 @@
 package com.czareg.service.notblocking.polling;
 
-import com.czareg.notifications.EstimateFxNotification;
+import com.czareg.notifications.NotificationMessageBuilder;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -10,12 +10,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+import static com.czareg.notifications.EstimateFxNotification.showErrorNotificationFromCustomThread;
 import static com.czareg.service.shared.NetworkUtils.exceptionCausedByCancelingEventSource;
 import static com.czareg.service.shared.NetworkUtils.exceptionCausedBySocketClosing;
 
 public class RetryInterceptor implements Interceptor {
     private static final Logger LOG = LogManager.getLogger(RetryInterceptor.class);
-    public static final long SLEEP_BEFORE_RETRY_IN_MILLIS = 10 * 1000L;
+    public static final long SLEEP_BEFORE_RETRY_IN_MILLIS = 13 * 1000L;
 
     @NotNull
     @Override
@@ -31,9 +32,12 @@ public class RetryInterceptor implements Interceptor {
                     LOG.info("Cancelled, stopping retries");
                     throw e;
                 }
-                String message = String.format("Processing request failed. Try %d. Retrying. \nMessage: %s", tryCount++, e.getMessage());
+                String message = String.format("Processing request failed. Try %d. Retrying.", tryCount++);
                 LOG.warn(message, e);
-                EstimateFxNotification.showErrorNotificationFromCustomThread(message);
+                NotificationMessageBuilder notificationMessageBuilder = new NotificationMessageBuilder();
+                notificationMessageBuilder.developerMessage(message);
+                notificationMessageBuilder.exceptionMessage(e);
+                showErrorNotificationFromCustomThread(notificationMessageBuilder.build());
                 sleep();
             }
         } while (response == null || !response.isSuccessful());

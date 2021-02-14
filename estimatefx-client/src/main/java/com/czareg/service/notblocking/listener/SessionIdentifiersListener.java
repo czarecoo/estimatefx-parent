@@ -1,7 +1,7 @@
 package com.czareg.service.notblocking.listener;
 
 import com.czareg.model.SessionIdentifier;
-import com.czareg.notifications.EstimateFxNotification;
+import com.czareg.notifications.NotificationMessageBuilder;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.czareg.notifications.EstimateFxNotification.showErrorNotificationFromCustomThread;
 
 public class SessionIdentifiersListener extends Listener {
     private static final Logger LOG = LogManager.getLogger(SessionIdentifiersListener.class);
@@ -36,9 +38,14 @@ public class SessionIdentifiersListener extends Listener {
     }
 
     @Override
-    protected void onFailure(Throwable t) {
-        LOG.error("Failed to fill existing sessions choice box", t);
-        EstimateFxNotification.showErrorNotificationFromCustomThread("Failed to get existing session list from backend. \n\nThere is a high probability that session list polling mechanism is broken now. \nIn that case switch view to create and back to join.");
+    protected void onFailure(Throwable throwable) {
+        String developerMessage = "Failed to fill existing sessions choice box.";
+        LOG.error(developerMessage, throwable);
+        NotificationMessageBuilder notificationMessageBuilder = new NotificationMessageBuilder();
+        notificationMessageBuilder.developerMessage(developerMessage);
+        notificationMessageBuilder.exceptionMessage(throwable);
+        notificationMessageBuilder.remediation("There is a high probability that session list polling mechanism is broken now.\nIn that case switch view to create and back to join");
+        showErrorNotificationFromCustomThread(notificationMessageBuilder.build());
     }
 
     private void updateChoiceBox(List<SessionIdentifier> sessionIdentifiers) {

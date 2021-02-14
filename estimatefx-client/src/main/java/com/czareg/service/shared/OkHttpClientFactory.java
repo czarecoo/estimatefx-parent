@@ -27,11 +27,21 @@ public class OkHttpClientFactory {
         }
     }
 
-    public OkHttpClient createClientForNotBlockingService() {
-        return new OkHttpClient.Builder()
-                .readTimeout(Duration.ZERO)
-                .retryOnConnectionFailure(true)
-                .addInterceptor(new RetryInterceptor())
-                .build();
+    public OkHttpClient createClientForPollingService() {
+        if (propertiesManager.shouldUseProxy()) {
+            Proxy proxy = proxyFactory.create();
+            return new OkHttpClient.Builder()
+                    .proxy(proxy)
+                    .readTimeout(Duration.ZERO)
+                    .retryOnConnectionFailure(true)
+                    .addInterceptor(new RetryInterceptor())
+                    .build();
+        } else {
+            return new OkHttpClient.Builder()
+                    .readTimeout(Duration.ZERO)
+                    .retryOnConnectionFailure(true)
+                    .addInterceptor(new RetryInterceptor())
+                    .build();
+        }
     }
 }

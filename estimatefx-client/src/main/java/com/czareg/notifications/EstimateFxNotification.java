@@ -15,24 +15,23 @@ public final class EstimateFxNotification {
     private EstimateFxNotification() {
     }
 
-    public static void showErrorNotificationFromUiThread(String failure) {
-        doShowErrorNotification(failure);
+    public static void showErrorNotificationFromUiThread(String message) {
+        doShowErrorNotification(message);
     }
 
-    public static void showErrorNotificationFromCustomThread(String failure) {
-        runLater(() -> doShowErrorNotification(failure));
+    public static void showErrorNotificationFromCustomThread(String message) {
+        runLater(() -> doShowErrorNotification(message));
     }
 
-    private static void doShowErrorNotification(String failure) {
+    private static void doShowErrorNotification(String message) {
         if (Utils.getWindow(null) == null) {
             LOG.info("Skipping notification because window could not be found");
             return;
         }
-        String errorMessage = String.format("%s\n\nSee logs for more information.", failure);
 
         Notifications.create()
                 .title("EstimateFx Error")
-                .text(errorMessage)
+                .text(message)
                 .position(TOP_CENTER)
                 .hideAfter(Duration.seconds(15))
                 .threshold(3, Notifications.create().title("Too many errors in short time."))

@@ -17,13 +17,14 @@ public class SessionPollingService extends PollingService {
 
     public SessionPollingService(Context context, EventSourceListener eventSourceListener) {
         super(context);
+        String baseUrl = context.getPropertiesManager().getBaseUrl();
         Request request = new Request.Builder()
-                .url("http://localhost/pollSession/" + context.getSessionId())
+                .url(baseUrl + "/pollSession/" + context.getSessionId())
                 .build();
         realEventSource = new RealEventSource(request, eventSourceListener);
         PropertiesManager propertiesManager = context.getPropertiesManager();
         OkHttpClientFactory okHttpClientFactory = new OkHttpClientFactory(propertiesManager);
-        client = okHttpClientFactory.createClientForNotBlockingService();
+        client = okHttpClientFactory.createClientForPollingService();
         realEventSource.connect(client);
     }
 

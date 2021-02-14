@@ -6,6 +6,7 @@ import com.czareg.dto.SessionDTO;
 import com.czareg.dto.UserDTO;
 import com.czareg.dto.UserTypeDTO;
 import com.czareg.model.Vote;
+import com.czareg.notifications.NotificationMessageBuilder;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -65,8 +66,12 @@ public class SessionListener extends Listener {
         sessionDTO = gson.fromJson(jsonObject, SessionDTO.class);
         boolean hasUser = hasUser(userName, sessionDTO);
         if (!hasUser) {
-            LOG.error("User is no longer in session");
-            showErrorNotificationFromCustomThread("User is no longer in session\n\n Try leaving and rejoining session.");
+            String developerMessage = "User is no longer in session";
+            LOG.error(developerMessage);
+            NotificationMessageBuilder notificationMessageBuilder = new NotificationMessageBuilder();
+            notificationMessageBuilder.developerMessage(developerMessage);
+            notificationMessageBuilder.remediation("Try leaving and rejoining session.");
+            showErrorNotificationFromCustomThread(notificationMessageBuilder.build());
             return;
         }
 
@@ -74,10 +79,14 @@ public class SessionListener extends Listener {
     }
 
     @Override
-    protected void onFailure(Throwable t) {
-        LOG.error("Failed to get current session information from backend.", t);
-        showErrorNotificationFromCustomThread("Failed to get current session information from backend.\n\nThere is a high probability that session polling mechanism is broken now. \nIn that case leave the session and try to rejoin.");
-
+    protected void onFailure(Throwable throwable) {
+        String developerMessage = "Failed to get current session information from backend.";
+        LOG.error(developerMessage, throwable);
+        NotificationMessageBuilder notificationMessageBuilder = new NotificationMessageBuilder();
+        notificationMessageBuilder.developerMessage(developerMessage);
+        notificationMessageBuilder.exceptionMessage(throwable);
+        notificationMessageBuilder.remediation("There is a high probability that session polling mechanism is broken now. \nIn that case leave the session and try to rejoin.");
+        showErrorNotificationFromCustomThread(notificationMessageBuilder.build());
     }
 
     private boolean hasUser(String userName, SessionDTO sessionDTO) {
@@ -183,9 +192,7 @@ public class SessionListener extends Listener {
         votes = createVoteList();
 
         if (!votes.equals(voteTableView.getItems())) {
-            LOG.info("Vote table list changed. Updating");
-            voteTableView.getItems().clear();
-            voteTableView.getItems().addAll(votes);
+            clearAndRepopulateVoteTable();
         }
     }
 
@@ -193,9 +200,7 @@ public class SessionListener extends Listener {
         votes = createVoteList();
 
         if (listsDoNotContainThemselves()) {
-            LOG.info("Vote table list changed. Updating");
-            voteTableView.getItems().clear();
-            voteTableView.getItems().addAll(votes);
+            clearAndRepopulateVoteTable();
         }
     }
 
@@ -206,6 +211,12 @@ public class SessionListener extends Listener {
             votes.add(vote);
         }
         return votes;
+    }
+
+    private void clearAndRepopulateVoteTable() {
+        LOG.info("Vote table list changed. Updating");
+        voteTableView.getItems().clear();
+        voteTableView.getItems().addAll(votes);
     }
 
     private boolean listsDoNotContainThemselves() {
