@@ -2,8 +2,8 @@ package com.czareg.service.blocking;
 
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.SessionIdentifierDTO;
-import com.czareg.service.shared.BackendServiceException;
-import com.czareg.service.shared.BackendServiceExceptionBuilder;
+import com.czareg.service.blocking.utils.BackendServiceException;
+import com.czareg.service.blocking.utils.BackendServiceExceptionBuilder;
 import retrofit2.Response;
 
 import java.io.IOException;

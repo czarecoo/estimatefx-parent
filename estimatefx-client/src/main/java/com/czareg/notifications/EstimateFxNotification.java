@@ -1,12 +1,13 @@
 package com.czareg.notifications;
 
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.tools.Utils;
 
 import static javafx.application.Platform.runLater;
-import static javafx.geometry.Pos.BOTTOM_CENTER;
+import static javafx.geometry.Pos.TOP_CENTER;
 
 public final class EstimateFxNotification {
     private static final Logger LOG = LogManager.getLogger(EstimateFxNotification.class);
@@ -32,7 +33,8 @@ public final class EstimateFxNotification {
         Notifications.create()
                 .title("EstimateFx Error")
                 .text(errorMessage)
-                .position(BOTTOM_CENTER)
+                .position(TOP_CENTER)
+                .hideAfter(Duration.seconds(15))
                 .threshold(3, Notifications.create().title("Too many errors in short time."))
                 .showError();
     }

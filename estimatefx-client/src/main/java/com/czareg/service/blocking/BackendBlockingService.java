@@ -2,7 +2,7 @@ package com.czareg.service.blocking;
 
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.SessionIdentifierDTO;
-import com.czareg.service.shared.BackendServiceException;
+import com.czareg.service.blocking.utils.BackendServiceException;
 
 import java.util.List;
 

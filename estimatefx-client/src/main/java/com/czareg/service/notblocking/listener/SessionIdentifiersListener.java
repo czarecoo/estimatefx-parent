@@ -38,7 +38,7 @@ public class SessionIdentifiersListener extends Listener {
     @Override
     protected void onFailure(Throwable t) {
         LOG.error("Failed to fill existing sessions choice box", t);
-        EstimateFxNotification.showErrorNotificationFromCustomThread("Failed to get existing session list from backend.");
+        EstimateFxNotification.showErrorNotificationFromCustomThread("Failed to get existing session list from backend. \n\nThere is a high probability that session list polling mechanism is broken now. \nIn that case switch view to create and back to join.");
     }
 
     private void updateChoiceBox(List<SessionIdentifier> sessionIdentifiers) {

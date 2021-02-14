@@ -75,7 +75,8 @@ public class SessionListener extends Listener {
     @Override
     protected void onFailure(Throwable t) {
         LOG.error("Failed to get current session information from backend.", t);
-        EstimateFxNotification.showErrorNotificationFromCustomThread("Failed to get current session information from backend.");
+        EstimateFxNotification.showErrorNotificationFromCustomThread("Failed to get current session information from backend.\n\nThere is a high probability that session polling mechanism is broken now. \nIn that case leave the session and try to rejoin.");
+
     }
 
     private boolean hasUser(String userName, SessionDTO sessionDTO) {

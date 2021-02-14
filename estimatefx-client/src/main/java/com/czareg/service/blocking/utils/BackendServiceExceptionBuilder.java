@@ -1,4 +1,4 @@
-package com.czareg.service.shared;
+package com.czareg.service.blocking.utils;
 
 import okhttp3.ResponseBody;
 import org.apache.logging.log4j.LogManager;

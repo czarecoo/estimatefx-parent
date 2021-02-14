@@ -1,4 +1,4 @@
-package com.czareg.service.shared;
+package com.czareg.service.blocking.utils;
 
 public class BackendServiceException extends Exception {
     public BackendServiceException(String message) {

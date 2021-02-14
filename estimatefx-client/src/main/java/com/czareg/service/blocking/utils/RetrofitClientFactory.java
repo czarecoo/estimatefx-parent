@@ -1,4 +1,4 @@
-package com.czareg.service.shared;
+package com.czareg.service.blocking.utils;
 
 import okhttp3.OkHttpClient;
 import org.apache.commons.configuration.PropertiesConfiguration;

@@ -23,6 +23,7 @@ public abstract class PollingService {
     protected OkHttpClient createClient() {
         return new OkHttpClient.Builder()
                 .readTimeout(Duration.ZERO)
+                .retryOnConnectionFailure(true)
                 .build();
     }
 }

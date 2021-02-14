@@ -3,7 +3,7 @@ package com.czareg.tasks;
 import com.czareg.context.Context;
 import com.czareg.notifications.EstimateFxNotification;
 import com.czareg.service.blocking.BackendBlockingService;
-import com.czareg.service.shared.BackendServiceException;
+import com.czareg.service.blocking.utils.BackendServiceException;
 import javafx.concurrent.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
