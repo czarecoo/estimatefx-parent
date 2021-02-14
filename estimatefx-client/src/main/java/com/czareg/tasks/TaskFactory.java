@@ -2,7 +2,7 @@ package com.czareg.tasks;
 
 import com.czareg.context.Context;
 import com.czareg.service.blocking.BackendBlockingService;
-import com.czareg.service.notblocking.PollingService;
+import com.czareg.service.notblocking.polling.PollingService;
 
 public class TaskFactory {
     private BackendBlockingService backendBlockingService;

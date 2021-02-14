@@ -1,6 +1,6 @@
 package com.czareg.context;
 
-import com.czareg.service.notblocking.PollingService;
+import com.czareg.service.notblocking.polling.PollingService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

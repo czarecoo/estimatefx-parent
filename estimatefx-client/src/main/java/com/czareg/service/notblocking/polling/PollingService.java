@@ -1,4 +1,4 @@
-package com.czareg.service.notblocking;
+package com.czareg.service.notblocking.polling;
 
 import com.czareg.context.Context;
 import okhttp3.OkHttpClient;

@@ -1,7 +1,6 @@
-package com.czareg.service.notblocking.sessionidentifiers;
+package com.czareg.service.notblocking.polling;
 
 import com.czareg.context.Context;
-import com.czareg.service.notblocking.PollingService;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.internal.sse.RealEventSource;

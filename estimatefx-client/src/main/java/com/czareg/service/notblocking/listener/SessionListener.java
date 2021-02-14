@@ -1,4 +1,4 @@
-package com.czareg.service.notblocking.session;
+package com.czareg.service.notblocking.listener;
 
 import com.czareg.context.Context;
 import com.czareg.context.VoteContext;
@@ -14,22 +14,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
-import okhttp3.Response;
-import okhttp3.sse.EventSource;
-import okhttp3.sse.EventSourceListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.czareg.dto.UserTypeDTO.CREATOR;
 
-public class SessionListener extends EventSourceListener {
+public class SessionListener extends Listener {
     private static final Logger LOG = LogManager.getLogger(SessionListener.class);
 
     private Gson gson;
@@ -47,6 +41,7 @@ public class SessionListener extends EventSourceListener {
     private List<Vote> votes;
 
     public SessionListener(Context context) {
+        super(LOG);
         gson = new Gson();
         this.context = context;
         VoteContext voteContext = context.getVoteContext();
@@ -61,49 +56,26 @@ public class SessionListener extends EventSourceListener {
     }
 
     @Override
-    public void onClosed(@NotNull EventSource eventSource) {
-        super.onClosed(eventSource);
-        LOG.info("Closed");
-    }
-
-    @Override
-    public void onOpen(@NotNull EventSource eventSource, @NotNull Response response) {
-        super.onOpen(eventSource, response);
-        LOG.info("Open");
-    }
-
-    @Override
-    public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
-        super.onFailure(eventSource, t, response);
-        if (exceptionCausedByCancelingEventSource(t)) {
-            LOG.info("Cancelled");
-        } else {
-            LOG.error("Failed to get current session information from backend.", t);
-            EstimateFxNotification.showErrorNotificationFromCustomThread("Failed to get current session information from backend.");
-        }
-    }
-
-    private boolean exceptionCausedByCancelingEventSource(@Nullable Throwable t) {
-        return t instanceof SocketException && "Socket closed".equals(t.getMessage());
-    }
-
-    @Override
-    public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
-        super.onEvent(eventSource, id, type, data);
-        LOG.info("Event");
+    protected void onEvent(String jsonObject) {
         String userName = context.getUserName();
         if (userName == null) {
             LOG.error("Username stored in context is null");
             return;
         }
-        sessionDTO = gson.fromJson(data, SessionDTO.class);
+        sessionDTO = gson.fromJson(jsonObject, SessionDTO.class);
         boolean hasUser = hasUser(userName, sessionDTO);
         if (!hasUser) {
             LOG.error("User is no longer in session");
             return;
         }
 
-        Platform.runLater(() -> updateStuff());
+        Platform.runLater(this::updateStuff);
+    }
+
+    @Override
+    protected void onFailure(Throwable t) {
+        LOG.error("Failed to get current session information from backend.", t);
+        EstimateFxNotification.showErrorNotificationFromCustomThread("Failed to get current session information from backend.");
     }
 
     private boolean hasUser(String userName, SessionDTO sessionDTO) {

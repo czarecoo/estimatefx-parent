@@ -3,7 +3,7 @@ package com.czareg.context;
 import com.czareg.scene.SceneManager;
 import com.czareg.service.blocking.BackendBlockingService;
 import com.czareg.service.blocking.BackendBlockingServiceFactory;
-import com.czareg.service.notblocking.PollingService;
+import com.czareg.service.notblocking.polling.PollingService;
 import com.czareg.tasks.TaskFactory;
 import javafx.stage.Stage;
 import org.apache.commons.configuration.ConfigurationException;
