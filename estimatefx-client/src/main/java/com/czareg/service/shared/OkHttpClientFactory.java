@@ -6,7 +6,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import java.net.Proxy;
 
 public class OkHttpClientFactory {
-    public OkHttpClient createWithDefaultTimeouts(PropertiesConfiguration propertiesConfiguration) {
+    public OkHttpClient create(PropertiesConfiguration propertiesConfiguration) {
         boolean useProxy = propertiesConfiguration.getBoolean("proxy.enabled", false);
         if (useProxy) {
             Proxy proxy = new ProxyFactory().create(propertiesConfiguration);

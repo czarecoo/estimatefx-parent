@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.util.Objects;
 
 public class RetrofitClientFactory {
-    public Retrofit createWithoutRxJava2CallAdapterFactory(OkHttpClient httpClient, PropertiesConfiguration propertiesConfiguration) {
+    public Retrofit create(OkHttpClient httpClient, PropertiesConfiguration propertiesConfiguration) {
         String baseUrl = propertiesConfiguration.getString("backend.url");
         Objects.requireNonNull(baseUrl, "Base url is not defined in " + propertiesConfiguration.getFileName());
 

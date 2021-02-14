@@ -11,8 +11,8 @@ public class BackendBlockingServiceFactory {
     private RetrofitClientFactory retrofitClientFactory = new RetrofitClientFactory();
 
     public BackendBlockingService create(PropertiesConfiguration propertiesConfiguration) {
-        OkHttpClient okHttpClient = okHttpClientFactory.createWithDefaultTimeouts(propertiesConfiguration);
-        Retrofit retrofit = retrofitClientFactory.createWithoutRxJava2CallAdapterFactory(okHttpClient, propertiesConfiguration);
+        OkHttpClient okHttpClient = okHttpClientFactory.create(propertiesConfiguration);
+        Retrofit retrofit = retrofitClientFactory.create(okHttpClient, propertiesConfiguration);
         BackendBlockingApi backendBlockingApi = retrofit.create(BackendBlockingApi.class);
         return new BackendBlockingServiceImpl(backendBlockingApi);
     }
