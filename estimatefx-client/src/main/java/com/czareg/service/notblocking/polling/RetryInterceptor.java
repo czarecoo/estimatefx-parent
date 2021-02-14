@@ -26,6 +26,7 @@ public class RetryInterceptor implements Interceptor {
         int tryCount = 1;
         do {
             try {
+                closeIfNeeded(response);
                 response = chain.proceed(request);
             } catch (Exception e) {
                 if (exceptionCausedByCancelingEventSource(e) || exceptionCausedBySocketClosing(e)) {
@@ -42,6 +43,12 @@ public class RetryInterceptor implements Interceptor {
             }
         } while (response == null || !response.isSuccessful());
         return response;
+    }
+
+    private void closeIfNeeded(Response response) {
+        if (response != null) {
+            response.close();
+        }
     }
 
     private void sleep() {
