@@ -27,7 +27,6 @@ public abstract class Listener extends EventSourceListener {
     }
 
     protected void onFailure(Throwable t) {
-
     }
 
     @Override
