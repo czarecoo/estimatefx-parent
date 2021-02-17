@@ -22,7 +22,7 @@ public class EmptySessionCleaningService {
         this.sessionListSink = sessionListSink;
     }
 
-    @Scheduled(cron = "0 * * ? * *") //every minute
+    @Scheduled(fixedRateString = "${empty.session.cleaning.millis}")
     public void clean() {
         List<Session> emptySessions = getEmptySessions();
         if (!emptySessions.isEmpty()) {
