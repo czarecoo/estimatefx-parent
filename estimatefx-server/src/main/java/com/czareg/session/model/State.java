@@ -27,16 +27,6 @@ public enum State {
         public String getDescription() {
             return "The session is now in WAITING state";
         }
-    }, CLOSED {
-        @Override
-        public void vote(Session session, User user, String voteValue) throws BadRequestException {
-            throw new BadRequestException("Voting is disabled in CLOSED state");
-        }
-
-        @Override
-        public String getDescription() {
-            return "The session is now in CLOSED state";
-        }
     };
 
     public abstract void vote(Session session, User user, String voteValue) throws BadRequestException;

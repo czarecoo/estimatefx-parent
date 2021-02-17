@@ -27,8 +27,11 @@ public class SessionController {
     }
 
     @PostMapping(value = "/createSession")
-    public SessionDTO createSession(@RequestParam String userName) throws BadRequestException {
-        Session session = sessionService.create(userName);
+    public SessionDTO createSession(@RequestParam String userName,
+                                    @RequestParam(defaultValue = "true") boolean allowPassingCreator,
+                                    @RequestParam(defaultValue = "true") boolean allowStealingCreator,
+                                    @RequestParam(defaultValue = "true") boolean passCreatorWhenLeaving) throws BadRequestException {
+        Session session = sessionService.create(userName, allowPassingCreator, allowStealingCreator, passCreatorWhenLeaving);
         sessionSink.emit(session);
         sessionListSink.emit(sessionService.getSessions());
         return session.toSessionDTO();
@@ -105,6 +108,21 @@ public class SessionController {
     public void stopVotingOnSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
             throws BadRequestException, NotExistsException {
         Session session = sessionService.stopVoting(sessionId, userName);
+        sessionSink.emit(session);
+    }
+
+    @PutMapping(value = "/passCreator/{sessionId}")
+    public void passCreator(@PathVariable("sessionId") int sessionId, @RequestParam String oldCreator,
+                            @RequestParam String newCreator)
+            throws NotExistsException, BadRequestException {
+        Session session = sessionService.passCreator(sessionId, oldCreator, newCreator);
+        sessionSink.emit(session);
+    }
+
+    @PutMapping(value = "/stealCreator/{sessionId}")
+    public void stealCreator(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
+            throws NotExistsException, BadRequestException {
+        Session session = sessionService.stealCreator(sessionId, userName);
         sessionSink.emit(session);
     }
 }

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.czareg.session.model.user.UserType.CREATOR;
+import static com.czareg.session.model.user.UserType.JOINER;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
 @Component
@@ -30,8 +32,12 @@ public class User {
                 .collect(Collectors.toList());
     }
 
-    public UserType getType() {
-        return userType;
+    public boolean isCreator() {
+        return userType == CREATOR;
+    }
+
+    public boolean isJoiner() {
+        return userType == JOINER;
     }
 
     public void setType(UserType userType) {
@@ -43,13 +49,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(name, user.name) &&
-                userType == user.userType;
+        return Objects.equals(name, user.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, userType);
+        return Objects.hash(name);
     }
 
     @Override

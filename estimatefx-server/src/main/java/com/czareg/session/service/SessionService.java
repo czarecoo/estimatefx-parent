@@ -13,8 +13,10 @@ import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
-import static com.czareg.session.model.State.*;
+import static com.czareg.session.model.State.VOTING;
+import static com.czareg.session.model.State.WAITING;
 import static com.czareg.session.model.user.UserType.CREATOR;
 import static com.czareg.session.model.user.UserType.JOINER;
 
@@ -33,10 +35,14 @@ public class SessionService {
         this.inactiveUserCleaningService = inactiveUserCleaningService;
     }
 
-    public Session create(String userName) throws BadRequestException {
+    public Session create(String userName, boolean allowPassingCreator, boolean allowStealingCreator,
+                          boolean passCreatorWhenLeaving) throws BadRequestException {
         User creator = createUser(userName, CREATOR);
         Session session = sessionFactory.getObject();
         session.addCreator(creator);
+        session.setAllowPassingCreator(allowPassingCreator);
+        session.setAllowStealingCreator(allowStealingCreator);
+        session.setPassCreatorWhenLeaving(passCreatorWhenLeaving);
         sessionRepository.add(session);
         inactiveUserCleaningService.add(session.getSessionId(), userName);
         return session;
@@ -75,8 +81,8 @@ public class SessionService {
         Session session = getSession(sessionId);
         User user = findUser(userName, session);
         session.removeUser(user);
-        if (didCreatorLeave(session)) {
-            session.setClosedState();
+        if (user.isCreator() && session.isPassCreatorWhenLeaving()) {
+            makeNextUserCreatorIfPossible(session);
         }
         inactiveUserCleaningService.remove(sessionId, userName);
         return session;
@@ -88,10 +94,10 @@ public class SessionService {
         inactiveUserCleaningService.add(sessionId, userName);
 
         State currentState = session.getState();
-        if (currentState == VOTING || currentState == CLOSED) {
-            throw new BadRequestException("Cannot start voting in current state: " + currentState);
+        if (currentState == VOTING) {
+            throw new BadRequestException("Session is already in voting state");
         }
-        if (!user.getType().isCreator()) {
+        if (!user.isCreator()) {
             throw new BadRequestException("Only creator can start voting.");
         }
 
@@ -106,15 +112,56 @@ public class SessionService {
         inactiveUserCleaningService.add(sessionId, userName);
 
         State currentState = session.getState();
-        if (currentState == WAITING || currentState == CLOSED) {
-            throw new BadRequestException("Cannot stop voting in current state:" + currentState);
+        if (currentState == WAITING) {
+            throw new BadRequestException("Session is already in waiting state");
         }
-        if (!user.getType().isCreator()) {
+        if (!user.isCreator()) {
             throw new BadRequestException("Only creator can stop voting.");
         }
 
         session.setWaitingState();
         return session;
+    }
+
+    public Session passCreator(int sessionId, String oldCreatorUserName, String newCreatorUserName)
+            throws NotExistsException, BadRequestException {
+        Session session = getSession(sessionId);
+        if (session.isAllowPassingCreator()) {
+            throw new BadRequestException("Passing creator is turned off for this session");
+        }
+        User oldCreator = findUser(oldCreatorUserName, session);
+        User newCreator = findUser(newCreatorUserName, session);
+        if (!oldCreator.isCreator()) {
+            throw new BadRequestException("Old creator is not a creator");
+        }
+        if (newCreator.isCreator()) {
+            throw new BadRequestException("New creator is already a creator");
+        }
+        oldCreator.setType(JOINER);
+        newCreator.setType(CREATOR);
+        return session;
+    }
+
+    public Session stealCreator(int sessionId, String userName) throws NotExistsException, BadRequestException {
+        Session session = getSession(sessionId);
+        if (session.isAllowStealingCreator()) {
+            throw new BadRequestException("Stealing creator is turned off for this session");
+        }
+        Optional<User> oldCreator = findCreator(session);
+        User newCreator = findUser(userName, session);
+        if (newCreator.isCreator()) {
+            throw new BadRequestException("User is already a creator");
+        }
+        oldCreator.ifPresent(user -> user.setType(JOINER));
+        newCreator.setType(CREATOR);
+        return session;
+    }
+
+    private void makeNextUserCreatorIfPossible(Session session) {
+        session.getUsers().stream()
+                .filter(User::isJoiner)
+                .findFirst()
+                .ifPresent(newCreator -> newCreator.setType(CREATOR));
     }
 
     private boolean isNameTakenForSession(Session session, String userName) {
@@ -123,17 +170,17 @@ public class SessionService {
                 .anyMatch(name -> name.equals(userName));
     }
 
-    private boolean didCreatorLeave(Session session) {
-        return session.getUsers().stream()
-                .map(User::getType)
-                .noneMatch(UserType::isCreator);
-    }
-
     private User findUser(String userName, Session session) throws NotExistsException {
         return session.getUsers().stream()
                 .filter(user -> user.getName().equals(userName))
                 .findFirst()
                 .orElseThrow(() -> new NotExistsException("User does not exist in this session"));
+    }
+
+    private Optional<User> findCreator(Session session) {
+        return session.getUsers().stream()
+                .filter(User::isCreator)
+                .findFirst();
     }
 
     private User createUser(String userName, UserType userType) throws BadRequestException {

@@ -9,7 +9,7 @@ public class Vote {
 
     public Vote() {
         this.voteState = NOT_VOTED;
-        this.voteValue = "?";
+        this.voteValue = "not voted";
     }
 
     public Vote(String voteValue) {
