@@ -16,7 +16,6 @@ public class SessionControllerAdvice {
         return ResponseEntity
                 .status(NOT_FOUND)
                 .body(e.getMessage());
-
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -24,6 +23,5 @@ public class SessionControllerAdvice {
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .body(e.getMessage());
-
     }
 }
