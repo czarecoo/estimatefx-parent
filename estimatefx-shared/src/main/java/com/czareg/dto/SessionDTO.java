@@ -2,6 +2,7 @@ package com.czareg.dto;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class SessionDTO {
     private int sessionId;
@@ -10,17 +11,24 @@ public class SessionDTO {
     private List<UserDTO> users;
     private Map<String, String> votes;
     private String description;
+    private boolean allowPassingCreator;
+    private boolean allowStealingCreator;
+    private boolean passCreatorWhenLeaving;
 
     public SessionDTO() {
     }
 
-    public SessionDTO(int sessionId, StateDTO state, String creationTime, List<UserDTO> users, Map<String, String> votes, String description) {
+    public SessionDTO(int sessionId, StateDTO state, String creationTime, List<UserDTO> users, Map<String, String> votes,
+                      String description, boolean allowPassingCreator, boolean allowStealingCreator, boolean passCreatorWhenLeaving) {
         this.sessionId = sessionId;
         this.state = state;
         this.creationTime = creationTime;
         this.users = users;
         this.votes = votes;
         this.description = description;
+        this.allowPassingCreator = allowPassingCreator;
+        this.allowStealingCreator = allowStealingCreator;
+        this.passCreatorWhenLeaving = passCreatorWhenLeaving;
     }
 
     public int getSessionId() {
@@ -71,6 +79,51 @@ public class SessionDTO {
         this.description = description;
     }
 
+    public boolean isAllowPassingCreator() {
+        return allowPassingCreator;
+    }
+
+    public void setAllowPassingCreator(boolean allowPassingCreator) {
+        this.allowPassingCreator = allowPassingCreator;
+    }
+
+    public boolean isAllowStealingCreator() {
+        return allowStealingCreator;
+    }
+
+    public void setAllowStealingCreator(boolean allowStealingCreator) {
+        this.allowStealingCreator = allowStealingCreator;
+    }
+
+    public boolean isPassCreatorWhenLeaving() {
+        return passCreatorWhenLeaving;
+    }
+
+    public void setPassCreatorWhenLeaving(boolean passCreatorWhenLeaving) {
+        this.passCreatorWhenLeaving = passCreatorWhenLeaving;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SessionDTO that = (SessionDTO) o;
+        return sessionId == that.sessionId &&
+                allowPassingCreator == that.allowPassingCreator &&
+                allowStealingCreator == that.allowStealingCreator &&
+                passCreatorWhenLeaving == that.passCreatorWhenLeaving &&
+                state == that.state &&
+                Objects.equals(creationTime, that.creationTime) &&
+                Objects.equals(users, that.users) &&
+                Objects.equals(votes, that.votes) &&
+                Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sessionId, state, creationTime, users, votes, description, allowPassingCreator, allowStealingCreator, passCreatorWhenLeaving);
+    }
+
     @Override
     public String toString() {
         return "SessionDTO{" +
@@ -80,6 +133,9 @@ public class SessionDTO {
                 ", users=" + users +
                 ", votes=" + votes +
                 ", description='" + description + '\'' +
+                ", allowPassingCreator=" + allowPassingCreator +
+                ", allowStealingCreator=" + allowStealingCreator +
+                ", passCreatorWhenLeaving=" + passCreatorWhenLeaving +
                 '}';
     }
 }
