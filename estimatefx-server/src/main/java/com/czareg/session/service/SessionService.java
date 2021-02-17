@@ -126,7 +126,7 @@ public class SessionService {
     public Session passCreator(int sessionId, String oldCreatorUserName, String newCreatorUserName)
             throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
-        if (session.isAllowPassingCreator()) {
+        if (!session.isAllowPassingCreator()) {
             throw new BadRequestException("Passing creator is turned off for this session");
         }
         User oldCreator = findUser(oldCreatorUserName, session);
@@ -144,7 +144,7 @@ public class SessionService {
 
     public Session stealCreator(int sessionId, String userName) throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
-        if (session.isAllowStealingCreator()) {
+        if (!session.isAllowStealingCreator()) {
             throw new BadRequestException("Stealing creator is turned off for this session");
         }
         Optional<User> oldCreator = findCreator(session);
