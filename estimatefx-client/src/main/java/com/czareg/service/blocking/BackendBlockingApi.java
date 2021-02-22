@@ -9,7 +9,10 @@ import java.util.List;
 
 public interface BackendBlockingApi {
     @POST("/createSession")
-    Call<SessionDTO> createSession(@Query(value = "userName") String userName);
+    Call<SessionDTO> createSession(@Query(value = "userName") String userName,
+                                   @Query(value = "allowPassingCreator") boolean allowPassingCreator,
+                                   @Query(value = "allowStealingCreator") boolean allowStealingCreator,
+                                   @Query(value = "passCreatorWhenLeaving") boolean passCreatorWhenLeaving);
 
     @PUT("/joinSession/{sessionId}")
     Call<SessionDTO> joinSession(@Path("sessionId") int sessionId, @Query(value = "userName") String userName);

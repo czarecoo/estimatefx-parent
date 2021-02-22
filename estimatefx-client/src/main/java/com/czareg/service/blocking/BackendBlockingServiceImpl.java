@@ -4,6 +4,7 @@ import com.czareg.dto.SessionDTO;
 import com.czareg.dto.SessionIdentifierDTO;
 import com.czareg.service.blocking.utils.BackendServiceException;
 import com.czareg.service.blocking.utils.BackendServiceExceptionBuilder;
+import retrofit2.Call;
 import retrofit2.Response;
 
 import java.io.IOException;
@@ -17,22 +18,33 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
     }
 
     @Override
-    public SessionDTO createSession(String userName) throws BackendServiceException {
+    public SessionDTO createSession(String userName,
+                                    boolean allowPassingCreator,
+                                    boolean allowStealingCreator,
+                                    boolean passCreatorWhenLeaving) throws BackendServiceException {
         try {
-            Response<SessionDTO> sessionDTOResponse = backendBlockingApi.createSession(userName).execute();
+            Call<SessionDTO> session = backendBlockingApi.createSession(userName,
+                    allowPassingCreator, allowStealingCreator, passCreatorWhenLeaving);
+            Response<SessionDTO> sessionDTOResponse = session.execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return sessionDTOResponse.body();
             }
             throw new BackendServiceExceptionBuilder()
                     .failedTo("create session")
-                    .userName(userName)
+                    .parameter("userName", userName)
+                    .parameter("allowPassingCreator", allowPassingCreator)
+                    .parameter("allowStealingCreator", allowStealingCreator)
+                    .parameter("passCreatorWhenLeaving", passCreatorWhenLeaving)
                     .serverMessage(sessionDTOResponse)
                     .build();
 
         } catch (IOException e) {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("create session")
-                    .userName(userName)
+                    .parameter("userName", userName)
+                    .parameter("allowPassingCreator", allowPassingCreator)
+                    .parameter("allowStealingCreator", allowStealingCreator)
+                    .parameter("passCreatorWhenLeaving", passCreatorWhenLeaving)
                     .cause(e)
                     .build();
         }
@@ -47,16 +59,16 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
             }
             throw new BackendServiceExceptionBuilder()
                     .failedTo("join session")
-                    .sessionId(sessionId)
-                    .userName(userName)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
                     .serverMessage(sessionDTOResponse)
                     .build();
 
         } catch (IOException e) {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("join session")
-                    .sessionId(sessionId)
-                    .userName(userName)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
                     .cause(e)
                     .build();
         }
@@ -71,14 +83,14 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
             }
             throw new BackendServiceExceptionBuilder()
                     .failedTo("get session")
-                    .sessionId(sessionId)
+                    .parameter("sessionId", sessionId)
                     .serverMessage(sessionDTOResponse)
                     .build();
 
         } catch (IOException e) {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("get session")
-                    .sessionId(sessionId)
+                    .parameter("sessionId", sessionId)
                     .cause(e)
                     .build();
         }
@@ -133,16 +145,16 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
             }
             throw new BackendServiceExceptionBuilder()
                     .failedTo("start voting on session")
-                    .sessionId(sessionId)
-                    .userName(userName)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
                     .serverMessage(sessionDTOResponse)
                     .build();
 
         } catch (IOException e) {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("start voting on session")
-                    .sessionId(sessionId)
-                    .userName(userName)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
                     .cause(e)
                     .build();
         }
@@ -157,16 +169,16 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
             }
             throw new BackendServiceExceptionBuilder()
                     .failedTo("stop voting on session")
-                    .sessionId(sessionId)
-                    .userName(userName)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
                     .serverMessage(sessionDTOResponse)
                     .build();
 
         } catch (IOException e) {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("stop voting on session")
-                    .sessionId(sessionId)
-                    .userName(userName)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
                     .cause(e)
                     .build();
         }
@@ -181,16 +193,16 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
             }
             throw new BackendServiceExceptionBuilder()
                     .failedTo("leave session")
-                    .sessionId(sessionId)
-                    .userName(userName)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
                     .serverMessage(sessionDTOResponse)
                     .build();
 
         } catch (IOException e) {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("leave session")
-                    .sessionId(sessionId)
-                    .userName(userName)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
                     .cause(e)
                     .build();
         }
@@ -205,18 +217,18 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
             }
             throw new BackendServiceExceptionBuilder()
                     .failedTo("vote on session")
-                    .sessionId(sessionId)
-                    .userName(userName)
-                    .voteValue(voteValue)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
+                    .parameter("voteValue", voteValue)
                     .serverMessage(sessionDTOResponse)
                     .build();
 
         } catch (IOException e) {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("vote on session")
-                    .sessionId(sessionId)
-                    .userName(userName)
-                    .voteValue(voteValue)
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
+                    .parameter("voteValue", voteValue)
                     .cause(e)
                     .build();
         }

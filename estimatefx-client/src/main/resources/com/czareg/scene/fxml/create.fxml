@@ -49,8 +49,9 @@
       </VBox>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
-            <CheckBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                      selected="true" text="Allow passing creator" VBox.vgrow="ALWAYS"/>
+            <CheckBox fx:id="allowPassingCreatorCheckBox" maxHeight="1.7976931348623157E308"
+                      maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true"
+                      text="Allow passing creator" VBox.vgrow="ALWAYS"/>
             <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                    text="Creator will be able to pass his role to other users" VBox.vgrow="ALWAYS">
                <font>
@@ -61,8 +62,9 @@
       </VBox>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
-            <CheckBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                      selected="true" text="Allow stealing creator" VBox.vgrow="ALWAYS"/>
+            <CheckBox fx:id="allowStealingCreatorCheckBox" maxHeight="1.7976931348623157E308"
+                      maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true"
+                      text="Allow stealing creator" VBox.vgrow="ALWAYS"/>
             <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                    text="Everyone will be able to become a creator at any time" VBox.vgrow="ALWAYS"/>
          </children>
@@ -70,8 +72,9 @@
       <VBox layoutX="50.0" layoutY="253.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
             spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
-            <CheckBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                      selected="true" text="Pass creator when leaving" VBox.vgrow="ALWAYS"/>
+            <CheckBox fx:id="passCreatorWhenLeavingCheckBox" maxHeight="1.7976931348623157E308"
+                      maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true"
+                      text="Pass creator when leaving" VBox.vgrow="ALWAYS"/>
             <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                    text="When creator leaves, his role will be passed to next player" VBox.vgrow="ALWAYS"/>
          </children>

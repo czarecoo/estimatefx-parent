@@ -7,7 +7,10 @@ import com.czareg.service.blocking.utils.BackendServiceException;
 import java.util.List;
 
 public interface BackendBlockingService {
-    SessionDTO createSession(String userName) throws BackendServiceException;
+    SessionDTO createSession(String userName,
+                             boolean allowPassingCreator,
+                             boolean allowStealingCreator,
+                             boolean passCreatorWhenLeaving) throws BackendServiceException;
 
     SessionDTO joinSession(int sessionId, String userName) throws BackendServiceException;
 

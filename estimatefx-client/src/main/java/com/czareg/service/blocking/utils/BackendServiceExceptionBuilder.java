@@ -36,20 +36,8 @@ public class BackendServiceExceptionBuilder {
         return this;
     }
 
-    public BackendServiceExceptionBuilder sessionId(int sessionId) {
-        String message = String.format(", sessionId: %d", sessionId);
-        stringBuilder.append(message);
-        return this;
-    }
-
-    public BackendServiceExceptionBuilder userName(String userName) {
-        String message = String.format(", userName: %s", userName);
-        stringBuilder.append(message);
-        return this;
-    }
-
-    public BackendServiceExceptionBuilder voteValue(String voteValue) {
-        String message = String.format(", voteValue: %s", voteValue);
+    public BackendServiceExceptionBuilder parameter(String parameterName, Object parameterValue) {
+        String message = String.format(", %s: %s", parameterName, parameterValue);
         stringBuilder.append(message);
         return this;
     }

@@ -13,8 +13,9 @@ public class Context {
     private Integer sessionId;
     private Stage stage;
     private SceneManager sceneManager;
-    private final TaskFactory taskFactory;
     private VoteContext voteContext;
+    private CreateContext createContext;
+    private final TaskFactory taskFactory;
     private final PollingServicesManager pollingServicesManager;
     private final PropertiesManager propertiesManager;
 
@@ -84,5 +85,13 @@ public class Context {
 
     public PropertiesManager getPropertiesManager() {
         return propertiesManager;
+    }
+
+    public CreateContext getCreateContext() {
+        return createContext;
+    }
+
+    public void setCreateContext(CreateContext createContext) {
+        this.createContext = createContext;
     }
 }
