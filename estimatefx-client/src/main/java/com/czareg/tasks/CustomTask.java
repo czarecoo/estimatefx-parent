@@ -24,8 +24,7 @@ abstract class CustomTask extends Task<Void> {
 
     @Override
     protected void failed() {
-        String exceptionMessage = getException().getMessage();
-        logger.error(exceptionMessage);
+        logger.error("Task failed.", getException());
         NotificationMessageBuilder notificationMessageBuilder = new NotificationMessageBuilder();
         notificationMessageBuilder.exceptionMessage(getException());
         showErrorNotificationFromUiThread(notificationMessageBuilder.build());

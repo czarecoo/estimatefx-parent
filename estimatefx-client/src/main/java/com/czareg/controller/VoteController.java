@@ -72,7 +72,7 @@ public class VoteController implements ContextAware {
         sessionPollingService.close();
         new Thread(context.getTaskFactory().createLeaveSessionTask()).start();
         context.getSceneManager().setScene(JOIN);
-        LOG.info("Left session");
+        LOG.info("Leave session button clicked");
     }
 
     @FXML
@@ -83,18 +83,18 @@ public class VoteController implements ContextAware {
         String voteValue = ((Button) event.getSource()).getText();
 
         new Thread(context.getTaskFactory().createVoteOnSessionTask(voteValue)).start();
-        LOG.info("Voted {}", voteValue);
+        LOG.info("Vote {} button clicked");
     }
 
     @FXML
     private void handleStartButtonClicked() {
         new Thread(context.getTaskFactory().createStartVotingOnSessionTask()).start();
-        LOG.info("Started voting");
+        LOG.info("Start voting button clicked");
     }
 
     @FXML
     private void handleStopButtonClicked() {
         new Thread(context.getTaskFactory().createStopVotingOnSessionTask()).start();
-        LOG.info("Stopped voting");
+        LOG.info("Stop voting button clicked");
     }
 }
