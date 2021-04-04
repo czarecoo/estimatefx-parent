@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 
 @RestController
+@RequestMapping("/service/v1")
 public class SessionController {
     private SessionService sessionService;
     private SessionSink sessionSink;

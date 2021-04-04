@@ -19,7 +19,7 @@ public class SessionIdentifierPollingService extends PollingService {
         super(context);
         String baseUrl = context.getPropertiesManager().getBaseUrl();
         Request request = new Request.Builder()
-                .url(baseUrl + "/pollSessionIdentifiers")
+                .url(baseUrl + "/service/v1/pollSessionIdentifiers")
                 .build();
         realEventSource = new RealEventSource(request, eventSourceListener);
         PropertiesManager propertiesManager = context.getPropertiesManager();

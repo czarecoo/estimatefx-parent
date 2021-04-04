@@ -39,6 +39,15 @@ public class LoggingFilter extends OncePerRequestFilter {
         wrappedResponse.copyBodyToResponse();
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return doesNotContainServiceInPath(request);
+    }
+
+    private boolean doesNotContainServiceInPath(HttpServletRequest request) {
+        return !request.getServletPath().contains("/service/");
+    }
+
     private String getContentAsString(byte[] contentAsByteArray, String charsetName) {
         if (contentAsByteArray == null || contentAsByteArray.length == 0) {
             return "";

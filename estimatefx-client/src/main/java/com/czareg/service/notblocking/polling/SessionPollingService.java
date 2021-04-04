@@ -19,7 +19,7 @@ public class SessionPollingService extends PollingService {
         super(context);
         String baseUrl = context.getPropertiesManager().getBaseUrl();
         Request request = new Request.Builder()
-                .url(baseUrl + "/pollSession/" + context.getSessionId())
+                .url(baseUrl + "/service/v1/pollSession/" + context.getSessionId())
                 .build();
         realEventSource = new RealEventSource(request, eventSourceListener);
         PropertiesManager propertiesManager = context.getPropertiesManager();
