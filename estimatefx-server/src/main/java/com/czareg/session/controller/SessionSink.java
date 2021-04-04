@@ -8,22 +8,20 @@ import reactor.core.publisher.Sinks;
 
 @Component
 public class SessionSink {
-    private Sinks.Many<Session> sink = Sinks.many()
+    private Sinks.Many<SessionDTO> sink = Sinks.many()
             .replay()
             .latest();
 
     public void emit(Session session) {
-        sink.tryEmitNext(session);
+        sink.tryEmitNext(session.toSessionDTO());
     }
 
     public Flux<SessionDTO> asSessionDTOFlux() {
-        return sink.asFlux()
-                .map(Session::toSessionDTO);
+        return sink.asFlux();
     }
 
     public Flux<SessionDTO> asSessionDTOFluxBySessionId(int sessionId) {
         return sink.asFlux()
-                .filter(sessionDTO -> sessionDTO.getSessionId() == sessionId)
-                .map(Session::toSessionDTO);
+                .filter(sessionDTO -> sessionDTO.getSessionId() == sessionId);
     }
 }

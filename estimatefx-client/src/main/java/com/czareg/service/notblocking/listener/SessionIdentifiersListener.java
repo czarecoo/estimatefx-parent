@@ -1,5 +1,6 @@
 package com.czareg.service.notblocking.listener;
 
+import com.czareg.dto.SessionIdentifierDTO;
 import com.czareg.model.SessionIdentifier;
 import com.czareg.notifications.NotificationMessageBuilder;
 import com.google.gson.Gson;
@@ -10,10 +11,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.czareg.notifications.EstimateFxNotification.showErrorNotificationFromCustomThread;
+import static java.util.stream.Collectors.toList;
 
 public class SessionIdentifiersListener extends Listener {
     private static final Logger LOG = LogManager.getLogger(SessionIdentifiersListener.class);
@@ -26,13 +27,18 @@ public class SessionIdentifiersListener extends Listener {
         super(LOG);
         this.choiceBox = choiceBox;
         gson = new Gson();
-        sessionIdentifierListType = new TypeToken<ArrayList<SessionIdentifier>>() {
+        sessionIdentifierListType = new TypeToken<List<SessionIdentifierDTO>>() {
         }.getType();
     }
 
     @Override
     protected void onEvent(String jsonObject) {
-        List<SessionIdentifier> sessionIdentifiers = gson.fromJson(jsonObject, sessionIdentifierListType);
+        List<SessionIdentifierDTO> sessionIdentifierDTOS = gson.fromJson(jsonObject, sessionIdentifierListType);
+
+        List<SessionIdentifier> sessionIdentifiers =
+                sessionIdentifierDTOS.stream()
+                        .map(SessionIdentifier::new)
+                        .collect(toList());
 
         Platform.runLater(() -> updateChoiceBox(sessionIdentifiers));
     }

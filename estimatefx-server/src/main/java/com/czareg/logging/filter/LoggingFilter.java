@@ -41,11 +41,15 @@ public class LoggingFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return doesNotContainServiceInPath(request);
+        return doesNotContainServiceInPath(request) || containsPollInPath(request);
     }
 
     private boolean doesNotContainServiceInPath(HttpServletRequest request) {
         return !request.getServletPath().contains("/service/");
+    }
+
+    private boolean containsPollInPath(HttpServletRequest request) {
+        return request.getServletPath().contains("/poll");
     }
 
     private String getContentAsString(byte[] contentAsByteArray, String charsetName) {

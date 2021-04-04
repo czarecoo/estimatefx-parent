@@ -7,27 +7,27 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class SessionListSink {
-    private Sinks.Many<List<Session>> sink = Sinks.many()
+    private Sinks.Many<List<SessionIdentifierDTO>> sink = Sinks.many()
             .replay()
             .latest();
 
     public void emit(List<Session> sessions) {
-        sink.tryEmitNext(sessions);
+        List<SessionIdentifierDTO> sessionIdentifierDTOS = mapListOfSessionToListOfSessionIdentifierDTOs(sessions);
+        sink.tryEmitNext(sessionIdentifierDTOS);
     }
 
     public Flux<List<SessionIdentifierDTO>> asSessionIdentifierDTOListFlux() {
-        return sink.asFlux()
-                .map(mapListOfSessionToListOfSessionIdentifierDTOs());
+        return sink.asFlux();
     }
 
-    private Function<List<Session>, List<SessionIdentifierDTO>> mapListOfSessionToListOfSessionIdentifierDTOs() {
-        return list -> list.stream()
+    private List<SessionIdentifierDTO> mapListOfSessionToListOfSessionIdentifierDTOs(List<Session> sessions) {
+        return sessions.stream()
                 .map(Session::toSessionIdentifierDTO)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }
