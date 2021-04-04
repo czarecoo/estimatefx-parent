@@ -1,6 +1,5 @@
 package com.czareg.session.service;
 
-import com.czareg.session.controller.SessionListSink;
 import com.czareg.session.model.Session;
 import com.czareg.session.repository.SessionRepository;
 import org.slf4j.Logger;
@@ -15,11 +14,9 @@ import java.util.stream.Collectors;
 public class EmptySessionCleaningService {
     private static Logger LOGGER = LoggerFactory.getLogger(EmptySessionCleaningService.class);
     private SessionRepository sessionRepository;
-    private SessionListSink sessionListSink;
 
-    public EmptySessionCleaningService(SessionRepository sessionRepository, SessionListSink sessionListSink) {
+    public EmptySessionCleaningService(SessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
-        this.sessionListSink = sessionListSink;
     }
 
     @Scheduled(fixedRateString = "${empty.session.cleaning.millis}")
@@ -28,7 +25,6 @@ public class EmptySessionCleaningService {
         if (!emptySessions.isEmpty()) {
             LOGGER.info("Removing empty sessions: {}", emptySessions);
             emptySessions.forEach(session -> sessionRepository.delete(session.getSessionId()));
-            sessionListSink.emit(getSessions());
         }
     }
 

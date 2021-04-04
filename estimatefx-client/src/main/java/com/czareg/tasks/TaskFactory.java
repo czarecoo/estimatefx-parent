@@ -1,8 +1,9 @@
 package com.czareg.tasks;
 
 import com.czareg.context.Context;
+import com.czareg.model.SessionIdentifier;
 import com.czareg.service.blocking.BackendBlockingService;
-import com.czareg.service.notblocking.polling.PollingService;
+import javafx.scene.control.ChoiceBox;
 
 public class TaskFactory {
     private BackendBlockingService backendBlockingService;
@@ -17,8 +18,12 @@ public class TaskFactory {
         return new CreateSessionTask(context, backendBlockingService);
     }
 
-    public Runnable createJoinSessionTask(PollingService pollingService) {
-        return new JoinSessionTask(context, backendBlockingService, pollingService);
+    public Runnable createJoinSessionTask() {
+        return new JoinSessionTask(context, backendBlockingService);
+    }
+
+    public Runnable createFillSessionsChoiceBoxTask(ChoiceBox<SessionIdentifier> sessionChoiceBox) {
+        return new FillSessionsChoiceBoxTask(sessionChoiceBox, backendBlockingService);
     }
 
     public Runnable createLeaveSessionTask() {

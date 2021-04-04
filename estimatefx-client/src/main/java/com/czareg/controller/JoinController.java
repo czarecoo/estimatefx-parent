@@ -4,8 +4,6 @@ import com.czareg.context.Context;
 import com.czareg.controller.bindings.SessionChoiceBoxBooleanBinding;
 import com.czareg.controller.bindings.UserNameTextFieldBooleanBinding;
 import com.czareg.model.SessionIdentifier;
-import com.czareg.service.notblocking.listener.SessionIdentifiersListener;
-import com.czareg.service.notblocking.polling.SessionIdentifierPollingService;
 import com.czareg.stage.ContextAware;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -27,9 +25,9 @@ public class JoinController implements ContextAware {
     private ChoiceBox<SessionIdentifier> existingSessionsChoiceBox;
     @FXML
     private Button joinSessionButton;
+    @FXML
+    private Button refreshSessionsButton;
     private SessionChoiceBoxBooleanBinding sessionChoiceBoxBooleanBinding;
-
-    private SessionIdentifierPollingService sessionIdentifierPollingService;
 
     @Override
     public void initialize(Context context) {
@@ -39,14 +37,11 @@ public class JoinController implements ContextAware {
         userNameTextFieldBooleanBinding = new UserNameTextFieldBooleanBinding(nameTextField);
         sessionChoiceBoxBooleanBinding = new SessionChoiceBoxBooleanBinding(existingSessionsChoiceBox);
         joinSessionButton.disableProperty().bind(userNameTextFieldBooleanBinding.or(sessionChoiceBoxBooleanBinding));
-
-        SessionIdentifiersListener sessionIdentifiersListener = new SessionIdentifiersListener(existingSessionsChoiceBox);
-        sessionIdentifierPollingService = new SessionIdentifierPollingService(context, sessionIdentifiersListener);
+        new Thread(context.getTaskFactory().createFillSessionsChoiceBoxTask(existingSessionsChoiceBox)).start();
     }
 
     @FXML
     private void handleCreateSessionButtonClicked() {
-        sessionIdentifierPollingService.close();
         context.getSceneManager().setScene(CREATE);
         LOG.info("Switch to create session button clicked");
     }
@@ -63,7 +58,13 @@ public class JoinController implements ContextAware {
         context.setUserName(userName);
         context.setSessionId(selectedItem.getSessionId());
 
-        new Thread(context.getTaskFactory().createJoinSessionTask(sessionIdentifierPollingService)).start();
+        new Thread(context.getTaskFactory().createJoinSessionTask()).start();
         LOG.info("Join session button clicked");
+    }
+
+    @FXML
+    private void handleRefreshSessionsButtonClicked() {
+        new Thread(context.getTaskFactory().createFillSessionsChoiceBoxTask(existingSessionsChoiceBox)).start();
+        LOG.info("Refresh sessions button clicked");
     }
 }

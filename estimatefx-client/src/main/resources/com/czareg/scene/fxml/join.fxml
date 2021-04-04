@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
       spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
@@ -42,8 +45,27 @@
                        VBox.vgrow="ALWAYS"/>
                 <TextField fx:id="nameTextField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                            promptText="Name" VBox.vgrow="ALWAYS"/>
-                <ChoiceBox fx:id="existingSessionsChoiceBox" maxHeight="1.7976931348623157E308"
-                           maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS"/>
+                <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0"
+                      VBox.vgrow="ALWAYS">
+                    <children>
+                        <ChoiceBox fx:id="existingSessionsChoiceBox" maxHeight="1.7976931348623157E308"
+                                   maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="refreshSessionsButton" maxHeight="1.7976931348623157E308"
+                                maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                onAction="#handleRefreshSessionsButtonClicked" HBox.hgrow="SOMETIMES">
+                            <graphic>
+                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@refresh.png"/>
+                                    </image>
+                                    <viewport>
+                                        <Rectangle2D/>
+                                    </viewport>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </children>
+                </HBox>
                 <Button fx:id="joinSessionButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                         mnemonicParsing="false" onAction="#handleJoinSessionButtonClicked" text="Join session"
                         VBox.vgrow="ALWAYS"/>

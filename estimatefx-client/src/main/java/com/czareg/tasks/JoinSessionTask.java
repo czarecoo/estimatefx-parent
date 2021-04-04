@@ -4,7 +4,6 @@ import com.czareg.context.Context;
 import com.czareg.dto.SessionDTO;
 import com.czareg.service.blocking.BackendBlockingService;
 import com.czareg.service.blocking.utils.BackendServiceException;
-import com.czareg.service.notblocking.polling.PollingService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,14 +14,11 @@ public class JoinSessionTask extends CustomTask {
     private SessionDTO session;
     private Context context;
     private BackendBlockingService backendBlockingService;
-    private PollingService pollingService;
 
-    public JoinSessionTask(Context context, BackendBlockingService backendBlockingService,
-                           PollingService pollingService) {
+    public JoinSessionTask(Context context, BackendBlockingService backendBlockingService) {
         super(LOG);
         this.context = context;
         this.backendBlockingService = backendBlockingService;
-        this.pollingService = pollingService;
     }
 
     @Override
@@ -35,7 +31,6 @@ public class JoinSessionTask extends CustomTask {
 
     @Override
     protected void succeeded() {
-        pollingService.close();
         context.getSceneManager().setScene(VOTE);
     }
 }

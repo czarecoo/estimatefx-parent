@@ -19,12 +19,10 @@ import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 public class SessionController {
     private SessionService sessionService;
     private SessionSink sessionSink;
-    private SessionListSink sessionListSink;
 
-    public SessionController(SessionService sessionService, SessionSink sessionSink, SessionListSink sessionListSink) {
+    public SessionController(SessionService sessionService, SessionSink sessionSink) {
         this.sessionService = sessionService;
         this.sessionSink = sessionSink;
-        this.sessionListSink = sessionListSink;
     }
 
     @PostMapping(value = "/createSession")
@@ -34,7 +32,6 @@ public class SessionController {
                                     @RequestParam(defaultValue = "true") boolean passCreatorWhenLeaving) throws BadRequestException {
         Session session = sessionService.create(userName, allowPassingCreator, allowStealingCreator, passCreatorWhenLeaving);
         sessionSink.emit(session);
-        sessionListSink.emit(sessionService.getSessions());
         return session.toSessionDTO();
     }
 
@@ -76,11 +73,6 @@ public class SessionController {
         return sessions.stream()
                 .map(Session::toSessionIdentifierDTO)
                 .collect(Collectors.toList());
-    }
-
-    @GetMapping(value = "/pollSessionIdentifiers", produces = TEXT_EVENT_STREAM_VALUE)
-    public Flux<List<SessionIdentifierDTO>> pollSessionIdentifiers() {
-        return sessionListSink.asSessionIdentifierDTOListFlux();
     }
 
     @PutMapping(value = "/voteOnSession/{sessionId}")
