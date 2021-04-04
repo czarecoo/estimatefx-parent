@@ -157,6 +157,20 @@ public class SessionService {
         return session;
     }
 
+    public Session kickUser(int sessionId, String userName, String userToKick) throws NotExistsException, BadRequestException {
+        Session session = getSession(sessionId);
+        User creator = findUser(userName, session);
+        if (!creator.isCreator()) {
+            throw new BadRequestException("User " + userName + " is not creator");
+        }
+        User userToBeKicked = findUser(userToKick, session);
+        if (userToBeKicked.isCreator()) {
+            throw new BadRequestException("User " + userToKick + " is creator and cannot be kicked");
+        }
+        session.removeUser(userToBeKicked);
+        return session;
+    }
+
     private void makeNextUserCreatorIfPossible(Session session) {
         session.getUsers().stream()
                 .filter(User::isJoiner)

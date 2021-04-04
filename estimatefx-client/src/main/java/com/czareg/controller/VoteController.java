@@ -18,6 +18,8 @@ import javafx.scene.layout.HBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Optional;
+
 import static com.czareg.scene.fxml.FxmlScene.JOIN;
 
 public class VoteController implements ContextAware {
@@ -83,7 +85,7 @@ public class VoteController implements ContextAware {
         String voteValue = ((Button) event.getSource()).getText();
 
         new Thread(context.getTaskFactory().createVoteOnSessionTask(voteValue)).start();
-        LOG.info("Vote {} button clicked");
+        LOG.info("Vote {} button clicked", voteValue);
     }
 
     @FXML
@@ -96,5 +98,28 @@ public class VoteController implements ContextAware {
     private void handleStopButtonClicked() {
         new Thread(context.getTaskFactory().createStopVotingOnSessionTask()).start();
         LOG.info("Stop voting button clicked");
+    }
+
+    @FXML
+    private void handleStealCreatorButtonClicked() {
+        LOG.info("handleStealCreatorButtonClicked");
+    }
+
+    @FXML
+    private void handlePassCreatorButtonClicked() {
+        LOG.info("handlePassCreatorButtonClicked");
+
+        Optional.ofNullable(voteTableView.getSelectionModel().getSelectedItem())
+                .map(Vote::getName)
+                .ifPresent(LOG::info);
+    }
+
+    @FXML
+    private void handleKickUserButtonClicked() {
+        LOG.info("handleKickUserButtonClicked");
+
+        Optional.ofNullable(voteTableView.getSelectionModel().getSelectedItem())
+                .map(Vote::getName)
+                .ifPresent(LOG::info);
     }
 }

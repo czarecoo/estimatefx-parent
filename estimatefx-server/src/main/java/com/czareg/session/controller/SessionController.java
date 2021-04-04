@@ -118,4 +118,12 @@ public class SessionController {
         Session session = sessionService.stealCreator(sessionId, userName);
         sessionSink.emit(session);
     }
+
+    @PutMapping(value = "/kickUser/{sessionId}")
+    public void kickUser(@PathVariable("sessionId") int sessionId, @RequestParam String userName,
+                         @RequestParam String userToKick)
+            throws NotExistsException, BadRequestException {
+        Session session = sessionService.kickUser(sessionId, userName, userToKick);
+        sessionSink.emit(session);
+    }
 }

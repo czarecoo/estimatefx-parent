@@ -50,9 +50,9 @@
                     <children>
                         <ChoiceBox fx:id="existingSessionsChoiceBox" maxHeight="1.7976931348623157E308"
                                    maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="refreshSessionsButton" maxHeight="1.7976931348623157E308"
-                                maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                onAction="#handleRefreshSessionsButtonClicked" HBox.hgrow="SOMETIMES">
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                mnemonicParsing="false" onAction="#handleRefreshSessionsButtonClicked"
+                                HBox.hgrow="SOMETIMES">
                             <graphic>
                                 <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
