@@ -1,4 +1,4 @@
-package com.czareg.tasks;
+package com.czareg.tasks.task;
 
 import com.czareg.notifications.NotificationMessageBuilder;
 import com.czareg.service.blocking.utils.BackendServiceException;

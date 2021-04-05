@@ -11,6 +11,10 @@ public class PropertiesManager {
         propertiesConfiguration.setThrowExceptionOnMissing(true);
     }
 
+    public int getThreadCount() {
+        return propertiesConfiguration.getInt("thread.count", 5);
+    }
+
     public String getBaseUrl() {
         String baseUrl = propertiesConfiguration.getString("backend.url");
         requireDefined(baseUrl, "Backend url");

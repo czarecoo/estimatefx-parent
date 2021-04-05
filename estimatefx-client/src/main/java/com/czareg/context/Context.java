@@ -5,25 +5,34 @@ import com.czareg.service.blocking.BackendBlockingService;
 import com.czareg.service.blocking.BackendBlockingServiceFactory;
 import com.czareg.service.notblocking.polling.PollingService;
 import com.czareg.tasks.TaskFactory;
+import com.czareg.tasks.TaskScheduler;
+import com.czareg.tasks.ThreadPoolManager;
 import javafx.stage.Stage;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Context {
+    private static final Logger LOG = LogManager.getLogger(Context.class);
     private String userName;
     private Integer sessionId;
     private Stage stage;
     private SceneManager sceneManager;
     private VoteContext voteContext;
     private CreateContext createContext;
-    private final TaskFactory taskFactory;
-    private final PollingServicesManager pollingServicesManager;
-    private final PropertiesManager propertiesManager;
+    private TaskFactory taskFactory;
+    private PollingServicesManager pollingServicesManager;
+    private PropertiesManager propertiesManager;
+    private ThreadPoolManager threadPoolManager;
+    private TaskScheduler taskScheduler;
 
     public Context() throws ConfigurationException {
         propertiesManager = new PropertiesManager();
         BackendBlockingServiceFactory backendBlockingServiceFactory = new BackendBlockingServiceFactory(propertiesManager);
         BackendBlockingService backendBlockingService = backendBlockingServiceFactory.create();
         taskFactory = new TaskFactory(backendBlockingService, this);
+        threadPoolManager = new ThreadPoolManager(propertiesManager);
+        taskScheduler = new TaskScheduler(taskFactory, threadPoolManager);
         pollingServicesManager = new PollingServicesManager();
     }
 
@@ -36,6 +45,8 @@ public class Context {
     }
 
     public void close() {
+        LOG.info("Closing context");
+        threadPoolManager.close();
         pollingServicesManager.close();
     }
 
@@ -71,10 +82,6 @@ public class Context {
         this.sessionId = sessionId;
     }
 
-    public TaskFactory getTaskFactory() {
-        return taskFactory;
-    }
-
     public void setVoteContext(VoteContext voteContext) {
         this.voteContext = voteContext;
     }
@@ -93,5 +100,9 @@ public class Context {
 
     public void setCreateContext(CreateContext createContext) {
         this.createContext = createContext;
+    }
+
+    public TaskScheduler getTaskScheduler() {
+        return taskScheduler;
     }
 }

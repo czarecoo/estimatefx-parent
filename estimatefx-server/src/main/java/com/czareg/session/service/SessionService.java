@@ -168,6 +168,7 @@ public class SessionService {
             throw new BadRequestException("User to kick is creator and cannot be kicked");
         }
         session.removeUser(userToBeKicked);
+        inactiveUserCleaningService.remove(sessionId, userToKick);
         return session;
     }
 

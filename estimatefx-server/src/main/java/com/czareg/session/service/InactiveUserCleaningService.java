@@ -7,6 +7,7 @@ import com.czareg.session.model.user.SessionUser;
 import com.czareg.session.repository.SessionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,15 @@ import java.util.*;
 @Service
 public class InactiveUserCleaningService {
     private static Logger LOGGER = LoggerFactory.getLogger(InactiveUserCleaningService.class);
-    private static final int MAX_HOURS_OF_INACTIVITY = 8;
     private HashMap<SessionUser, Instant> lastActivityMap;
     private SessionService sessionService;
     private SessionRepository sessionRepository;
     private SessionSink sessionSink;
+    private int hoursOfInactivityToDeleteUser;
 
-    public InactiveUserCleaningService(@Lazy SessionService sessionService, SessionRepository sessionRepository, SessionSink sessionSink) {
+    public InactiveUserCleaningService(@Value("${hours.of.inactivity.to.delete.user:8}") int hoursOfInactivityToDeleteUser,
+                                       @Lazy SessionService sessionService, SessionRepository sessionRepository, SessionSink sessionSink) {
+        this.hoursOfInactivityToDeleteUser = hoursOfInactivityToDeleteUser;
         lastActivityMap = new HashMap<>();
         this.sessionService = sessionService;
         this.sessionRepository = sessionRepository;
@@ -41,8 +44,9 @@ public class InactiveUserCleaningService {
         lastActivityMap.remove(sessionUser);
     }
 
-    @Scheduled(cron = "0 0 * ? * *") //every hour
+    @Scheduled(cron = "${user.activity.check.cron}")
     public void clean() {
+        LOGGER.info("Logging user activity");
         LOGGER.info(lastActivityMap.toString());
         List<SessionUser> sessionUsersToClean = findInactiveUsers();
         deleteInactiveUsers(sessionUsersToClean);
@@ -53,7 +57,7 @@ public class InactiveUserCleaningService {
         for (Map.Entry<SessionUser, Instant> entry : lastActivityMap.entrySet()) {
             SessionUser sessionUser = entry.getKey();
             Instant lastActivity = entry.getValue();
-            if (Duration.between(lastActivity, Instant.now()).toHours() >= MAX_HOURS_OF_INACTIVITY) {
+            if (Duration.between(lastActivity, Instant.now()).toHours() >= hoursOfInactivityToDeleteUser) {
                 sessionUsersToClean.add(sessionUser);
             }
         }
@@ -71,7 +75,7 @@ public class InactiveUserCleaningService {
 
     public void cleanUser(SessionUser sessionUser) {
         try {
-            LOGGER.info("Removing user {} from session {}, last active over {} hours.", sessionUser.getName(), sessionUser.getSessionId(), MAX_HOURS_OF_INACTIVITY);
+            LOGGER.info("Removing user {} from session {}, last active over {} hours.", sessionUser.getName(), sessionUser.getSessionId(), hoursOfInactivityToDeleteUser);
             sessionService.leave(sessionUser.getSessionId(), sessionUser.getName());
         } catch (NotExistsException e) {
             LOGGER.error("{} does not exist", sessionUser, e);

@@ -77,7 +77,7 @@ public class VoteController implements ContextAware {
     private void handleLeaveButtonClicked() {
         LOG.info("Leave session button clicked");
         sessionPollingService.close();
-        new Thread(context.getTaskFactory().createLeaveSessionTask()).start();
+        context.getTaskScheduler().scheduleLeaveSessionTask();
         context.getSceneManager().setScene(JOIN);
     }
 
@@ -90,25 +90,25 @@ public class VoteController implements ContextAware {
         }
         String voteValue = ((Button) event.getSource()).getText();
         LOG.info("Vote value {}", voteValue);
-        new Thread(context.getTaskFactory().createVoteOnSessionTask(voteValue)).start();
+        context.getTaskScheduler().scheduleVoteOnSessionTask(voteValue);
     }
 
     @FXML
     private void handleStartButtonClicked() {
         LOG.info("Start voting button clicked");
-        new Thread(context.getTaskFactory().createStartVotingOnSessionTask()).start();
+        context.getTaskScheduler().scheduleStartVotingOnSessionTask();
     }
 
     @FXML
     private void handleStopButtonClicked() {
         LOG.info("Stop voting button clicked");
-        new Thread(context.getTaskFactory().createStopVotingOnSessionTask()).start();
+        context.getTaskScheduler().scheduleStopVotingOnSessionTask();
     }
 
     @FXML
     private void handleStealCreatorButtonClicked() {
         LOG.info("handleStealCreatorButtonClicked");
-        new Thread(context.getTaskFactory().createStealCreatorTask()).start();
+        context.getTaskScheduler().scheduleStealCreatorTask();
     }
 
     @FXML
@@ -120,7 +120,7 @@ public class VoteController implements ContextAware {
             LOG.warn("no user selected");
             return;
         }
-        new Thread(context.getTaskFactory().createPassCreatorTask(selectedItem.getName())).start();
+        context.getTaskScheduler().schedulePassCreatorTask(selectedItem.getName());
     }
 
     @FXML
@@ -131,6 +131,6 @@ public class VoteController implements ContextAware {
             LOG.warn("no user selected");
             return;
         }
-        new Thread(context.getTaskFactory().createKickUserTask(selectedItem.getName())).start();
+        context.getTaskScheduler().scheduleKickUserTask(selectedItem.getName());
     }
 }

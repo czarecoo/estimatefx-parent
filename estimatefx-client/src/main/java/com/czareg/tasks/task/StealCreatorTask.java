@@ -1,4 +1,4 @@
-package com.czareg.tasks;
+package com.czareg.tasks.task;
 
 import com.czareg.context.Context;
 import com.czareg.service.blocking.BackendBlockingService;
@@ -6,12 +6,12 @@ import com.czareg.service.blocking.utils.BackendServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class StartVotingOnSessionTask extends CustomTask {
-    private static final Logger LOG = LogManager.getLogger(StartVotingOnSessionTask.class);
+public class StealCreatorTask extends CustomTask {
+    private static final Logger LOG = LogManager.getLogger(StealCreatorTask.class);
     private Context context;
     private BackendBlockingService backendBlockingService;
 
-    public StartVotingOnSessionTask(Context context, BackendBlockingService backendBlockingService) {
+    public StealCreatorTask(Context context, BackendBlockingService backendBlockingService) {
         super(LOG);
         this.context = context;
         this.backendBlockingService = backendBlockingService;
@@ -21,7 +21,7 @@ public class StartVotingOnSessionTask extends CustomTask {
     void process() throws BackendServiceException {
         String userName = context.getUserName();
         int sessionId = context.getSessionId();
-        backendBlockingService.startVotingOnSession(sessionId, userName);
-        LOG.info("Started voting on session");
+        backendBlockingService.stealCreator(sessionId, userName);
+        LOG.info("Stole creator");
     }
 }

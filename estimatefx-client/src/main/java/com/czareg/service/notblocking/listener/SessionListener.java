@@ -34,7 +34,7 @@ public class SessionListener extends Listener {
         boolean hasUser = hasUser(userName, sessionDTO);
         if (!hasUser) {
             String developerMessage = "You are no longer in session";
-            LOG.error(developerMessage);
+            LOG.info(developerMessage);
             NotificationMessageBuilder notificationMessageBuilder = new NotificationMessageBuilder();
             notificationMessageBuilder.developerMessage(developerMessage);
             notificationMessageBuilder.remediation("Try leaving and rejoining session.");

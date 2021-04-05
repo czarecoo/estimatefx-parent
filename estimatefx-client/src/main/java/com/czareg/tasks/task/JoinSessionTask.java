@@ -1,29 +1,36 @@
-package com.czareg.tasks;
+package com.czareg.tasks.task;
 
 import com.czareg.context.Context;
+import com.czareg.dto.SessionDTO;
 import com.czareg.service.blocking.BackendBlockingService;
 import com.czareg.service.blocking.utils.BackendServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class VoteOnSessionTask extends CustomTask {
-    private static final Logger LOG = LogManager.getLogger(VoteOnSessionTask.class);
+import static com.czareg.scene.fxml.FxmlScene.VOTE;
+
+public class JoinSessionTask extends CustomTask {
+    private static final Logger LOG = LogManager.getLogger(JoinSessionTask.class);
+    private SessionDTO session;
     private Context context;
     private BackendBlockingService backendBlockingService;
-    private String voteValue;
 
-    public VoteOnSessionTask(Context context, BackendBlockingService backendBlockingService, String voteValue) {
+    public JoinSessionTask(Context context, BackendBlockingService backendBlockingService) {
         super(LOG);
         this.context = context;
         this.backendBlockingService = backendBlockingService;
-        this.voteValue = voteValue;
     }
 
     @Override
     void process() throws BackendServiceException {
         String userName = context.getUserName();
         int sessionId = context.getSessionId();
-        backendBlockingService.voteOnSession(sessionId, userName, voteValue);
-        LOG.info("Voted on session");
+        session = backendBlockingService.joinSession(sessionId, userName);
+        LOG.info("Received join session from backend: {}", session);
+    }
+
+    @Override
+    protected void succeeded() {
+        context.getSceneManager().setScene(VOTE);
     }
 }

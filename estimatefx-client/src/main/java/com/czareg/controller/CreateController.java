@@ -52,6 +52,6 @@ public class CreateController implements ContextAware {
         LOG.info("Create session button clicked");
         String userName = nameTextField.getText();
         context.setUserName(userName);
-        new Thread(context.getTaskFactory().createCreateSessionTask()).start();
+        context.getTaskScheduler().scheduleCreateSessionTask();
     }
 }

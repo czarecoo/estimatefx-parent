@@ -35,7 +35,7 @@ public class JoinController implements ContextAware {
         userNameTextFieldBooleanBinding = new UserNameTextFieldBooleanBinding(nameTextField);
         sessionChoiceBoxBooleanBinding = new SessionChoiceBoxBooleanBinding(existingSessionsChoiceBox);
         joinSessionButton.disableProperty().bind(userNameTextFieldBooleanBinding.or(sessionChoiceBoxBooleanBinding));
-        new Thread(context.getTaskFactory().createFillSessionsChoiceBoxTask(existingSessionsChoiceBox)).start();
+        context.getTaskScheduler().scheduleFillSessionsChoiceBoxTask(existingSessionsChoiceBox);
     }
 
     @FXML
@@ -56,13 +56,12 @@ public class JoinController implements ContextAware {
         }
         context.setUserName(userName);
         context.setSessionId(selectedItem.getSessionId());
-
-        new Thread(context.getTaskFactory().createJoinSessionTask()).start();
+        context.getTaskScheduler().scheduleJoinSessionTask();
     }
 
     @FXML
     private void handleRefreshSessionsButtonClicked() {
         LOG.info("Refresh sessions button clicked");
-        new Thread(context.getTaskFactory().createFillSessionsChoiceBoxTask(existingSessionsChoiceBox)).start();
+        context.getTaskScheduler().scheduleFillSessionsChoiceBoxTask(existingSessionsChoiceBox);
     }
 }

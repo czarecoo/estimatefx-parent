@@ -1,4 +1,4 @@
-package com.czareg.tasks;
+package com.czareg.tasks.task;
 
 import com.czareg.dto.SessionIdentifierDTO;
 import com.czareg.model.SessionIdentifier;
