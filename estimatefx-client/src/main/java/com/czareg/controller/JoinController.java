@@ -40,12 +40,13 @@ public class JoinController implements ContextAware {
 
     @FXML
     private void handleCreateSessionButtonClicked() {
-        context.getSceneManager().setScene(CREATE);
         LOG.info("Switch to create session button clicked");
+        context.getSceneManager().setScene(CREATE);
     }
 
     @FXML
     private void handleJoinSessionButtonClicked() {
+        LOG.info("Join session button clicked");
         String userName = nameTextField.getText();
 
         SessionIdentifier selectedItem = existingSessionsChoiceBox.getSelectionModel().getSelectedItem();
@@ -57,12 +58,11 @@ public class JoinController implements ContextAware {
         context.setSessionId(selectedItem.getSessionId());
 
         new Thread(context.getTaskFactory().createJoinSessionTask()).start();
-        LOG.info("Join session button clicked");
     }
 
     @FXML
     private void handleRefreshSessionsButtonClicked() {
-        new Thread(context.getTaskFactory().createFillSessionsChoiceBoxTask(existingSessionsChoiceBox)).start();
         LOG.info("Refresh sessions button clicked");
+        new Thread(context.getTaskFactory().createFillSessionsChoiceBoxTask(existingSessionsChoiceBox)).start();
     }
 }

@@ -150,7 +150,7 @@ public class SessionService {
         Optional<User> oldCreator = findCreator(session);
         User newCreator = findUser(userName, session);
         if (newCreator.isCreator()) {
-            throw new BadRequestException("User is already a creator");
+            throw new BadRequestException("User is already creator");
         }
         oldCreator.ifPresent(user -> user.setType(JOINER));
         newCreator.setType(CREATOR);
@@ -161,11 +161,11 @@ public class SessionService {
         Session session = getSession(sessionId);
         User creator = findUser(userName, session);
         if (!creator.isCreator()) {
-            throw new BadRequestException("User " + userName + " is not creator");
+            throw new BadRequestException("User issuing kicking is not creator");
         }
         User userToBeKicked = findUser(userToKick, session);
         if (userToBeKicked.isCreator()) {
-            throw new BadRequestException("User " + userToKick + " is creator and cannot be kicked");
+            throw new BadRequestException("User to kick is creator and cannot be kicked");
         }
         session.removeUser(userToBeKicked);
         return session;

@@ -43,15 +43,15 @@ public class CreateController implements ContextAware {
 
     @FXML
     private void handleJoinSessionButtonClicked() {
-        context.getSceneManager().setScene(JOIN);
         LOG.info("Switch to join session button clicked");
+        context.getSceneManager().setScene(JOIN);
     }
 
     @FXML
     private void handleCreateSessionButtonClicked() {
+        LOG.info("Create session button clicked");
         String userName = nameTextField.getText();
         context.setUserName(userName);
         new Thread(context.getTaskFactory().createCreateSessionTask()).start();
-        LOG.info("Create session button clicked");
     }
 }

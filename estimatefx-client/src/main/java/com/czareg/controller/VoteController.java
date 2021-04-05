@@ -55,6 +55,9 @@ public class VoteController implements ContextAware {
         startButton.setDisable(true);
         stopButton.setDisable(true);
         buttonsHBox.setDisable(true);
+        stealCreatorButton.setDisable(true);
+        passCreatorButton.setDisable(true);
+        kickUserButton.setDisable(true);
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         voteColumn.setCellValueFactory(new PropertyValueFactory<>("voteValue"));
@@ -64,7 +67,7 @@ public class VoteController implements ContextAware {
     public void initialize(Context context) {
         this.context = context;
         voteContext = new VoteContext(startButton, stopButton, buttonsHBox, userStatusLabel, sessionStatusLabel,
-                usersStatusLabel, votingStatusLabel, voteTableView);
+                usersStatusLabel, votingStatusLabel, voteTableView, stealCreatorButton, passCreatorButton, kickUserButton);
         context.setVoteContext(voteContext);
         SessionListener sessionListener = new SessionListener(context);
         sessionPollingService = new SessionPollingService(context, sessionListener);
@@ -72,20 +75,21 @@ public class VoteController implements ContextAware {
 
     @FXML
     private void handleLeaveButtonClicked() {
+        LOG.info("Leave session button clicked");
         sessionPollingService.close();
         new Thread(context.getTaskFactory().createLeaveSessionTask()).start();
-        LOG.info("Leave session button clicked");
         context.getSceneManager().setScene(JOIN);
     }
 
     @FXML
     private void handleVoteButtonClicked(ActionEvent event) {
+        LOG.info("Vote button clicked");
         if (!(event.getSource() instanceof Button)) {
-            throw new IllegalStateException("Handle was assigned to wrong UI element");
+            LOG.warn("Handle was assigned to wrong UI element");
+            return;
         }
         String voteValue = ((Button) event.getSource()).getText();
-
-        LOG.info("Vote {} button clicked", voteValue);
+        LOG.info("Vote value {}", voteValue);
         new Thread(context.getTaskFactory().createVoteOnSessionTask(voteValue)).start();
     }
 
@@ -104,7 +108,6 @@ public class VoteController implements ContextAware {
     @FXML
     private void handleStealCreatorButtonClicked() {
         LOG.info("handleStealCreatorButtonClicked");
-
         new Thread(context.getTaskFactory().createStealCreatorTask()).start();
     }
 

@@ -11,13 +11,13 @@ public final class NetworkUtils {
         if (throwable == null) {
             return false;
         }
-        return throwable instanceof SocketException && "Socket closed".equals(throwable.getMessage());
+        return throwable instanceof SocketException && "Socket closed".equalsIgnoreCase(throwable.getMessage());
     }
 
     public static boolean exceptionCausedByCancelingEventSource(Throwable throwable) {
         if (throwable == null) {
             return false;
         }
-        return throwable instanceof IOException && "Canceled".equals(throwable.getMessage());
+        return throwable instanceof IOException && "Canceled".equalsIgnoreCase(throwable.getMessage());
     }
 }
