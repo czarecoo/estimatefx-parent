@@ -12,8 +12,9 @@
          <children>
             <Label fx:id="userStatusLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                    minHeight="-Infinity" minWidth="200.0" text="User Status"/>
-            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                    onAction="#handleStealCreatorButtonClicked" text="Steal Creator" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="stealCreatorButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                    mnemonicParsing="false" onAction="#handleStealCreatorButtonClicked" text="Steal Creator"
+                    HBox.hgrow="ALWAYS"/>
          </children>
       </HBox>
       <Separator prefWidth="200.0"/>
@@ -73,8 +74,10 @@
          <contextMenu>
             <ContextMenu>
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#handlePassCreatorButtonClicked" text="Pass Creator"/>
-                  <MenuItem mnemonicParsing="false" onAction="#handleKickUserButtonClicked" text="Kick User"/>
+                  <MenuItem fx:id="passCreatorButton" mnemonicParsing="false" onAction="#handlePassCreatorButtonClicked"
+                            text="Pass Creator"/>
+                  <MenuItem fx:id="kickUserButton" mnemonicParsing="false" onAction="#handleKickUserButtonClicked"
+                            text="Kick User"/>
                </items>
             </ContextMenu>
          </contextMenu>

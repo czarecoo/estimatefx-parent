@@ -233,4 +233,80 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
                     .build();
         }
     }
+
+    @Override
+    public void passCreator(int sessionId, String oldCreator, String newCreator) throws BackendServiceException {
+        try {
+            Response<Void> sessionDTOResponse = backendBlockingApi.passCreator(sessionId, oldCreator, newCreator).execute();
+            if (sessionDTOResponse.isSuccessful()) {
+                return;
+            }
+            throw new BackendServiceExceptionBuilder()
+                    .failedTo("pass creator")
+                    .parameter("sessionId", sessionId)
+                    .parameter("oldCreator", oldCreator)
+                    .parameter("newCreator", newCreator)
+                    .serverMessage(sessionDTOResponse)
+                    .build();
+
+        } catch (IOException e) {
+            throw new BackendServiceExceptionBuilder()
+                    .failedTo("pass creator")
+                    .parameter("sessionId", sessionId)
+                    .parameter("oldCreator", oldCreator)
+                    .parameter("newCreator", newCreator)
+                    .cause(e)
+                    .build();
+        }
+    }
+
+    @Override
+    public void stealCreator(int sessionId, String userName) throws BackendServiceException {
+        try {
+            Response<Void> sessionDTOResponse = backendBlockingApi.stealCreator(sessionId, userName).execute();
+            if (sessionDTOResponse.isSuccessful()) {
+                return;
+            }
+            throw new BackendServiceExceptionBuilder()
+                    .failedTo("steal creator")
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
+                    .serverMessage(sessionDTOResponse)
+                    .build();
+
+        } catch (IOException e) {
+            throw new BackendServiceExceptionBuilder()
+                    .failedTo("steal creator")
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
+                    .cause(e)
+                    .build();
+        }
+    }
+
+    @Override
+    public void kickUser(int sessionId, String userName, String userToKick) throws BackendServiceException {
+        try {
+            Response<Void> sessionDTOResponse = backendBlockingApi.kickUser(sessionId, userName, userToKick).execute();
+            if (sessionDTOResponse.isSuccessful()) {
+                return;
+            }
+            throw new BackendServiceExceptionBuilder()
+                    .failedTo("kick user")
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
+                    .parameter("userToKick", userToKick)
+                    .serverMessage(sessionDTOResponse)
+                    .build();
+
+        } catch (IOException e) {
+            throw new BackendServiceExceptionBuilder()
+                    .failedTo("kick user")
+                    .parameter("sessionId", sessionId)
+                    .parameter("userName", userName)
+                    .parameter("userToKick", userToKick)
+                    .cause(e)
+                    .build();
+        }
+    }
 }

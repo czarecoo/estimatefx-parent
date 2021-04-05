@@ -9,16 +9,11 @@ import com.czareg.service.notblocking.polling.SessionPollingService;
 import com.czareg.stage.ContextAware;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Optional;
 
 import static com.czareg.scene.fxml.FxmlScene.JOIN;
 
@@ -48,6 +43,12 @@ public class VoteController implements ContextAware {
     private TableColumn<Vote, String> nameColumn;
     @FXML
     private TableColumn<Vote, VoteValue> voteColumn;
+    @FXML
+    private Button stealCreatorButton;
+    @FXML
+    private MenuItem passCreatorButton;
+    @FXML
+    private MenuItem kickUserButton;
 
     @FXML
     public void initialize() {
@@ -73,8 +74,8 @@ public class VoteController implements ContextAware {
     private void handleLeaveButtonClicked() {
         sessionPollingService.close();
         new Thread(context.getTaskFactory().createLeaveSessionTask()).start();
-        context.getSceneManager().setScene(JOIN);
         LOG.info("Leave session button clicked");
+        context.getSceneManager().setScene(JOIN);
     }
 
     @FXML
@@ -84,42 +85,49 @@ public class VoteController implements ContextAware {
         }
         String voteValue = ((Button) event.getSource()).getText();
 
-        new Thread(context.getTaskFactory().createVoteOnSessionTask(voteValue)).start();
         LOG.info("Vote {} button clicked", voteValue);
+        new Thread(context.getTaskFactory().createVoteOnSessionTask(voteValue)).start();
     }
 
     @FXML
     private void handleStartButtonClicked() {
-        new Thread(context.getTaskFactory().createStartVotingOnSessionTask()).start();
         LOG.info("Start voting button clicked");
+        new Thread(context.getTaskFactory().createStartVotingOnSessionTask()).start();
     }
 
     @FXML
     private void handleStopButtonClicked() {
-        new Thread(context.getTaskFactory().createStopVotingOnSessionTask()).start();
         LOG.info("Stop voting button clicked");
+        new Thread(context.getTaskFactory().createStopVotingOnSessionTask()).start();
     }
 
     @FXML
     private void handleStealCreatorButtonClicked() {
         LOG.info("handleStealCreatorButtonClicked");
+
+        new Thread(context.getTaskFactory().createStealCreatorTask()).start();
     }
 
     @FXML
     private void handlePassCreatorButtonClicked() {
         LOG.info("handlePassCreatorButtonClicked");
 
-        Optional.ofNullable(voteTableView.getSelectionModel().getSelectedItem())
-                .map(Vote::getName)
-                .ifPresent(LOG::info);
+        Vote selectedItem = voteTableView.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) {
+            LOG.warn("no user selected");
+            return;
+        }
+        new Thread(context.getTaskFactory().createPassCreatorTask(selectedItem.getName())).start();
     }
 
     @FXML
     private void handleKickUserButtonClicked() {
         LOG.info("handleKickUserButtonClicked");
-
-        Optional.ofNullable(voteTableView.getSelectionModel().getSelectedItem())
-                .map(Vote::getName)
-                .ifPresent(LOG::info);
+        Vote selectedItem = voteTableView.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) {
+            LOG.warn("no user selected");
+            return;
+        }
+        new Thread(context.getTaskFactory().createKickUserTask(selectedItem.getName())).start();
     }
 }

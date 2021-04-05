@@ -168,13 +168,6 @@ public class SessionListener extends Listener {
                 voteTableView.getColumns().forEach((column) -> column.setSortable(true));
                 updateVoteTableDoNotForceOrder();
                 break;
-            case CLOSED:
-                startButton.setDisable(true);
-                stopButton.setDisable(true);
-                buttonsHBox.setDisable(true);
-                votingStatusLabel.setText("Session is closed");
-                updateVoteTableDoNotForceOrder();
-                break;
             default:
                 throw new IllegalArgumentException("Unknown state");
         }

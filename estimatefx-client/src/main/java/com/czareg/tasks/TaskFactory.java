@@ -41,4 +41,16 @@ public class TaskFactory {
     public Runnable createVoteOnSessionTask(String voteValue) {
         return new VoteOnSessionTask(context, backendBlockingService, voteValue);
     }
+
+    public Runnable createKickUserTask(String userToKick) {
+        return new KickUserTask(context, backendBlockingService, userToKick);
+    }
+
+    public Runnable createPassCreatorTask(String newCreator) {
+        return new PassCreatorTask(context, backendBlockingService, newCreator);
+    }
+
+    public Runnable createStealCreatorTask() {
+        return new StealCreatorTask(context, backendBlockingService);
+    }
 }

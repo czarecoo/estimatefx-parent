@@ -27,4 +27,10 @@ public interface BackendBlockingService {
     void leaveSession(int sessionId, String userName) throws BackendServiceException;
 
     void voteOnSession(int sessionId, String userName, String voteValue) throws BackendServiceException;
+
+    void passCreator(int sessionId, String oldCreator, String newCreator) throws BackendServiceException;
+
+    void stealCreator(int sessionId, String userName) throws BackendServiceException;
+
+    void kickUser(int sessionId, String userName, String userToKick) throws BackendServiceException;
 }

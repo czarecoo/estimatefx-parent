@@ -37,4 +37,13 @@ public interface BackendBlockingApi {
 
     @PUT("/service/v1/stopVotingOnSession/{sessionId}")
     Call<Void> stopVotingOnSession(@Path("sessionId") int sessionId, @Query(value = "userName") String userName);
+
+    @PUT("/service/v1/passCreator/{sessionId}")
+    Call<Void> passCreator(@Path("sessionId") int sessionId, @Query(value = "oldCreator") String oldCreator, @Query(value = "newCreator") String newCreator);
+
+    @PUT("/service/v1/stealCreator/{sessionId}")
+    Call<Void> stealCreator(@Path("sessionId") int sessionId, @Query(value = "userName") String userName);
+
+    @PUT("/service/v1/kickUser/{sessionId}")
+    Call<Void> kickUser(@Path("sessionId") int sessionId, @Query(value = "userName") String userName, @Query(value = "userToKick") String userToKick);
 }
