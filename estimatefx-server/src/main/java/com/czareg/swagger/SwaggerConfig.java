@@ -29,7 +29,7 @@ public class SwaggerConfig {
                 .contact(new Contact("Cezary Witkowski",
                         "https://www.linkedin.com/in/cezary-witkowski-4032491b8/",
                         "czarecoo@gmail.com"))
-                .version("v1.0")
+                .version("v3.0")
                 .build();
     }
 }

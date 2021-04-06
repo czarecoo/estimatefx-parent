@@ -19,3 +19,11 @@ estimatefx-client\target\jfx\native\estimatefx-client-1.0
 <h3>To produce fat jar server (20 MB)</h3>
 mvn install<br>
 estimatefx-server/target/estimatefx-server-1.0.jar
+
+<h2>Versions</h2>
+- mvn versions:set -DnewVersion=x
+- mvn versions:commit
+
+<h2>Double click start win10</h2>
+Computer\HKEY_CLASSES_ROOT\jarfile\shell\open\command
+"C:\Program Files\Java\jdk1.8.0_261\bin\java.exe" -jar "%1" %*

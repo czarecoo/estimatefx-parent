@@ -2,24 +2,15 @@ package com.czareg.service.notblocking.listener;
 
 import com.czareg.context.Context;
 import com.czareg.context.VoteContext;
-import com.czareg.dto.SessionDTO;
 import com.czareg.model.Vote;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.List;
 
 public class InactiveVoteViewUpdater {
-    private static final Logger LOG = LogManager.getLogger(InactiveVoteViewUpdater.class);
-
-    private SessionDTO sessionDTO;
     private String userName;
-    private boolean isCreator;
     private Button startButton;
     private Button stopButton;
     private HBox buttonsHBox;
@@ -28,13 +19,11 @@ public class InactiveVoteViewUpdater {
     private Label usersStatusLabel;
     private Label votingStatusLabel;
     private TableView<Vote> voteTableView;
-    private List<Vote> votes;
     private Button stealCreatorButton;
     private MenuItem kickUserButton;
     private MenuItem passCreatorButton;
 
-    public InactiveVoteViewUpdater(Context context, SessionDTO sessionDTO) {
-        this.sessionDTO = sessionDTO;
+    public InactiveVoteViewUpdater(Context context) {
         userName = context.getUserName();
         VoteContext voteContext = context.getVoteContext();
         startButton = voteContext.getStartButton();

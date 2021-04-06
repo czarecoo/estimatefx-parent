@@ -10,7 +10,7 @@ import com.czareg.session.repository.SessionRepository;
 import com.czareg.validator.UserNameValidator;
 import com.czareg.validator.ValidationResult;
 import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +20,7 @@ import static com.czareg.session.model.State.WAITING;
 import static com.czareg.session.model.user.UserType.CREATOR;
 import static com.czareg.session.model.user.UserType.JOINER;
 
-@Component
+@Service
 public class SessionService {
     private SessionRepository sessionRepository;
     private ObjectFactory<Session> sessionFactory;

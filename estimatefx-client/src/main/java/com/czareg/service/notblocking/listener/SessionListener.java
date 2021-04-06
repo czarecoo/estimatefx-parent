@@ -41,7 +41,7 @@ public class SessionListener extends Listener {
             showErrorNotificationFromCustomThread(notificationMessageBuilder.build());
 
             Platform.runLater(() -> {
-                InactiveVoteViewUpdater inactiveVoteViewUpdater = new InactiveVoteViewUpdater(context, sessionDTO);
+                InactiveVoteViewUpdater inactiveVoteViewUpdater = new InactiveVoteViewUpdater(context);
                 inactiveVoteViewUpdater.update();
             });
             return;

@@ -8,7 +8,6 @@ public class CreateContext {
     private final CheckBox passCreatorWhenLeavingCheckBox;
 
     public CreateContext(CheckBox allowPassingCreatorCheckBox, CheckBox allowStealingCreatorCheckBox, CheckBox passCreatorWhenLeavingCheckBox) {
-
         this.allowPassingCreatorCheckBox = allowPassingCreatorCheckBox;
         this.allowStealingCreatorCheckBox = allowStealingCreatorCheckBox;
         this.passCreatorWhenLeavingCheckBox = passCreatorWhenLeavingCheckBox;

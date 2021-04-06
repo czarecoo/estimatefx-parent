@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 
 @RestController
@@ -59,7 +59,7 @@ public class SessionController {
         List<Session> sessions = sessionService.getSessions();
         return sessions.stream()
                 .map(Session::toSessionDTO)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @GetMapping(value = "/pollSessions", produces = TEXT_EVENT_STREAM_VALUE)
@@ -72,7 +72,7 @@ public class SessionController {
         List<Session> sessions = sessionService.getSessions();
         return sessions.stream()
                 .map(Session::toSessionIdentifierDTO)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @PutMapping(value = "/voteOnSession/{sessionId}")

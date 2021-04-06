@@ -23,7 +23,7 @@ public class ThreadPoolManager implements AutoCloseable {
 
     @Override
     public void close() {
-        LOG.info("Closing threadpool");
+        LOG.info("Closing thread pool");
         threadPool.shutdownNow();
     }
 }

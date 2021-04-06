@@ -14,19 +14,19 @@ public class TaskScheduler {
         this.threadPoolManager = threadPoolManager;
     }
 
-    public void scheduleCreateSessionTask() {
+    public Future<?> scheduleCreateSessionTask() {
         Runnable createSessionTask = taskFactory.createCreateSessionTask();
-        threadPoolManager.submit(createSessionTask);
+        return threadPoolManager.submit(createSessionTask);
     }
 
-    public void scheduleJoinSessionTask() {
+    public Future<?> scheduleJoinSessionTask() {
         Runnable joinSessionTask = taskFactory.createJoinSessionTask();
-        threadPoolManager.submit(joinSessionTask);
+        return threadPoolManager.submit(joinSessionTask);
     }
 
-    public void scheduleFillSessionsChoiceBoxTask(ChoiceBox<SessionIdentifier> sessionChoiceBox) {
+    public Future<?> scheduleFillSessionsChoiceBoxTask(ChoiceBox<SessionIdentifier> sessionChoiceBox) {
         Runnable fillSessionsChoiceBoxTask = taskFactory.createFillSessionsChoiceBoxTask(sessionChoiceBox);
-        threadPoolManager.submit(fillSessionsChoiceBoxTask);
+        return threadPoolManager.submit(fillSessionsChoiceBoxTask);
     }
 
     public Future<?> scheduleLeaveSessionTask() {
@@ -34,33 +34,33 @@ public class TaskScheduler {
         return threadPoolManager.submit(leaveSessionTask);
     }
 
-    public void scheduleStartVotingOnSessionTask() {
+    public Future<?> scheduleStartVotingOnSessionTask() {
         Runnable startVotingOnSessionTask = taskFactory.createStartVotingOnSessionTask();
-        threadPoolManager.submit(startVotingOnSessionTask);
+        return threadPoolManager.submit(startVotingOnSessionTask);
     }
 
-    public void scheduleStopVotingOnSessionTask() {
+    public Future<?> scheduleStopVotingOnSessionTask() {
         Runnable stopVotingOnSessionTask = taskFactory.createStopVotingOnSessionTask();
-        threadPoolManager.submit(stopVotingOnSessionTask);
+        return threadPoolManager.submit(stopVotingOnSessionTask);
     }
 
-    public void scheduleVoteOnSessionTask(String voteValue) {
+    public Future<?> scheduleVoteOnSessionTask(String voteValue) {
         Runnable voteOnSessionTask = taskFactory.createVoteOnSessionTask(voteValue);
-        threadPoolManager.submit(voteOnSessionTask);
+        return threadPoolManager.submit(voteOnSessionTask);
     }
 
-    public void scheduleKickUserTask(String userToKick) {
+    public Future<?> scheduleKickUserTask(String userToKick) {
         Runnable kickUserTask = taskFactory.createKickUserTask(userToKick);
-        threadPoolManager.submit(kickUserTask);
+        return threadPoolManager.submit(kickUserTask);
     }
 
-    public void schedulePassCreatorTask(String newCreator) {
+    public Future<?> schedulePassCreatorTask(String newCreator) {
         Runnable passCreatorTask = taskFactory.createPassCreatorTask(newCreator);
-        threadPoolManager.submit(passCreatorTask);
+        return threadPoolManager.submit(passCreatorTask);
     }
 
-    public void scheduleStealCreatorTask() {
+    public Future<?> scheduleStealCreatorTask() {
         Runnable stealCreatorTask = taskFactory.createStealCreatorTask();
-        threadPoolManager.submit(stealCreatorTask);
+        return threadPoolManager.submit(stealCreatorTask);
     }
 }
