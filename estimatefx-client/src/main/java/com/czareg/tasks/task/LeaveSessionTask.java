@@ -41,7 +41,7 @@ public class LeaveSessionTask extends Task<Void> {
     }
 
     private boolean hasUser(String userName, SessionDTO sessionDTO) {
-        return sessionDTO.getUsers().stream()
+        return sessionDTO.getUserDTOs().stream()
                 .anyMatch((userDTO -> userDTO.getUserName().equals(userName)));
     }
 }

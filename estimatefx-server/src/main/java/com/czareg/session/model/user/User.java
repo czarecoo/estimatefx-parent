@@ -1,47 +1,28 @@
 package com.czareg.session.model.user;
 
 import com.czareg.dto.UserDTO;
+import com.czareg.dto.UserType;
+import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import static com.czareg.session.model.user.UserType.CREATOR;
-import static com.czareg.session.model.user.UserType.JOINER;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
+@Data
 @Component
 @Scope(SCOPE_PROTOTYPE)
 public class User {
     private String name;
     private UserType userType;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public static List<UserDTO> mapUsersToDTOs(List<User> users) {
-        return users.stream()
-                .map(User::toDTO)
-                .collect(Collectors.toList());
-    }
-
     public boolean isCreator() {
-        return userType == CREATOR;
+        return getUserType().isCreator();
     }
 
     public boolean isJoiner() {
-        return userType == JOINER;
-    }
-
-    public void setType(UserType userType) {
-        this.userType = userType;
+        return getUserType().isJoiner();
     }
 
     @Override
@@ -57,15 +38,7 @@ public class User {
         return Objects.hash(name);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", type=" + userType +
-                '}';
-    }
-
     public UserDTO toDTO() {
-        return new UserDTO(name, userType.toDTO());
+        return new UserDTO(name, userType);
     }
 }

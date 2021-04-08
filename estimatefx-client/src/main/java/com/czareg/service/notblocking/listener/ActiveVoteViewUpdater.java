@@ -4,8 +4,10 @@ import com.czareg.context.Context;
 import com.czareg.context.VoteContext;
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.UserDTO;
-import com.czareg.dto.UserTypeDTO;
+import com.czareg.dto.UserType;
+import com.czareg.dto.VoteDTO;
 import com.czareg.model.Vote;
+import com.czareg.model.VoteValue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,9 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import static com.czareg.dto.UserTypeDTO.CREATOR;
+import static com.czareg.dto.UserType.CREATOR;
 
 public class ActiveVoteViewUpdater {
     private static final Logger LOG = LogManager.getLogger(ActiveVoteViewUpdater.class);
@@ -75,11 +76,11 @@ public class ActiveVoteViewUpdater {
     }
 
     private String findUserType(String userName) {
-        return sessionDTO.getUsers().stream()
+        return sessionDTO.getUserDTOs().stream()
                 .filter(userDTO -> userDTO.getUserName().equals(userName))
                 .findFirst()
                 .map(UserDTO::getUserType)
-                .map(UserTypeDTO::toString)
+                .map(UserType::toString)
                 .map(String::toLowerCase)
                 .orElse("unknown");
     }
@@ -91,13 +92,13 @@ public class ActiveVoteViewUpdater {
     }
 
     private void updateUsersStatusLabel() {
-        int usersCount = sessionDTO.getUsers().size();
+        int usersCount = sessionDTO.getUserDTOs().size();
         String sessionStatus = String.format("Active users: %d", usersCount);
         usersStatusLabel.setText(sessionStatus);
     }
 
     private boolean isCreator() {
-        for (UserDTO user : sessionDTO.getUsers()) {
+        for (UserDTO user : sessionDTO.getUserDTOs()) {
             if (user.getUserName().equals(userName)) {
                 return user.getUserType().equals(CREATOR);
             }
@@ -146,7 +147,7 @@ public class ActiveVoteViewUpdater {
     }
 
     private double getLastSessionVoteAverage() {
-        return sessionDTO.getVotes().values().stream()
+        return sessionDTO.getVoteValues().stream()
                 .filter(vote -> vote.matches("\\d+"))
                 .mapToInt(Integer::valueOf)
                 .average()
@@ -171,8 +172,10 @@ public class ActiveVoteViewUpdater {
 
     private List<Vote> createVoteList() {
         List<Vote> votes = new ArrayList<>();
-        for (Map.Entry<String, String> entry : sessionDTO.getVotes().entrySet()) {
-            Vote vote = new Vote(entry.getKey(), entry.getValue());
+        for (VoteDTO voteDTO : sessionDTO.getVoteDTOs()) {
+            UserDTO userDTO = voteDTO.getUserDTO();
+            VoteValue voteValue = new VoteValue(voteDTO.getVoteValue());
+            Vote vote = new Vote(userDTO.getUserName(), userDTO.getUserType(), voteValue);
             votes.add(vote);
         }
         return votes;

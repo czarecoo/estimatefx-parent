@@ -1,16 +1,21 @@
 package com.czareg.session.model.vote;
 
+import com.czareg.dto.VoteDTO;
 import com.czareg.session.model.user.User;
+import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import static java.util.stream.Collectors.toList;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
+@Data
 @Component
 @Scope(SCOPE_PROTOTYPE)
 public class UserVotes {
@@ -43,26 +48,14 @@ public class UserVotes {
         return userVotes.keySet();
     }
 
-    public Map<String, String> getHiddenMap() {
-        return getMap(Vote::getVoteState);
-    }
-
-    public Map<String, String> getNormalMap() {
-        return getMap(Vote::getVoteValue);
-    }
-
-    private Map<String, String> getMap(Function<Vote, String> function) {
-        Map<String, String> newVoteMap = new LinkedHashMap<>();
-        for (Map.Entry<User, Vote> entry : userVotes.entrySet()) {
-            String userName = entry.getKey().getName();
-            String vote = function.apply(entry.getValue());
-            newVoteMap.put(userName, vote);
-        }
-        return newVoteMap;
-    }
-
-    @Override
-    public String toString() {
-        return userVotes.toString();
+    public List<VoteDTO> toVoteDTO(Function<Vote, String> function) {
+        return userVotes.entrySet().stream()
+                .map(entry -> {
+                    User user = entry.getKey();
+                    Vote vote = entry.getValue();
+                    String voteValue = function.apply(vote);
+                    return new VoteDTO(user.toDTO(), voteValue);
+                })
+                .collect(toList());
     }
 }

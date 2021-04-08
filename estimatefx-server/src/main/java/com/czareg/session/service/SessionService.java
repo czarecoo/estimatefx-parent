@@ -1,11 +1,11 @@
 package com.czareg.session.service;
 
+import com.czareg.dto.UserType;
 import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.session.exceptions.NotExistsException;
 import com.czareg.session.model.Session;
 import com.czareg.session.model.State;
 import com.czareg.session.model.user.User;
-import com.czareg.session.model.user.UserType;
 import com.czareg.session.repository.SessionRepository;
 import com.czareg.validator.UserNameValidator;
 import com.czareg.validator.ValidationResult;
@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.czareg.dto.UserType.CREATOR;
+import static com.czareg.dto.UserType.JOINER;
 import static com.czareg.session.model.State.VOTING;
 import static com.czareg.session.model.State.WAITING;
-import static com.czareg.session.model.user.UserType.CREATOR;
-import static com.czareg.session.model.user.UserType.JOINER;
 
 @Service
 public class SessionService {
@@ -137,8 +137,8 @@ public class SessionService {
         if (newCreator.isCreator()) {
             throw new BadRequestException("New creator is already a creator");
         }
-        oldCreator.setType(JOINER);
-        newCreator.setType(CREATOR);
+        oldCreator.setUserType(JOINER);
+        newCreator.setUserType(CREATOR);
         return session;
     }
 
@@ -152,8 +152,8 @@ public class SessionService {
         if (newCreator.isCreator()) {
             throw new BadRequestException("User is already creator");
         }
-        oldCreator.ifPresent(user -> user.setType(JOINER));
-        newCreator.setType(CREATOR);
+        oldCreator.ifPresent(user -> user.setUserType(JOINER));
+        newCreator.setUserType(CREATOR);
         return session;
     }
 
@@ -176,7 +176,7 @@ public class SessionService {
         session.getUsers().stream()
                 .filter(User::isJoiner)
                 .findFirst()
-                .ifPresent(newCreator -> newCreator.setType(CREATOR));
+                .ifPresent(newCreator -> newCreator.setUserType(CREATOR));
     }
 
     private boolean isNameTakenForSession(Session session, String userName) {
@@ -205,7 +205,7 @@ public class SessionService {
         }
         User creator = userFactory.getObject();
         creator.setName(userName);
-        creator.setType(userType);
+        creator.setUserType(userType);
         return creator;
     }
 }

@@ -1,35 +1,12 @@
 package com.czareg.model;
 
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
+@AllArgsConstructor
 public class VoteValue implements Comparable<VoteValue> {
     private String vote;
-
-    public VoteValue(String vote) {
-        this.vote = vote;
-    }
-
-    public String getVote() {
-        return vote;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        VoteValue voteValue1 = (VoteValue) o;
-        return Objects.equals(vote, voteValue1.vote);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(vote);
-    }
-
-    @Override
-    public String toString() {
-        return vote;
-    }
 
     @Override
     public int compareTo(VoteValue otherVote) {
@@ -52,5 +29,10 @@ public class VoteValue implements Comparable<VoteValue> {
 
     private boolean isInt(String s) {
         return s.matches("\\d+");
+    }
+
+    @Override
+    public String toString() {
+        return vote;
     }
 }

@@ -1,8 +1,11 @@
 package com.czareg.session.model.vote;
 
+import lombok.Data;
+
 import static com.czareg.session.model.vote.VoteState.NOT_VOTED;
 import static com.czareg.session.model.vote.VoteState.VOTED;
 
+@Data
 public class Vote {
     private VoteState voteState;
     private String voteValue;
@@ -23,13 +26,5 @@ public class Vote {
 
     public String getVoteValue() {
         return voteValue;
-    }
-
-    @Override
-    public String toString() {
-        return "Vote{" +
-                "voteState=" + voteState +
-                ", voteValue='" + voteValue + '\'' +
-                '}';
     }
 }

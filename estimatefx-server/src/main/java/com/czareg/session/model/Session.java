@@ -2,25 +2,25 @@ package com.czareg.session.model;
 
 import com.czareg.dto.SessionDTO;
 import com.czareg.dto.SessionIdentifierDTO;
-import com.czareg.dto.UserDTO;
+import com.czareg.dto.VoteDTO;
 import com.czareg.session.exceptions.BadRequestException;
 import com.czareg.session.model.user.User;
 import com.czareg.session.model.vote.UserVotes;
+import com.czareg.session.model.vote.Vote;
+import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static com.czareg.session.model.State.VOTING;
 import static com.czareg.session.model.State.WAITING;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
+@Data
 @Component
 @Scope(SCOPE_PROTOTYPE)
 public class Session {
@@ -58,26 +58,6 @@ public class Session {
         userVotes.removeUser(user);
     }
 
-    public int getSessionId() {
-        return sessionId;
-    }
-
-    public UserVotes getUserVotes() {
-        return userVotes;
-    }
-
-    public Instant getCreationTime() {
-        return creationTime;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public State getState() {
-        return state;
-    }
-
     public void setWaitingState() {
         this.state = WAITING;
     }
@@ -95,8 +75,7 @@ public class Session {
         sessionDTO.setSessionId(sessionId);
         sessionDTO.setState(state.toDTO());
         sessionDTO.setCreationTime(creationTime.toString());
-        sessionDTO.setUsers(getUserList());
-        sessionDTO.setVotes(getVotesDependingOnState());
+        sessionDTO.setVoteDTOs(getVotesDependingOnState());
         sessionDTO.setDescription(description);
         sessionDTO.setAllowPassingCreator(allowPassingCreator);
         sessionDTO.setAllowStealingCreator(allowStealingCreator);
@@ -104,11 +83,11 @@ public class Session {
         return sessionDTO;
     }
 
-    private Map<String, String> getVotesDependingOnState() {
-        if (state == WAITING) {
-            return userVotes.getNormalMap();
+    private List<VoteDTO> getVotesDependingOnState() {
+        if (state == VOTING) {
+            return userVotes.toVoteDTO(Vote::getVoteState);
         }
-        return userVotes.getHiddenMap();
+        return userVotes.toVoteDTO(Vote::getVoteValue);
     }
 
     public SessionIdentifierDTO toSessionIdentifierDTO() {
@@ -120,12 +99,6 @@ public class Session {
 
     public boolean isEmpty() {
         return userVotes.isEmpty();
-    }
-
-    private List<UserDTO> getUserList() {
-        return getUsers().stream()
-                .map(User::toDTO)
-                .collect(Collectors.toList());
     }
 
     public Set<User> getUsers() {
@@ -154,32 +127,5 @@ public class Session {
 
     public void setPassCreatorWhenLeaving(boolean passCreatorWhenLeaving) {
         this.passCreatorWhenLeaving = passCreatorWhenLeaving;
-    }
-
-    @Override
-    public String toString() {
-        return "Session{" +
-                "sessionId=" + sessionId +
-                ", state=" + state +
-                ", creationTime=" + creationTime +
-                ", userVotes=" + userVotes +
-                ", description='" + description + '\'' +
-                ", allowPassingCreator=" + allowPassingCreator +
-                ", allowStealingCreator=" + allowStealingCreator +
-                ", passCreatorWhenLeaving=" + passCreatorWhenLeaving +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Session session = (Session) o;
-        return sessionId == session.sessionId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sessionId);
     }
 }

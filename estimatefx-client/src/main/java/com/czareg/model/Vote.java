@@ -1,43 +1,29 @@
 package com.czareg.model;
 
+import com.czareg.dto.UserType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.Objects;
 
+@Data
+@AllArgsConstructor
 public class Vote {
     private String name;
+    private UserType userType;
     private VoteValue voteValue;
-
-    public Vote(String name, String vote) {
-        this.name = name;
-        this.voteValue = new VoteValue(vote);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public VoteValue getVoteValue() {
-        return voteValue;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Vote vote1 = (Vote) o;
-        return Objects.equals(name, vote1.name) &&
-                Objects.equals(voteValue, vote1.voteValue);
+        Vote vote = (Vote) o;
+        return Objects.equals(name, vote.name) &&
+                Objects.equals(voteValue, vote.voteValue);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(name, voteValue);
-    }
-
-    @Override
-    public String toString() {
-        return "Vote{" +
-                "name='" + name + '\'' +
-                ", vote='" + voteValue + '\'' +
-                '}';
     }
 }
