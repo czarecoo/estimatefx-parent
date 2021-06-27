@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar estimatefx-server-1.0.jar
+web: java -Dserver.port=$PORT -jar estimatefx-server-3.0.jar
