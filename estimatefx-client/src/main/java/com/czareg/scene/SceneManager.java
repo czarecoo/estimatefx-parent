@@ -30,6 +30,12 @@ public class SceneManager {
         Scene scene = loadScene(fxmlScene);
         Stage stage = context.getStage();
         stage.setScene(scene);
+        int width = fxmlScene.getWidth();
+        stage.setMinWidth(width);
+        stage.setWidth(width);
+        int height = fxmlScene.getHeight();
+        stage.setMinHeight(height);
+        stage.setHeight(height);
     }
 
     private Scene loadScene(FxmlScene fxmlScene) {

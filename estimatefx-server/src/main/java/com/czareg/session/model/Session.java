@@ -30,7 +30,6 @@ public class Session {
     private Instant creationTime;
     private UserVotes userVotes;
     private String description;
-    private boolean allowPassingCreator;
     private boolean allowStealingCreator;
     private boolean passCreatorWhenLeaving;
 
@@ -77,7 +76,6 @@ public class Session {
         sessionDTO.setCreationTime(creationTime.toString());
         sessionDTO.setVoteDTOs(getVotesDependingOnState());
         sessionDTO.setDescription(description);
-        sessionDTO.setAllowPassingCreator(allowPassingCreator);
         sessionDTO.setAllowStealingCreator(allowStealingCreator);
         sessionDTO.setPassCreatorWhenLeaving(passCreatorWhenLeaving);
         return sessionDTO;
@@ -103,14 +101,6 @@ public class Session {
 
     public Set<User> getUsers() {
         return userVotes.getUsers();
-    }
-
-    public boolean isAllowPassingCreator() {
-        return allowPassingCreator;
-    }
-
-    public void setAllowPassingCreator(boolean allowPassingCreator) {
-        this.allowPassingCreator = allowPassingCreator;
     }
 
     public boolean isAllowStealingCreator() {

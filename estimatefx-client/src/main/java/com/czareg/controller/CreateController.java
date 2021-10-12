@@ -23,8 +23,6 @@ public class CreateController implements ContextAware {
     @FXML
     private Button createSessionButton;
     @FXML
-    private CheckBox allowPassingCreatorCheckBox;
-    @FXML
     private CheckBox allowStealingCreatorCheckBox;
     @FXML
     private CheckBox passCreatorWhenLeavingCheckBox;
@@ -32,8 +30,7 @@ public class CreateController implements ContextAware {
     @Override
     public void initialize(Context context) {
         this.context = context;
-        CreateContext createContext = new CreateContext(allowPassingCreatorCheckBox, allowStealingCreatorCheckBox,
-                passCreatorWhenLeavingCheckBox);
+        CreateContext createContext = new CreateContext(allowStealingCreatorCheckBox, passCreatorWhenLeavingCheckBox);
         context.setCreateContext(createContext);
         nameTextField.setText(context.getUserName());
         nameTextField.textProperty().addListener(((observable, oldValue, newValue) -> context.setUserName(newValue)));

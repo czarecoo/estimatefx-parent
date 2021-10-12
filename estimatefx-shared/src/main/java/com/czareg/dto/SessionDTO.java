@@ -13,7 +13,6 @@ public class SessionDTO {
     private String creationTime;
     private List<VoteDTO> voteDTOs;
     private String description;
-    private boolean allowPassingCreator;
     private boolean allowStealingCreator;
     private boolean passCreatorWhenLeaving;
 

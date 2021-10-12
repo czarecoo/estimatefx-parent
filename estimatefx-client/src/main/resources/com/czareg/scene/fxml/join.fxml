@@ -6,8 +6,9 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-      spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+<?import javafx.scene.text.Font?>
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="250.0" minWidth="300.0"
+      spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.czareg.controller.JoinController">
     <padding>
         <Insets bottom="20.0" left="40.0" right="40.0" top="20.0"/>
@@ -34,7 +35,7 @@
                 </HBox>
             </children>
         </VBox>
-        <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+        <Separator maxHeight="-Infinity" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
             <VBox.margin>
                 <Insets/>
             </VBox.margin>
@@ -49,7 +50,15 @@
                       VBox.vgrow="ALWAYS">
                     <children>
                         <ChoiceBox fx:id="existingSessionsChoiceBox" maxHeight="1.7976931348623157E308"
-                                   maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                                   maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                            <tooltip>
+                                <Tooltip text="Active sessions">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Tooltip>
+                            </tooltip>
+                        </ChoiceBox>
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                                 mnemonicParsing="false" onAction="#handleRefreshSessionsButtonClicked"
                                 HBox.hgrow="SOMETIMES">
@@ -63,6 +72,13 @@
                                     </viewport>
                                 </ImageView>
                             </graphic>
+                            <tooltip>
+                                <Tooltip text="Refresh sessions information">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Tooltip>
+                            </tooltip>
                         </Button>
                     </children>
                 </HBox>

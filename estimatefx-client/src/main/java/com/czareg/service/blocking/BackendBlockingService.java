@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface BackendBlockingService {
     SessionDTO createSession(String userName,
-                             boolean allowPassingCreator,
                              boolean allowStealingCreator,
                              boolean passCreatorWhenLeaving) throws BackendServiceException;
 

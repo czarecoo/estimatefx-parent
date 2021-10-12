@@ -19,12 +19,11 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
 
     @Override
     public SessionDTO createSession(String userName,
-                                    boolean allowPassingCreator,
                                     boolean allowStealingCreator,
                                     boolean passCreatorWhenLeaving) throws BackendServiceException {
         try {
             Call<SessionDTO> session = backendBlockingApi.createSession(userName,
-                    allowPassingCreator, allowStealingCreator, passCreatorWhenLeaving);
+                    allowStealingCreator, passCreatorWhenLeaving);
             Response<SessionDTO> sessionDTOResponse = session.execute();
             if (sessionDTOResponse.isSuccessful()) {
                 return sessionDTOResponse.body();
@@ -32,7 +31,6 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("create session")
                     .parameter("userName", userName)
-                    .parameter("allowPassingCreator", allowPassingCreator)
                     .parameter("allowStealingCreator", allowStealingCreator)
                     .parameter("passCreatorWhenLeaving", passCreatorWhenLeaving)
                     .serverMessage(sessionDTOResponse)
@@ -42,7 +40,6 @@ public class BackendBlockingServiceImpl implements BackendBlockingService {
             throw new BackendServiceExceptionBuilder()
                     .failedTo("create session")
                     .parameter("userName", userName)
-                    .parameter("allowPassingCreator", allowPassingCreator)
                     .parameter("allowStealingCreator", allowStealingCreator)
                     .parameter("passCreatorWhenLeaving", passCreatorWhenLeaving)
                     .cause(e)

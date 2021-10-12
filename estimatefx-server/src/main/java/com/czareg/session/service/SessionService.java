@@ -35,12 +35,11 @@ public class SessionService {
         this.inactiveUserCleaningService = inactiveUserCleaningService;
     }
 
-    public Session create(String userName, boolean allowPassingCreator, boolean allowStealingCreator,
+    public Session create(String userName, boolean allowStealingCreator,
                           boolean passCreatorWhenLeaving) throws BadRequestException {
         User creator = createUser(userName, CREATOR);
         Session session = sessionFactory.getObject();
         session.addCreator(creator);
-        session.setAllowPassingCreator(allowPassingCreator);
         session.setAllowStealingCreator(allowStealingCreator);
         session.setPassCreatorWhenLeaving(passCreatorWhenLeaving);
         sessionRepository.add(session);
@@ -126,9 +125,6 @@ public class SessionService {
     public Session passCreator(int sessionId, String oldCreatorUserName, String newCreatorUserName)
             throws NotExistsException, BadRequestException {
         Session session = getSession(sessionId);
-        if (!session.isAllowPassingCreator()) {
-            throw new BadRequestException("Passing creator is turned off for this session");
-        }
         User oldCreator = findUser(oldCreatorUserName, session);
         User newCreator = findUser(newCreatorUserName, session);
         if (!oldCreator.isCreator()) {

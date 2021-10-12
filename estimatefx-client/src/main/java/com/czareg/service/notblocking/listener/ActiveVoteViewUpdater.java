@@ -115,9 +115,7 @@ public class ActiveVoteViewUpdater {
         if (sessionDTO.isAllowStealingCreator()) {
             stealCreatorButton.setDisable(isCreator);
         }
-        if (sessionDTO.isAllowPassingCreator()) {
-            passCreatorButton.setDisable(!isCreator);
-        }
+        passCreatorButton.setDisable(!isCreator);
         kickUserButton.setDisable(!isCreator);
     }
 

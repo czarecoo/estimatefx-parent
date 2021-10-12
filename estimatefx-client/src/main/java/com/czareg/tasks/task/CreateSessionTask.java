@@ -24,10 +24,9 @@ public class CreateSessionTask extends CustomTask {
     @Override
     void process() throws BackendServiceException {
         String userName = context.getUserName();
-        boolean allowPassingCreator = context.getCreateContext().shouldAllowPassingCreator();
         boolean allowStealingCreator = context.getCreateContext().shouldAllowStealingCreator();
         boolean passCreatorWhenLeaving = context.getCreateContext().shouldPassCreatorWhenLeaving();
-        session = backendBlockingService.createSession(userName, allowPassingCreator, allowStealingCreator, passCreatorWhenLeaving);
+        session = backendBlockingService.createSession(userName, allowStealingCreator, passCreatorWhenLeaving);
         LOG.info("Received created session from backend: {}", session);
     }
 

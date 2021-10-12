@@ -27,10 +27,9 @@ public class SessionController {
 
     @PostMapping(value = "/createSession")
     public SessionDTO createSession(@RequestParam String userName,
-                                    @RequestParam(defaultValue = "true") boolean allowPassingCreator,
                                     @RequestParam(defaultValue = "true") boolean allowStealingCreator,
                                     @RequestParam(defaultValue = "true") boolean passCreatorWhenLeaving) throws BadRequestException {
-        Session session = sessionService.create(userName, allowPassingCreator, allowStealingCreator, passCreatorWhenLeaving);
+        Session session = sessionService.create(userName, allowStealingCreator, passCreatorWhenLeaving);
         sessionSink.emit(session);
         return session.toSessionDTO();
     }

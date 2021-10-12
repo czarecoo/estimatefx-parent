@@ -4,8 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-      spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="280.0" minWidth="300.0"
+      spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.czareg.controller.CreateController">
    <padding>
       <Insets bottom="20.0" left="40.0" right="40.0" top="20.0"/>
@@ -34,7 +34,7 @@
             </HBox>
          </children>
       </VBox>
-      <Separator prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <Separator VBox.vgrow="ALWAYS">
          <VBox.margin>
             <Insets/>
          </VBox.margin>
@@ -47,38 +47,29 @@
                        promptText="Name" VBox.vgrow="ALWAYS"/>
          </children>
       </VBox>
-      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" VBox.vgrow="ALWAYS">
-         <children>
-            <CheckBox fx:id="allowPassingCreatorCheckBox" maxHeight="1.7976931348623157E308"
-                      maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true"
-                      text="Allow passing creator" VBox.vgrow="ALWAYS"/>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                   text="Creator will be able to pass his role to other users" VBox.vgrow="ALWAYS">
+      <CheckBox fx:id="allowStealingCreatorCheckBox" maxHeight="1.7976931348623157E308"
+                maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Allow stealing creator"
+                VBox.vgrow="ALWAYS">
+         <tooltip>
+            <Tooltip
+                    text="Other users will be able to become a creator at any time. In that case current creator will be demoted to joiner.">
                <font>
-                  <Font name="System Italic" size="12.0"/>
+                  <Font size="14.0"/>
                </font>
-            </Label>
-         </children>
-      </VBox>
-      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" VBox.vgrow="ALWAYS">
-         <children>
-            <CheckBox fx:id="allowStealingCreatorCheckBox" maxHeight="1.7976931348623157E308"
-                      maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true"
-                      text="Allow stealing creator" VBox.vgrow="ALWAYS"/>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                   text="Everyone will be able to become a creator at any time" VBox.vgrow="ALWAYS"/>
-         </children>
-      </VBox>
-      <VBox layoutX="50.0" layoutY="253.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-            spacing="5.0" VBox.vgrow="ALWAYS">
-         <children>
-            <CheckBox fx:id="passCreatorWhenLeavingCheckBox" maxHeight="1.7976931348623157E308"
-                      maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true"
-                      text="Pass creator when leaving" VBox.vgrow="ALWAYS"/>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                   text="When creator leaves, his role will be passed to next player" VBox.vgrow="ALWAYS"/>
-         </children>
-      </VBox>
+            </Tooltip>
+         </tooltip>
+      </CheckBox>
+      <CheckBox fx:id="passCreatorWhenLeavingCheckBox" maxHeight="1.7976931348623157E308"
+                maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true"
+                text="Pass creator when leaving" VBox.vgrow="ALWAYS">
+         <tooltip>
+            <Tooltip text="When creator leaves, his role will be passed to other randomly selected user.">
+               <font>
+                  <Font size="14.0"/>
+               </font>
+            </Tooltip>
+         </tooltip>
+      </CheckBox>
       <Button fx:id="createSessionButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
               mnemonicParsing="false" onAction="#handleCreateSessionButtonClicked" text="Create new session"
               VBox.vgrow="ALWAYS"/>
