@@ -1,8 +1,10 @@
 package com.czareg.service.notblocking.listener;
 
 import com.czareg.context.Context;
+import com.czareg.context.PollingServicesManager;
 import com.czareg.dto.SessionDTO;
 import com.czareg.notifications.NotificationMessageBuilder;
+import com.czareg.service.notblocking.polling.SessionPollingService;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
@@ -33,6 +35,8 @@ public class SessionListener extends Listener {
         sessionDTO = gson.fromJson(jsonObject, SessionDTO.class);
         boolean hasUser = hasUser(userName, sessionDTO);
         if (!hasUser) {
+            PollingServicesManager pollingServicesManager = context.getPollingServicesManager();
+            pollingServicesManager.close();
             String developerMessage = "You are no longer in session";
             LOG.info(developerMessage);
             NotificationMessageBuilder notificationMessageBuilder = new NotificationMessageBuilder();

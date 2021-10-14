@@ -21,6 +21,7 @@ public class Context {
     private VoteContext voteContext;
     private CreateContext createContext;
     private TaskFactory taskFactory;
+
     private PollingServicesManager pollingServicesManager;
     private PropertiesManager propertiesManager;
     private ThreadPoolManager threadPoolManager;
@@ -104,5 +105,9 @@ public class Context {
 
     public TaskScheduler getTaskScheduler() {
         return taskScheduler;
+    }
+
+    public PollingServicesManager getPollingServicesManager() {
+        return pollingServicesManager;
     }
 }
