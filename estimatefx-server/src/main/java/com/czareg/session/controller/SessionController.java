@@ -26,16 +26,16 @@ public class SessionController {
     }
 
     @PostMapping(value = "/createSession")
-    public SessionDTO createSession(@RequestParam String userName,
-                                    @RequestParam(defaultValue = "true") boolean allowStealingCreator,
-                                    @RequestParam(defaultValue = "true") boolean passCreatorWhenLeaving) throws BadRequestException {
+    public SessionDTO createSession(@RequestParam("userName") String userName,
+                                    @RequestParam(name = "allowStealingCreator", defaultValue = "true") boolean allowStealingCreator,
+                                    @RequestParam(name = "passCreatorWhenLeaving", defaultValue = "true") boolean passCreatorWhenLeaving) throws BadRequestException {
         Session session = sessionService.create(userName, allowStealingCreator, passCreatorWhenLeaving);
         sessionSink.emit(session);
         return session.toSessionDTO();
     }
 
     @PutMapping(value = "/joinSession/{sessionId}")
-    public SessionDTO joinSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
+    public SessionDTO joinSession(@PathVariable("sessionId") int sessionId, @RequestParam("userName") String userName)
             throws BadRequestException, NotExistsException {
         Session session = sessionService.join(sessionId, userName);
         sessionSink.emit(session);
@@ -75,52 +75,52 @@ public class SessionController {
     }
 
     @PutMapping(value = "/voteOnSession/{sessionId}")
-    public void voteOnSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName,
-                              @RequestParam String voteValue)
+    public void voteOnSession(@PathVariable("sessionId") int sessionId, @RequestParam("userName") String userName,
+                              @RequestParam("voteValue") String voteValue)
             throws BadRequestException, NotExistsException {
         Session session = sessionService.vote(sessionId, userName, voteValue);
         sessionSink.emit(session);
     }
 
     @DeleteMapping(value = "/leaveSession/{sessionId}")
-    public void leaveSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
+    public void leaveSession(@PathVariable("sessionId") int sessionId, @RequestParam("userName") String userName)
             throws NotExistsException {
         Session session = sessionService.leave(sessionId, userName);
         sessionSink.emit(session);
     }
 
     @PutMapping(value = "/startVotingOnSession/{sessionId}")
-    public void startVotingOnSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
+    public void startVotingOnSession(@PathVariable("sessionId") int sessionId, @RequestParam("userName") String userName)
             throws BadRequestException, NotExistsException {
         Session session = sessionService.startVoting(sessionId, userName);
         sessionSink.emit(session);
     }
 
     @PutMapping(value = "/stopVotingOnSession/{sessionId}")
-    public void stopVotingOnSession(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
+    public void stopVotingOnSession(@PathVariable("sessionId") int sessionId, @RequestParam("userName") String userName)
             throws BadRequestException, NotExistsException {
         Session session = sessionService.stopVoting(sessionId, userName);
         sessionSink.emit(session);
     }
 
     @PutMapping(value = "/passCreator/{sessionId}")
-    public void passCreator(@PathVariable("sessionId") int sessionId, @RequestParam String oldCreator,
-                            @RequestParam String newCreator)
+    public void passCreator(@PathVariable("sessionId") int sessionId, @RequestParam("oldCreator") String oldCreator,
+                            @RequestParam("newCreator") String newCreator)
             throws NotExistsException, BadRequestException {
         Session session = sessionService.passCreator(sessionId, oldCreator, newCreator);
         sessionSink.emit(session);
     }
 
     @PutMapping(value = "/stealCreator/{sessionId}")
-    public void stealCreator(@PathVariable("sessionId") int sessionId, @RequestParam String userName)
+    public void stealCreator(@PathVariable("sessionId") int sessionId, @RequestParam("userName") String userName)
             throws NotExistsException, BadRequestException {
         Session session = sessionService.stealCreator(sessionId, userName);
         sessionSink.emit(session);
     }
 
     @PutMapping(value = "/kickUser/{sessionId}")
-    public void kickUser(@PathVariable("sessionId") int sessionId, @RequestParam String userName,
-                         @RequestParam String userToKick)
+    public void kickUser(@PathVariable("sessionId") int sessionId, @RequestParam("userName") String userName,
+                         @RequestParam("userToKick") String userToKick)
             throws NotExistsException, BadRequestException {
         Session session = sessionService.kickUser(sessionId, userName, userToKick);
         sessionSink.emit(session);

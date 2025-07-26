@@ -8,7 +8,6 @@ import com.czareg.tasks.TaskFactory;
 import com.czareg.tasks.TaskScheduler;
 import com.czareg.tasks.ThreadPoolManager;
 import javafx.stage.Stage;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,7 +25,7 @@ public class Context {
     private ThreadPoolManager threadPoolManager;
     private TaskScheduler taskScheduler;
 
-    public Context() throws ConfigurationException {
+    public Context() {
         propertiesManager = new PropertiesManager();
         BackendBlockingServiceFactory backendBlockingServiceFactory = new BackendBlockingServiceFactory(propertiesManager);
         BackendBlockingService backendBlockingService = backendBlockingServiceFactory.create();

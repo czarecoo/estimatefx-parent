@@ -1,45 +1,54 @@
 package com.czareg.context;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class PropertiesManager {
-    private final PropertiesConfiguration propertiesConfiguration;
+    private static final String FILE_NAME = "application.properties";
 
-    public PropertiesManager() throws ConfigurationException {
-        propertiesConfiguration = new PropertiesConfiguration("application.properties");
-        propertiesConfiguration.setThrowExceptionOnMissing(true);
+    private final Properties propertiesConfiguration = new Properties();
+
+    public PropertiesManager() {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(FILE_NAME)) {
+            if (in == null) {
+                throw new IllegalStateException("Properties file not found in classpath: " + FILE_NAME);
+            }
+            propertiesConfiguration.load(in);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load properties file: " + FILE_NAME, e);
+        }
     }
 
     public int getThreadCount() {
-        return propertiesConfiguration.getInt("thread.count", 5);
+        return Integer.parseInt(propertiesConfiguration.getProperty("thread.count", "5"));
     }
 
     public String getBaseUrl() {
-        String baseUrl = propertiesConfiguration.getString("backend.url");
+        String baseUrl = propertiesConfiguration.getProperty("backend.url");
         requireDefined(baseUrl, "Backend url");
         return baseUrl;
     }
 
     public boolean shouldUseProxy() {
-        return propertiesConfiguration.getBoolean("proxy.enabled", false);
+        return Boolean.parseBoolean(propertiesConfiguration.getProperty("proxy.enabled", "false"));
     }
 
     public String getProxyHost() {
-        String proxyHost = propertiesConfiguration.getString("proxy.host");
+        String proxyHost = propertiesConfiguration.getProperty("proxy.host");
         requireDefined(proxyHost, "Proxy host address");
         return proxyHost;
     }
 
     public int getProxyPort() {
-        Integer proxyPort = propertiesConfiguration.getInteger("proxy.port", null);
+        String proxyPort = propertiesConfiguration.getProperty("proxy.port");
         requireDefined(proxyPort, "Proxy port");
-        return proxyPort;
+        return Integer.parseInt(proxyPort);
     }
 
     private <T> void requireDefined(T object, String objectsDescription) {
         if (object == null) {
-            String message = String.format("%s is not defined in %s", objectsDescription, propertiesConfiguration.getFileName());
+            String message = String.format("%s is not defined in %s", objectsDescription, FILE_NAME);
             throw new IllegalStateException(message);
         }
     }

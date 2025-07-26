@@ -5,8 +5,8 @@ import com.czareg.context.PropertiesManager;
 import com.czareg.service.shared.OkHttpClientFactory;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.internal.sse.RealEventSource;
 import okhttp3.sse.EventSourceListener;
+import okhttp3.sse.internal.RealEventSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

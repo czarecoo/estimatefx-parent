@@ -1,6 +1,6 @@
 package com.czareg.notifications;
 
-import org.apache.commons.lang.StringUtils;
+import com.czareg.utils.StringUtils;
 
 public class NotificationMessageBuilder {
     private String developerMessage;
